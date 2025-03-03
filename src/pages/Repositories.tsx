@@ -1,28 +1,9 @@
 
 import React, { useState } from 'react';
 import NavBar from '@/components/NavBar';
-import ConfigurationModal from '@/components/ConfigurationModal';
 import RepositoryHeader from '@/components/RepositoryHeader';
-import RepositoryTable from '@/components/RepositoryTable';
-import WorkflowSection from '@/components/WorkflowSection';
-
-// Define types for our data
-interface GitHubRepository {
-  id: string;
-  name: string;
-  owner: string;
-  orgName: string;
-  packageTypes: string[];
-  lastRun: string;
-  isConfigured: boolean;
-  workflows: {
-    id: string;
-    name: string;
-    status: 'active' | 'inactive';
-    buildNumber?: number;
-    lastRun?: string;
-  }[];
-}
+import RepositoryList from '@/components/RepositoryList';
+import { Repository } from '@/types/repository';
 
 interface Organization {
   id: string;
@@ -30,19 +11,31 @@ interface Organization {
 }
 
 const RepositoriesPage: React.FC = () => {
-  // Mock data for repositories
-  const [repositories, setRepositories] = useState<GitHubRepository[]>([
+  // Mock repositories data with workflows as children
+  const [repositories, setRepositories] = useState<Repository[]>([
     {
       id: '1',
       name: 'frontend-app',
       owner: 'acme-org',
       orgName: 'ACME Organization',
-      packageTypes: ['npm', 'yarn'],
-      lastRun: '2 days ago',
+      language: 'TypeScript',
+      lastUpdated: '2 days ago',
       isConfigured: true,
       workflows: [
-        { id: 'w1', name: 'CI/CD Pipeline', status: 'active' },
-        { id: 'w2', name: 'Test Suite', status: 'active' }
+        { 
+          id: 'w1', 
+          name: 'CI/CD Pipeline', 
+          status: 'active', 
+          buildNumber: 245,
+          lastRun: '2 days ago'
+        },
+        { 
+          id: 'w2', 
+          name: 'Test Suite', 
+          status: 'active',
+          buildNumber: 244,
+          lastRun: '3 days ago'
+        }
       ]
     },
     {
@@ -50,11 +43,17 @@ const RepositoriesPage: React.FC = () => {
       name: 'backend-api',
       owner: 'acme-org',
       orgName: 'ACME Organization',
-      packageTypes: ['npm'],
-      lastRun: '5 days ago',
+      language: 'JavaScript',
+      lastUpdated: '5 days ago',
       isConfigured: false,
       workflows: [
-        { id: 'w3', name: 'Database Migrations', status: 'inactive' }
+        { 
+          id: 'w3', 
+          name: 'Database Migrations', 
+          status: 'inactive',
+          buildNumber: 76,
+          lastRun: '5 days ago'
+        }
       ]
     },
     {
@@ -62,8 +61,8 @@ const RepositoriesPage: React.FC = () => {
       name: 'documentation',
       owner: 'dev-team',
       orgName: 'Development Team',
-      packageTypes: ['markdown'],
-      lastRun: 'Never',
+      language: 'Markdown',
+      lastUpdated: '10 days ago',
       isConfigured: false,
       workflows: []
     }
@@ -77,13 +76,10 @@ const RepositoriesPage: React.FC = () => {
   ]);
 
   const [selectedOrg, setSelectedOrg] = useState<Organization>(organizations[0]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedRepo, setSelectedRepo] = useState<GitHubRepository | null>(null);
-  const [configModalOpen, setConfigModalOpen] = useState(false);
+  const [selectedRepo, setSelectedRepo] = useState<Repository | null>(null);
   
-  const handleConfigureClick = (repo: GitHubRepository) => {
+  const handleConfigureRepository = (repo: Repository) => {
     setSelectedRepo(repo);
-    setConfigModalOpen(true);
   };
 
   return (
@@ -98,25 +94,13 @@ const RepositoriesPage: React.FC = () => {
             setSelectedOrg={setSelectedOrg}
           />
           
-          <RepositoryTable 
+          <RepositoryList 
             repositories={repositories}
-            selectedOrg={selectedOrg}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            onConfigureClick={handleConfigureClick}
+            onConfigureRepository={handleConfigureRepository}
+            className="mt-6"
           />
-          
-          <WorkflowSection selectedRepo={selectedRepo} />
         </div>
       </main>
-      
-      {selectedRepo && (
-        <ConfigurationModal
-          open={configModalOpen}
-          onOpenChange={setConfigModalOpen}
-          repository={selectedRepo}
-        />
-      )}
     </div>
   );
 };
