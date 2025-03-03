@@ -4,6 +4,7 @@ import NavBar from '@/components/NavBar';
 import RepositoryHeader from '@/components/RepositoryHeader';
 import RepositoryList from '@/components/RepositoryList';
 import { Repository } from '@/types/repository';
+import OrganizationSelect from '@/components/OrganizationSelect';
 
 interface Organization {
   id: string;
@@ -20,6 +21,7 @@ const RepositoriesPage: React.FC = () => {
       orgName: 'ACME Organization',
       language: 'TypeScript',
       lastUpdated: '2 days ago',
+      packageTypes: ['npm', 'yarn'],
       isConfigured: true,
       workflows: [
         { 
@@ -45,6 +47,7 @@ const RepositoriesPage: React.FC = () => {
       orgName: 'ACME Organization',
       language: 'JavaScript',
       lastUpdated: '5 days ago',
+      packageTypes: ['npm'],
       isConfigured: false,
       workflows: [
         { 
@@ -63,6 +66,7 @@ const RepositoriesPage: React.FC = () => {
       orgName: 'Development Team',
       language: 'Markdown',
       lastUpdated: '10 days ago',
+      packageTypes: ['markdown'],
       isConfigured: false,
       workflows: []
     }
@@ -94,11 +98,23 @@ const RepositoriesPage: React.FC = () => {
             setSelectedOrg={setSelectedOrg}
           />
           
-          <RepositoryList 
-            repositories={repositories}
-            onConfigureRepository={handleConfigureRepository}
-            className="mt-6"
-          />
+          <div className="mt-6">
+            <div className="mb-4 flex items-center justify-between">
+              <div className="flex items-center">
+                <h2 className="text-xl font-semibold mr-3">GitHub Repositories</h2>
+                <OrganizationSelect 
+                  organizations={organizations}
+                  selectedOrg={selectedOrg}
+                  setSelectedOrg={setSelectedOrg}
+                />
+              </div>
+            </div>
+            
+            <RepositoryList 
+              repositories={repositories}
+              onConfigureRepository={handleConfigureRepository}
+            />
+          </div>
         </div>
       </main>
     </div>

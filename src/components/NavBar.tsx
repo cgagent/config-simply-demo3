@@ -2,9 +2,11 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import Button from './Button';
-import { Github, UserCircle, Settings, HelpCircle, BellRing } from 'lucide-react';
+import { UserCircle, Settings, HelpCircle, BellRing } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Link } from 'react-router-dom';
+import SideNavigation from './SideNavigation';
 
 interface NavBarProps {
   className?: string;
@@ -18,10 +20,16 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
     )}>
       <nav className="flex items-center justify-between h-full max-w-7xl mx-auto">
         <div className="flex items-center gap-2">
-          <div className="flex items-center justify-center w-10 h-10 rounded-md bg-primary text-white font-semibold">
-            R
+          <Link to="/dashboard" className="flex items-center gap-2">
+            <div className="flex items-center justify-center w-10 h-10 rounded-md bg-primary text-white font-semibold">
+              R
+            </div>
+            <span className="font-semibold text-lg">Repository Manager</span>
+          </Link>
+          
+          <div className="hidden md:block ml-8">
+            <SideNavigation className="flex-row space-y-0 space-x-1" />
           </div>
-          <span className="font-semibold text-lg">Repository Manager</span>
         </div>
 
         <div className="flex items-center gap-5">

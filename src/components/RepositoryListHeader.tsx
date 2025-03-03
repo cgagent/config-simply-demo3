@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Github } from 'lucide-react';
+import { GitBranch } from 'lucide-react';
 import Search from './Search';
 import RepositoryFilter from './RepositoryFilter';
 
@@ -18,8 +18,8 @@ const RepositoryListHeader: React.FC<RepositoryListHeaderProps> = ({
   return (
     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
       <div className="flex items-center gap-2 text-xl font-semibold">
-        <Github className="h-5 w-5" />
-        <h2>GitHub Repositories</h2>
+        <GitBranch className="h-5 w-5" />
+        <h2>Repositories</h2>
       </div>
       
       <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
