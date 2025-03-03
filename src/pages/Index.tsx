@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import NavBar from '@/components/NavBar';
 import StatusSummary from '@/components/StatusSummary';
-import RepositoryList, { Repository } from '@/components/RepositoryList';
+import RepositoryList from '@/components/RepositoryList';
+import { Repository } from '@/types/repository';
 import EmptyState from '@/components/EmptyState';
 import Button from '@/components/Button';
 import { Github, Filter, RefreshCw } from 'lucide-react';
@@ -30,25 +31,42 @@ const Index = () => {
           id: '1',
           name: 'frontend-app',
           owner: 'acme-org',
+          orgName: 'ACME Organization',
           isConfigured: true,
           language: 'TypeScript',
-          lastUpdated: '2 days ago'
+          lastUpdated: '2 days ago',
+          packageTypes: ['npm', 'yarn'],
+          lastRun: '2 days ago',
+          workflows: [
+            { id: 'w1', name: 'CI/CD Pipeline', status: 'active' },
+            { id: 'w2', name: 'Test Suite', status: 'active' }
+          ]
         },
         {
           id: '2',
           name: 'backend-api',
           owner: 'acme-org',
+          orgName: 'ACME Organization',
           isConfigured: false,
           language: 'JavaScript',
-          lastUpdated: '5 days ago'
+          lastUpdated: '5 days ago',
+          packageTypes: ['npm'],
+          lastRun: '5 days ago',
+          workflows: [
+            { id: 'w3', name: 'Database Migrations', status: 'inactive' }
+          ]
         },
         {
           id: '3',
           name: 'documentation',
           owner: 'acme-org',
+          orgName: 'ACME Organization',
           isConfigured: false,
           language: 'TypeScript',
-          lastUpdated: '1 week ago'
+          lastUpdated: '1 week ago',
+          packageTypes: [],
+          lastRun: 'Never',
+          workflows: []
         }
       ]);
       setLoading(false);
@@ -105,13 +123,6 @@ const Index = () => {
               </div>
             )}
           </div>
-          
-          {connected && (
-            <StatusSummary 
-              totalRepos={repositories.length} 
-              configuredRepos={configuredCount} 
-            />
-          )}
         </div>
         
         {!connected ? (
