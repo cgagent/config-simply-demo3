@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import NavBar from '@/components/NavBar';
 import RepositoryHeader from '@/components/RepositoryHeader';
 import RepositoryList from '@/components/RepositoryList';
-import { Repository } from '@/types/repository';
+import { Repository, commonPackageTypes } from '@/types/repository';
 import OrganizationSelect from '@/components/OrganizationSelect';
 
 interface Organization {
@@ -107,6 +107,31 @@ const RepositoriesPage: React.FC = () => {
       packageTypes: ['docker'],
       isConfigured: false,
       workflows: []
+    },
+    {
+      id: '5',
+      name: 'fully-configured-repo',
+      owner: 'acme-org',
+      orgName: 'ACME Organization',
+      language: 'Python',
+      lastUpdated: '1 day ago',
+      packageTypes: ['npm', 'docker', 'python'],
+      isConfigured: true,
+      packageTypeStatus: {
+        'npm': true,
+        'docker': true,
+        'python': true
+      },
+      workflows: [
+        { 
+          id: 'w5', 
+          name: 'Full Pipeline', 
+          status: 'active', 
+          buildNumber: 127,
+          lastRun: '1 day ago',
+          packageTypes: ['npm', 'docker', 'python']
+        }
+      ]
     }
   ]);
 

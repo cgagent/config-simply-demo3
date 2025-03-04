@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Repository, Workflow } from '@/types/repository';
-import { ChevronDown, ChevronRight, GitPullRequest, Package } from 'lucide-react';
+import { ChevronDown, ChevronRight, GitPullRequest, Package, Check, X } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Badge } from '@/components/ui/badge';
 import Button from './Button';
@@ -40,6 +40,8 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
         .map(([type]) => type)
     : [];
   
+  const isFullyConfigured = coveragePercentage === 100;
+
   return (
     <Collapsible
       open={isOpen}
@@ -75,6 +77,7 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
         <div className="col-span-2 hidden md:flex justify-center items-center">
           {repository.packageTypes && repository.packageTypes.length > 0 ? (
             <div className="flex gap-1 flex-wrap">
+              {/* Connected package types */}
               {repository.packageTypes.map((type, index) => (
                 <Badge 
                   key={index}
@@ -82,6 +85,18 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
                   className="text-xs bg-secondary text-secondary-foreground"
                 >
                   <Package className="h-3 w-3 mr-1" />
+                  {type}
+                </Badge>
+              ))}
+              
+              {/* Missing package types */}
+              {missingPackageTypes.map((type, index) => (
+                <Badge 
+                  key={`missing-${index}`}
+                  variant="outline"
+                  className="text-xs border-dashed bg-red-50 text-red-500 border-red-200"
+                >
+                  <X className="h-3 w-3 mr-1" />
                   {type}
                 </Badge>
               ))}
@@ -100,12 +115,19 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div className="w-full max-w-24">
-                    <div className="flex justify-between text-xs mb-1">
-                      <span>{coveragePercentage}%</span>
+                  {isFullyConfigured ? (
+                    <div className="flex items-center text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
+                      <Check className="h-3.5 w-3.5 mr-1" />
+                      <span className="text-xs font-medium">Configured</span>
                     </div>
-                    <Progress value={coveragePercentage} className="h-1.5" />
-                  </div>
+                  ) : (
+                    <div className="w-full max-w-24">
+                      <div className="flex justify-between text-xs mb-1">
+                        <span>{coveragePercentage}%</span>
+                      </div>
+                      <Progress value={coveragePercentage} className="h-1.5" />
+                    </div>
+                  )}
                 </TooltipTrigger>
                 <TooltipContent>
                   {missingPackageTypes.length > 0 ? (

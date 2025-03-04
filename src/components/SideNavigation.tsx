@@ -24,8 +24,8 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ className }) => {
   const location = useLocation();
   
   return (
-    <nav className={cn("py-4", className)}>
-      <ul className="space-y-1">
+    <nav className={cn("py-2", className)}>
+      <ul className={cn("space-y-1", className?.includes("flex-row") && "flex space-x-2 space-y-0")}>
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           
@@ -34,10 +34,10 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ className }) => {
               <Link
                 to={item.path}
                 className={cn(
-                  "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                  "flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors hover:bg-secondary",
                   isActive 
-                    ? "bg-primary/10 text-primary" 
-                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                    ? "bg-primary text-white" 
+                    : "text-foreground hover:text-foreground"
                 )}
               >
                 {item.icon}
