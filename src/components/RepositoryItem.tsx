@@ -1,10 +1,12 @@
 
 import React, { useState } from 'react';
-import { Repository } from '@/types/repository';
+import { Repository, Workflow } from '@/types/repository';
 import { ChevronDown, ChevronRight, GitPullRequest, Package } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Badge } from '@/components/ui/badge';
 import Button from './Button';
+import { Progress } from '@/components/ui/progress';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface RepositoryItemProps {
   repository: Repository;
@@ -19,6 +21,24 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const hasWorkflows = repository.workflows && repository.workflows.length > 0;
+  
+  // Calculate package type coverage
+  const calculatePackageTypeCoverage = () => {
+    if (!repository.packageTypeStatus) return 0;
+    
+    const total = Object.keys(repository.packageTypeStatus).length;
+    if (total === 0) return 0;
+    
+    const connected = Object.values(repository.packageTypeStatus).filter(Boolean).length;
+    return Math.round((connected / total) * 100);
+  };
+
+  const coveragePercentage = calculatePackageTypeCoverage();
+  const missingPackageTypes = repository.packageTypeStatus 
+    ? Object.entries(repository.packageTypeStatus)
+        .filter(([_, isConnected]) => !isConnected)
+        .map(([type]) => type)
+    : [];
   
   return (
     <Collapsible
@@ -77,9 +97,32 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
         
         <div className="col-span-2 md:col-span-2 flex justify-center items-center">
           {repository.isConfigured ? (
-            <span className="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs rounded-full font-medium">
-              Configured
-            </span>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="w-full max-w-24">
+                    <div className="flex justify-between text-xs mb-1">
+                      <span>{coveragePercentage}%</span>
+                    </div>
+                    <Progress value={coveragePercentage} className="h-1.5" />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {missingPackageTypes.length > 0 ? (
+                    <div className="text-xs">
+                      <p>Missing package types:</p>
+                      <ul className="list-disc pl-4 mt-1">
+                        {missingPackageTypes.map((type) => (
+                          <li key={type}>{type}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : (
+                    <p className="text-xs">All package types connected</p>
+                  )}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           ) : (
             <Button 
               size="sm" 
@@ -104,14 +147,34 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
               className="grid grid-cols-12 gap-2 px-6 py-3 border-t border-border/50 pl-10"
             >
               <div className="col-span-6 flex items-center gap-2">
-                <div className="flex items-center gap-2">
-                  <GitPullRequest className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">{workflow.name}</span>
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-2">
+                    <GitPullRequest className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm">{workflow.name}</span>
+                  </div>
+                  <span className="text-xs text-muted-foreground ml-6">
+                    / #{workflow.buildNumber || '-'}
+                  </span>
                 </div>
               </div>
               
               <div className="col-span-2 flex justify-center items-center">
-                <span className="text-sm text-muted-foreground">#{workflow.buildNumber || '-'}</span>
+                {workflow.packageTypes && workflow.packageTypes.length > 0 ? (
+                  <div className="flex gap-1 flex-wrap">
+                    {workflow.packageTypes.map((type, index) => (
+                      <Badge 
+                        key={index}
+                        variant="outline"
+                        className="text-xs bg-secondary text-secondary-foreground"
+                      >
+                        <Package className="h-3 w-3 mr-1" />
+                        {type}
+                      </Badge>
+                    ))}
+                  </div>
+                ) : (
+                  <span className="text-xs text-muted-foreground">-</span>
+                )}
               </div>
               
               <div className="col-span-2 flex justify-center items-center">

@@ -21,22 +21,29 @@ const RepositoriesPage: React.FC = () => {
       orgName: 'ACME Organization',
       language: 'TypeScript',
       lastUpdated: '2 days ago',
-      packageTypes: ['npm', 'yarn'],
+      packageTypes: ['npm', 'docker'],
       isConfigured: true,
+      packageTypeStatus: {
+        'npm': true,
+        'docker': true,
+        'python': false
+      },
       workflows: [
         { 
           id: 'w1', 
           name: 'CI/CD Pipeline', 
           status: 'active', 
           buildNumber: 245,
-          lastRun: '2 days ago'
+          lastRun: '2 days ago',
+          packageTypes: ['npm']
         },
         { 
           id: 'w2', 
           name: 'Test Suite', 
           status: 'active',
           buildNumber: 244,
-          lastRun: '3 days ago'
+          lastRun: '3 days ago',
+          packageTypes: ['npm', 'docker']
         }
       ]
     },
@@ -47,15 +54,21 @@ const RepositoriesPage: React.FC = () => {
       orgName: 'ACME Organization',
       language: 'JavaScript',
       lastUpdated: '5 days ago',
-      packageTypes: ['npm'],
-      isConfigured: false,
+      packageTypes: ['npm', 'python'],
+      isConfigured: true,
+      packageTypeStatus: {
+        'npm': true,
+        'python': true,
+        'docker': false
+      },
       workflows: [
         { 
           id: 'w3', 
           name: 'Database Migrations', 
           status: 'inactive',
           buildNumber: 76,
-          lastRun: '5 days ago'
+          lastRun: '5 days ago',
+          packageTypes: ['npm', 'python']
         }
       ]
     },
@@ -66,7 +79,32 @@ const RepositoriesPage: React.FC = () => {
       orgName: 'Development Team',
       language: 'Markdown',
       lastUpdated: '10 days ago',
-      packageTypes: ['markdown'],
+      packageTypes: ['maven', 'rpm'],
+      isConfigured: true,
+      packageTypeStatus: {
+        'maven': true,
+        'rpm': true,
+        'debian': false
+      },
+      workflows: [
+        { 
+          id: 'w4', 
+          name: 'Documentation Build', 
+          status: 'active',
+          buildNumber: 35,
+          lastRun: '10 days ago',
+          packageTypes: ['maven', 'rpm']
+        }
+      ]
+    },
+    {
+      id: '4',
+      name: 'infrastructure',
+      owner: 'dev-team',
+      orgName: 'Development Team',
+      language: 'YAML',
+      lastUpdated: '12 days ago',
+      packageTypes: ['docker'],
       isConfigured: false,
       workflows: []
     }

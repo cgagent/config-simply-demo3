@@ -1,4 +1,13 @@
 
+export interface Workflow {
+  id: string; 
+  name: string; 
+  status: 'active' | 'inactive';
+  buildNumber?: number;
+  lastRun?: string;
+  packageTypes?: string[];
+}
+
 export interface Repository {
   id: string;
   name: string;
@@ -9,13 +18,8 @@ export interface Repository {
   packageTypes?: string[];
   lastRun?: string;
   orgName?: string;
-  workflows?: { 
-    id: string; 
-    name: string; 
-    status: 'active' | 'inactive';
-    buildNumber?: number;
-    lastRun?: string;
-  }[];
+  workflows?: Workflow[];
+  packageTypeStatus?: Record<string, boolean>;
 }
 
 export const languageColors: Record<string, string> = {
@@ -33,3 +37,5 @@ export const languageColors: Record<string, string> = {
   Dart: 'bg-blue-400',
   default: 'bg-gray-500'
 };
+
+export const commonPackageTypes = ['npm', 'docker', 'python', 'maven', 'debian', 'rpm'];
