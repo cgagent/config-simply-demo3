@@ -6,7 +6,8 @@ import {
   LayoutDashboard, 
   GitBranch, 
   Package, 
-  Users
+  Users,
+  Beaker
 } from 'lucide-react';
 
 const navItems = [
@@ -14,6 +15,8 @@ const navItems = [
   { name: 'CI', path: '/repositories', icon: <GitBranch className="w-5 h-5" /> },
   { name: 'Packages', path: '/packages', icon: <Package className="w-5 h-5" /> },
   { name: 'User Management', path: '/users', icon: <Users className="w-5 h-5" /> },
+  // Test link - normally would be hidden in production
+  { name: 'CI Test UX', path: '/ci-configuration-test', icon: <Beaker className="w-5 h-5" /> },
 ];
 
 interface SideNavigationProps {

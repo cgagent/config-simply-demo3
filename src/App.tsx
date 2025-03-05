@@ -8,6 +8,7 @@ import Auth from "./pages/Auth";
 import Index from "./pages/Index";
 import Repositories from "./pages/Repositories";
 import CIConfiguration from "./pages/CIConfiguration";
+import CIConfigurationTest from "./pages/CIConfigurationTest";
 import Packages from "./pages/Packages";
 import Users from "./pages/Users";
 import NotFound from "./pages/NotFound";
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/dashboard" element={<Index />} />
           <Route path="/repositories" element={<Repositories />} />
           <Route path="/ci-configuration" element={<CIConfiguration />} />
+          <Route path="/ci-configuration-test" element={<CIConfigurationTest />} />
           <Route path="/packages" element={<Packages />} />
           <Route path="/users" element={<Users />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
