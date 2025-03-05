@@ -1,10 +1,10 @@
 
 import React, { useState } from 'react';
 import { Repository, Workflow } from '@/types/repository';
-import { ChevronDown, ChevronRight, GitPullRequest, Package, Check, X } from 'lucide-react';
+import { ChevronDown, ChevronRight, GitPullRequest, Package, Check, X, Settings } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Badge } from '@/components/ui/badge';
-import Button from './Button';
+import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useNavigate } from 'react-router-dom';
@@ -60,7 +60,7 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
         onClick={() => onClick(repository)}
       >
         <div className="col-span-6 flex items-center gap-2">
-          {hasWorkflows && (
+          {hasWorkflows && repository.isConfigured && (
             <CollapsibleTrigger 
               onClick={(e) => e.stopPropagation()}
               className="p-1 hover:bg-secondary rounded-sm mr-1"
@@ -73,7 +73,7 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
             </CollapsibleTrigger>
           )}
           
-          {!hasWorkflows && <div className="w-6" />}
+          {(!hasWorkflows || !repository.isConfigured) && <div className="w-6" />}
           
           <div className="flex flex-col">
             <span className="font-medium truncate">{repository.name}</span>
@@ -82,7 +82,7 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
         </div>
         
         <div className="col-span-2 hidden md:flex justify-center items-center">
-          {repository.packageTypes && repository.packageTypes.length > 0 ? (
+          {repository.isConfigured && repository.packageTypes && repository.packageTypes.length > 0 ? (
             <div className="flex gap-1 flex-wrap">
               {/* Connected package types */}
               {repository.packageTypes.map((type, index) => (
@@ -109,12 +109,18 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
               ))}
             </div>
           ) : (
-            <span className="text-xs text-muted-foreground">-</span>
+            repository.isConfigured ? 
+            <span className="text-xs text-muted-foreground">-</span> :
+            <span className="text-xs text-muted-foreground">Not configured yet</span>
           )}
         </div>
         
         <div className="col-span-2 hidden md:flex justify-center items-center">
-          <span className="text-sm text-muted-foreground">{repository.lastUpdated}</span>
+          {repository.isConfigured ? (
+            <span className="text-sm text-muted-foreground">{repository.lastUpdated}</span>
+          ) : (
+            <span className="text-xs text-muted-foreground">-</span>
+          )}
         </div>
         
         <div className="col-span-2 md:col-span-2 flex justify-center items-center">
@@ -122,19 +128,29 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  {isFullyConfigured ? (
-                    <div className="flex items-center text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
-                      <Check className="h-3.5 w-3.5 mr-1" />
-                      <span className="text-xs font-medium">Configured</span>
-                    </div>
-                  ) : (
-                    <div className="w-full max-w-24">
-                      <div className="flex justify-between text-xs mb-1">
-                        <span>{coveragePercentage}%</span>
+                  <div className="flex items-center gap-2">
+                    {isFullyConfigured ? (
+                      <div className="flex items-center text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
+                        <Check className="h-3.5 w-3.5 mr-1" />
+                        <span className="text-xs font-medium">Configured</span>
                       </div>
-                      <Progress value={coveragePercentage} className="h-1.5" />
-                    </div>
-                  )}
+                    ) : (
+                      <div className="w-full max-w-24">
+                        <div className="flex justify-between text-xs mb-1">
+                          <span>{coveragePercentage}%</span>
+                        </div>
+                        <Progress value={coveragePercentage} className="h-1.5" />
+                      </div>
+                    )}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={handleConfigure}
+                    >
+                      <Settings className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </TooltipTrigger>
                 <TooltipContent>
                   {missingPackageTypes.length > 0 ? (
@@ -153,19 +169,22 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
               </Tooltip>
             </TooltipProvider>
           ) : (
-            <Button 
-              size="sm" 
-              variant="outline"
-              className="text-xs"
-              onClick={handleConfigure}
-            >
-              Configure
-            </Button>
+            <div className="flex items-center">
+              <span className="text-sm text-muted-foreground mr-2">Configure FlyFrog</span>
+              <Button 
+                variant="ghost" 
+                size="icon"
+                className="h-8 w-8"
+                onClick={handleConfigure}
+              >
+                <Settings className="h-4 w-4" />
+              </Button>
+            </div>
           )}
         </div>
       </div>
       
-      {hasWorkflows && (
+      {hasWorkflows && repository.isConfigured && (
         <CollapsibleContent className="bg-muted/30">
           {repository.workflows?.map((workflow) => (
             <div 

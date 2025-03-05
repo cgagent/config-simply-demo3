@@ -33,7 +33,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ className }) => {
   
   return (
     <nav className={cn("py-2", className)}>
-      <ul className={cn("space-y-1", className?.includes("flex-row") && "flex space-x-2 space-y-0")}>
+      <ul className="flex items-center space-x-2">
         {navItems.map((item) => {
           const active = isActive(item.path);
           
@@ -47,6 +47,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ className }) => {
                     ? "bg-primary text-white" 
                     : "text-foreground hover:text-foreground"
                 )}
+                aria-current={active ? "page" : undefined}
               >
                 {item.icon}
                 {item.name}

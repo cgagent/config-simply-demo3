@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import NavBar from '@/components/NavBar';
 import RepositoryHeader from '@/components/RepositoryHeader';
@@ -54,21 +53,21 @@ const RepositoriesPage: React.FC = () => {
       orgName: 'ACME Organization',
       language: 'JavaScript',
       lastUpdated: '5 days ago',
-      packageTypes: ['npm', 'python'],
+      packageTypes: ['npm', 'python', 'docker'],
       isConfigured: true,
       packageTypeStatus: {
         'npm': true,
         'python': true,
-        'docker': false
+        'docker': true
       },
       workflows: [
         { 
           id: 'w3', 
           name: 'Database Migrations', 
-          status: 'inactive',
+          status: 'active',
           buildNumber: 76,
           lastRun: '5 days ago',
-          packageTypes: ['npm', 'python']
+          packageTypes: ['npm', 'python', 'docker']
         }
       ]
     },
@@ -104,7 +103,7 @@ const RepositoriesPage: React.FC = () => {
       orgName: 'Development Team',
       language: 'YAML',
       lastUpdated: '12 days ago',
-      packageTypes: ['docker'],
+      packageTypes: [],
       isConfigured: false,
       workflows: []
     },
