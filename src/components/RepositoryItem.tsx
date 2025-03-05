@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import Button from './Button';
 import { Progress } from '@/components/ui/progress';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useNavigate } from 'react-router-dom';
 
 interface RepositoryItemProps {
   repository: Repository;
@@ -21,6 +22,7 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const hasWorkflows = repository.workflows && repository.workflows.length > 0;
+  const navigate = useNavigate();
   
   // Calculate package type coverage
   const calculatePackageTypeCoverage = () => {
@@ -41,6 +43,11 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
     : [];
   
   const isFullyConfigured = coveragePercentage === 100;
+
+  const handleConfigure = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigate('/ci-configuration', { state: { repository } });
+  };
 
   return (
     <Collapsible
@@ -150,10 +157,7 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
               size="sm" 
               variant="outline"
               className="text-xs"
-              onClick={(e) => {
-                e.stopPropagation();
-                onConfigureClick(repository);
-              }}
+              onClick={handleConfigure}
             >
               Configure
             </Button>

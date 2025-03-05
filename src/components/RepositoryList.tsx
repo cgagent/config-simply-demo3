@@ -3,9 +3,9 @@ import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import RepositoryListHeader from './RepositoryListHeader';
 import RepositoryItem from './RepositoryItem';
-import ConfigurationModal from './ConfigurationModal';
 import { Repository } from '@/types/repository';
 import StatusSummary from './StatusSummary';
+import { useNavigate } from 'react-router-dom';
 
 interface RepositoryListProps {
   repositories: Repository[];
@@ -20,8 +20,7 @@ const RepositoryList: React.FC<RepositoryListProps> = ({
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState<'all' | 'configured' | 'not-configured'>('all');
-  const [selectedRepo, setSelectedRepo] = useState<Repository | null>(null);
-  const [configModalOpen, setConfigModalOpen] = useState(false);
+  const navigate = useNavigate();
   
   const filteredRepos = repositories
     .filter(repo => repo.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -34,8 +33,8 @@ const RepositoryList: React.FC<RepositoryListProps> = ({
     });
     
   const handleConfigureClick = (repo: Repository) => {
-    setSelectedRepo(repo);
-    setConfigModalOpen(true);
+    onConfigureRepository(repo);
+    navigate('/ci-configuration', { state: { repository: repo } });
   };
   
   const configuredCount = repositories.filter(repo => repo.isConfigured).length;
@@ -79,12 +78,6 @@ const RepositoryList: React.FC<RepositoryListProps> = ({
           )}
         </div>
       </div>
-      
-      <ConfigurationModal
-        open={configModalOpen}
-        onOpenChange={setConfigModalOpen}
-        repository={selectedRepo}
-      />
     </div>
   );
 };
