@@ -1,10 +1,10 @@
 
 import React, { useState } from 'react';
 import { Repository } from '@/types/repository';
-import { ChevronDown, ChevronRight, Package } from 'lucide-react';
+import { ChevronDown, ChevronRight, Cog } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Badge } from '@/components/ui/badge';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 import WorkflowItem from './repository/WorkflowItem';
 import PackageTypeBadges from './repository/PackageTypeBadges';
 import RepositoryStatus from './repository/RepositoryStatus';
@@ -79,7 +79,7 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
         className="grid grid-cols-12 gap-2 px-6 py-4 hover:bg-muted/30 transition-colors cursor-pointer"
         onClick={() => onClick(repoState)}
       >
-        <div className="col-span-6 flex items-center gap-2">
+        <div className="col-span-5 flex items-center gap-2">
           {hasWorkflows && repoState.isConfigured && (
             <CollapsibleTrigger 
               onClick={(e) => e.stopPropagation()}
@@ -123,14 +123,36 @@ const RepositoryItem: React.FC<RepositoryItemProps> = ({
           )}
         </div>
         
-        <div className="col-span-2 md:col-span-2 flex justify-end items-center">
+        <div className="col-span-2 md:col-span-2 flex justify-center items-center">
           <RepositoryStatus
             isConfigured={repoState.isConfigured}
             isFullyConfigured={isFullyConfigured}
             coveragePercentage={coveragePercentage}
             missingPackageTypes={missingPackageTypes}
-            onConfigure={handleConfigure}
           />
+        </div>
+
+        <div className="col-span-1 md:flex justify-center items-center hidden">
+          {isFullyConfigured ? (
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleConfigure}
+              className="h-8 w-8"
+              title="Manage Configuration"
+            >
+              <Cog className="h-4 w-4" />
+            </Button>
+          ) : (
+            <Button
+              variant="default"
+              size="sm"
+              onClick={handleConfigure}
+            >
+              <Cog className="h-4 w-4 mr-2" />
+              Configure
+            </Button>
+          )}
         </div>
       </div>
       

@@ -55,10 +55,11 @@ const RepositoryList: React.FC<RepositoryListProps> = ({
       
       <div className="bg-white rounded-lg border border-border overflow-hidden shadow-sm">
         <div className="grid grid-cols-12 gap-2 px-6 py-3 bg-secondary font-medium text-sm">
-          <div className="col-span-6">Repository</div>
+          <div className="col-span-5">Repository</div>
           <div className="col-span-2 text-center hidden md:block">Package Types</div>
           <div className="col-span-2 text-center hidden md:block">Last Updated</div>
-          <div className="col-span-2 md:col-span-2 text-center">Status</div>
+          <div className="col-span-2 text-center">Status</div>
+          <div className="col-span-1 text-center hidden md:block">Action</div>
         </div>
         
         <div className="divide-y divide-border">
