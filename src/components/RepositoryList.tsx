@@ -55,7 +55,7 @@ const RepositoryList: React.FC<RepositoryListProps> = ({
       
       <div className="bg-white rounded-lg border border-border overflow-hidden shadow-sm">
         <div className="grid grid-cols-12 gap-2 px-6 py-3 bg-secondary font-medium text-sm">
-          <div className="col-span-5">Repository</div>
+          <div className="col-span-5">Git Repository</div>
           <div className="col-span-2 text-center hidden md:block">Package Types</div>
           <div className="col-span-2 text-center hidden md:block">Last Updated</div>
           <div className="col-span-2 text-center">Status</div>
@@ -65,7 +65,7 @@ const RepositoryList: React.FC<RepositoryListProps> = ({
         <div className="divide-y divide-border">
           {filteredRepos.length === 0 ? (
             <div className="py-12 text-center text-muted-foreground">
-              No repositories found matching your criteria
+              No git repositories found matching your criteria
             </div>
           ) : (
             filteredRepos.map((repo) => (

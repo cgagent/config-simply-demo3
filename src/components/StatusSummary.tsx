@@ -33,7 +33,7 @@ const StatusSummary: React.FC<StatusSummaryProps> = ({
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="flex flex-col gap-1">
-            <span className="text-sm text-muted-foreground">Total Repositories</span>
+            <span className="text-sm text-muted-foreground">Total Git Repositories</span>
             <div className="flex items-center gap-2">
               <GitBranch className="h-5 w-5 text-muted-foreground" />
               <span className="text-2xl font-semibold">{totalRepos}</span>

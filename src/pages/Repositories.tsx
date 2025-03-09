@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import NavBar from '@/components/NavBar';
 import RepositoryHeader from '@/components/RepositoryHeader';
@@ -11,7 +12,7 @@ interface Organization {
 }
 
 const RepositoriesPage: React.FC = () => {
-  // Mock repositories data with workflows as children
+  // Mock git repositories data with workflows as children
   const [repositories, setRepositories] = useState<Repository[]>([
     {
       id: '1',
@@ -163,7 +164,7 @@ const RepositoriesPage: React.FC = () => {
           <div className="mt-6">
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center">
-                <h2 className="text-xl font-semibold mr-3">GitHub Repositories</h2>
+                <h2 className="text-xl font-semibold mr-3">GitHub Git Repositories</h2>
                 <OrganizationSelect 
                   organizations={organizations}
                   selectedOrg={selectedOrg}

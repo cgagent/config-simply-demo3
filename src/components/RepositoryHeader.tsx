@@ -28,12 +28,12 @@ const RepositoryHeader: React.FC<RepositoryHeaderProps> = ({
           <span className="text-xs text-muted-foreground">/</span>
           <span className="text-xs font-medium">CI</span>
         </div>
-        <h1 className="text-3xl font-bold mt-1">Repository Manager</h1>
+        <h1 className="text-3xl font-bold mt-1">Git Repository Manager</h1>
       </div>
       
       <div className="flex items-center gap-3">
         <Button icon={<GitBranch className="h-4 w-4" />}>
-          Connect Repositories
+          Connect Git Repositories
         </Button>
       </div>
     </div>
