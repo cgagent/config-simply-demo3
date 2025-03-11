@@ -33,7 +33,7 @@ export const getInitialMessage = (): Message => {
   return {
     id: '1',
     role: 'bot',
-    content: 'Hi! I\'m your package management assistant. How can I help you today? You can ask me about your packages, such as "Show me the latest 10 downloaded packages" or "Show me packages with vulnerabilities".'
+    content: 'Hi! I\'m your package management assistant. You can search for packages in your organization or public packages, and get information about updated versions, vulnerabilities, licenses, and more. How can I help you today?'
   };
 };
 
