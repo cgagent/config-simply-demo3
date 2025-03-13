@@ -87,6 +87,27 @@ evil-package-101: Attempted to steal user credentials.
 malware-lib: Contained scripts to inject ransomware.
 bad-actor-addon: Had a payload to exfiltrate private data.`;
   }
+  else if (lowerQuery.includes('sbom') || lowerQuery.includes('report for') || lowerQuery.includes('last 30 days')) {
+    return `Here is the SBOM report for your packages from the last 30 days:
+
+Package: lodash
+Version: 4.17.21
+License: MIT
+Dependencies:
+lodash._baseassign (3.2.0)
+lodash._baseclone (3.3.0)
+Package: axios
+Version: 0.21.1
+License: MIT
+Dependencies:
+follow-redirects (1.14.1)
+Package: react
+Version: 17.0.2
+License: MIT
+Dependencies:
+loose-envify (1.4.0)
+object-assign (4.1.1)`;
+  }
   else if (lowerQuery === 'what is abc?') {
     return "ABC is a placeholder term often used as an example in software development. It can represent anything you'd like it to mean in your specific context. How would you like to define ABC for your project?";
   }
