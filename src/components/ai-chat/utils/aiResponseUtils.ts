@@ -5,6 +5,31 @@
 export const simulateAIResponse = (query: string): string => {
   const lowerQuery = query.toLowerCase().trim();
   
+  // Add debug logging to help diagnose the issue
+  console.log("Query evaluation:", {
+    query: lowerQuery,
+    containsHello: lowerQuery.includes('hello'),
+    containsBlock: lowerQuery.includes('block'),
+    exactMatch: lowerQuery === "which packages were blocked in the last two weeks?"
+  });
+  
+  // Special case handling for blocked packages query (placed at the top to give it priority)
+  if (
+    lowerQuery === "which packages were blocked in the last two weeks?" || 
+    lowerQuery === "blocked packages" || 
+    lowerQuery === "show me the packages that are blocked" || 
+    lowerQuery === "block" || 
+    lowerQuery.includes('block') || 
+    lowerQuery.includes('malicious')
+  ) {
+    console.log("Matched blocked packages query!");
+    return `In the past 2 weeks, we blocked the following malicious npm packages:
+
+evil-package-101: Attempted to steal user credentials.
+malware-lib: Contained scripts to inject ransomware.
+bad-actor-addon: Had a payload to exfiltrate private data.`;
+  }
+  
   if (lowerQuery.includes('hello') || lowerQuery.includes('hi')) {
     return "Hello! How can I assist you today?";
   } 
@@ -77,22 +102,6 @@ Severity: High
    • [GitHub Repository](https://github.com/request/request)
 
    • [Homepage](https://request.js.org/)`;
-  }
-  // Completely revised the condition to ensure it catches all variations of block-related queries
-  else if (
-    lowerQuery === "which packages were blocked in the last two weeks?" ||
-    lowerQuery === "blocked packages" ||
-    lowerQuery === "show me the packages that are blocked" ||
-    lowerQuery === "block" ||
-    (lowerQuery.includes('block') && !lowerQuery.includes('blockchain')) ||
-    lowerQuery.includes('malicious')
-  ) {
-    // Ensure the response has the exact format required
-    return `In the past 2 weeks, we blocked the following malicious npm packages:
-
-evil-package-101: Attempted to steal user credentials.
-malware-lib: Contained scripts to inject ransomware.
-bad-actor-addon: Had a payload to exfiltrate private data.`;
   }
   else if (lowerQuery.includes('sbom') || lowerQuery.includes('report for') || lowerQuery.includes('last 30 days')) {
     return `Here is the SBOM report for your packages from the last 30 days:
