@@ -16,7 +16,7 @@ type GitHubAuthFlowProps = {
 };
 
 // Auth flow stages that match the GitHub OAuth flow more closely
-type AuthStage = 'initial' | 'organization' | 'repositories' | 'confirmation';
+type AuthStage = 'initial' | 'requestOrgPermissions' | 'organization' | 'repositories' | 'confirmation';
 
 const GitHubAuthFlow: React.FC<GitHubAuthFlowProps> = ({ onClose, showDialog, onComplete }) => {
   const navigate = useNavigate();
@@ -32,15 +32,44 @@ const GitHubAuthFlow: React.FC<GitHubAuthFlowProps> = ({ onClose, showDialog, on
     ? githubRepos.filter(repo => repo.orgName === selectedOrg.name)
     : [];
   
-  const handleStartAuth = () => {
-    // Simulate initiating the GitHub OAuth flow
+  // Step 1: Connect GitHub account (personal)
+  const handleConnectGitHub = () => {
+    // Simulate initial GitHub OAuth authentication (just the user, no org perms yet)
+    toast({
+      title: "GitHub Account Connected",
+      description: "Your personal GitHub account has been connected.",
+    });
+    
+    // Move to the next step (requesting org permissions)
+    setStage('requestOrgPermissions');
+  };
+  
+  // Step 2: Request organization permissions
+  const handleRequestOrgPermissions = () => {
+    // Simulate granting org permissions
+    setHasGrantedOrgPermissions(true);
     setStage('organization');
+  };
+  
+  // Skip org permissions
+  const handleSkipOrgPermissions = () => {
+    // User chose to connect without granting organization permissions
+    toast({
+      title: "Organization Access Skipped",
+      description: "Connected to GitHub without organization permissions",
+    });
+    
+    if (onComplete) {
+      onComplete(false);
+    } else {
+      onClose();
+      navigate('/repositories');
+    }
   };
   
   const handleOrgSelect = (org: GithubOrg) => {
     setSelectedOrg(org);
     setStage('repositories');
-    setHasGrantedOrgPermissions(true);
     
     // Reset repository selection when changing organization
     setSelectedRepos({});
@@ -79,21 +108,6 @@ const GitHubAuthFlow: React.FC<GitHubAuthFlowProps> = ({ onClose, showDialog, on
     setStage('confirmation');
   };
   
-  const handleSkipOrgPermissions = () => {
-    // User chose to connect without granting organization permissions
-    toast({
-      title: "GitHub Authentication Successful",
-      description: "Connected to GitHub without organization permissions",
-    });
-    
-    if (onComplete) {
-      onComplete(false);
-    } else {
-      onClose();
-      navigate('/repositories');
-    }
-  };
-  
   const handleComplete = () => {
     // Complete the GitHub auth flow
     toast({
@@ -116,6 +130,8 @@ const GitHubAuthFlow: React.FC<GitHubAuthFlowProps> = ({ onClose, showDialog, on
     } else if (stage === 'repositories') {
       setStage('organization');
     } else if (stage === 'organization') {
+      setStage('requestOrgPermissions');
+    } else if (stage === 'requestOrgPermissions') {
       setStage('initial');
     } else {
       onClose();
@@ -127,6 +143,8 @@ const GitHubAuthFlow: React.FC<GitHubAuthFlowProps> = ({ onClose, showDialog, on
     switch (stage) {
       case 'initial':
         return "Connect to GitHub";
+      case 'requestOrgPermissions':
+        return "GitHub Organization Access";
       case 'organization':
         return "Select GitHub Organization";
       case 'repositories':
@@ -151,9 +169,18 @@ const GitHubAuthFlow: React.FC<GitHubAuthFlowProps> = ({ onClose, showDialog, on
         <div className="space-y-4 py-2">
           {stage === 'initial' && (
             <AuthorizationScreen 
-              onAuthorize={handleStartAuth}
+              onAuthorize={handleConnectGitHub}
+              onCancel={onClose}
+              isInitialAuth={true}
+            />
+          )}
+          
+          {stage === 'requestOrgPermissions' && (
+            <AuthorizationScreen 
+              onAuthorize={handleRequestOrgPermissions}
               onSkipOrgPermissions={handleSkipOrgPermissions}
               onCancel={onClose}
+              isInitialAuth={false}
             />
           )}
           
