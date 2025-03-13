@@ -11,7 +11,6 @@ export const useConfigChat = (repositoryName?: string) => {
       content: `Hi! I'm your FlyFrog CI configuration assistant. I can help you set up CI integration for ${repositoryName || 'your repository'}. What CI server are you using?`
     }
   ]);
-  const [input, setInput] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [options, setOptions] = useState<ChatOption[]>([
     { id: 'github', label: 'GitHub Actions', value: 'I use GitHub Actions' },
@@ -31,7 +30,6 @@ export const useConfigChat = (repositoryName?: string) => {
     };
     
     setMessages(prev => [...prev, userMessage]);
-    setInput('');
     setIsProcessing(true);
     
     // Process the selected option
@@ -39,20 +37,9 @@ export const useConfigChat = (repositoryName?: string) => {
   };
 
   const handleSendMessage = async () => {
-    if (!input.trim()) return;
-    
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      role: 'user',
-      content: input
-    };
-    
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
+    // This function is kept for compatibility but no longer uses input
     setIsProcessing(true);
-    
-    // Process the user's typed message
-    processMessage(input);
+    // You could add a default message here if needed
   };
 
   const processMessage = (content: string) => {
@@ -185,8 +172,6 @@ Once you add this file to your repository and merge it to your main branch, FlyF
   return {
     messages,
     isProcessing,
-    input,
-    setInput,
     handleSendMessage,
     options,
     handleSelectOption,

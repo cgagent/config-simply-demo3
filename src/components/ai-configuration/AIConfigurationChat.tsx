@@ -14,8 +14,6 @@ const AIConfigurationChat: React.FC<AIConfigurationChatProps> = ({ repositoryNam
   const {
     messages,
     isProcessing,
-    input,
-    setInput,
     handleSendMessage,
     options,
     handleSelectOption,
