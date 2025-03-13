@@ -1,8 +1,9 @@
 
 import React, { useState } from 'react';
-import { GitBranch } from 'lucide-react';
+import { GitBranch, Github } from 'lucide-react';
 import OrganizationSelect from './OrganizationSelect';
 import GitHubAuthFlow from './auth/GitHubAuthFlow';
+import { Button } from './ui/button';
 
 interface Organization {
   id: string;
@@ -14,13 +15,15 @@ interface RepositoryHeaderProps {
   selectedOrg: Organization;
   setSelectedOrg: (org: Organization) => void;
   onGitHubConnected?: (hasOrgPermissions: boolean) => void;
+  onConnectGitHub?: () => void;
 }
 
 const RepositoryHeader: React.FC<RepositoryHeaderProps> = ({
   organizations,
   selectedOrg,
   setSelectedOrg,
-  onGitHubConnected
+  onGitHubConnected,
+  onConnectGitHub
 }) => {
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   
@@ -41,6 +44,16 @@ const RepositoryHeader: React.FC<RepositoryHeaderProps> = ({
       <div>
         <h1 className="text-3xl font-bold mt-1">Git Repository Manager</h1>
       </div>
+      
+      {/* Add connect GitHub button */}
+      <Button 
+        onClick={onConnectGitHub}
+        className="flex items-center gap-2"
+        variant="outline"
+      >
+        <Github className="h-4 w-4" />
+        Connect GitHub Repo
+      </Button>
       
       {/* GitHub Authentication Flow Dialog */}
       <GitHubAuthFlow 

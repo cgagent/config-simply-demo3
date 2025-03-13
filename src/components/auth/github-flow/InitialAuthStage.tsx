@@ -29,7 +29,7 @@ const InitialAuthStage: React.FC<InitialAuthStageProps> = ({ onClose }) => {
       onCancel={onClose}
       isInitialAuth={true}
       title="GitHub Account Connection"
-      description="Connect your GitHub account to get started. This is the first step in setting up your CI/CD pipeline."
+      description="Connect your GitHub account to get started. This will allow you to select and configure your repositories."
     />
   );
 };

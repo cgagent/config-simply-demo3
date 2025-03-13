@@ -46,7 +46,7 @@ const OrgPermissionsStage: React.FC<OrgPermissionsStageProps> = ({
       onCancel={onClose}
       isInitialAuth={false}
       title="GitHub Organization Access"
-      description="Grant access to your organizations to select and configure repositories."
+      description="Grant access to your organizations to select and configure repositories. If you skip this step, you'll need to reconnect later to access organization repositories."
     />
   );
 };

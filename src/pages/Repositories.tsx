@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import RepositoryHeader from '@/components/RepositoryHeader';
 import RepositoryList from '@/components/RepositoryList';
 import StatusSummary from '@/components/StatusSummary';
-import EmptyState from '@/components/EmptyState';
 import { Repository } from '@/types/repository';
 import { useToast } from '@/hooks/use-toast';
 import GitHubAuthFlow from '@/components/auth/GitHubAuthFlow';
@@ -19,7 +18,7 @@ const RepositoriesPage: React.FC = () => {
   // Flag to check if organization permissions were granted
   const [hasOrgPermissions, setHasOrgPermissions] = useState<boolean>(false);
   // State to control the GitHub auth dialog
-  const [showAuthDialog, setShowAuthDialog] = useState<boolean>(false);
+  const [showAuthDialog, setShowAuthDialog] = useState<boolean>(!isGitHubConnected || !hasOrgPermissions);
   
   // Reduced git repositories to just 3 with different configuration statuses
   const [repositories, setRepositories] = useState<Repository[]>([
@@ -143,6 +142,7 @@ const RepositoriesPage: React.FC = () => {
           selectedOrg={selectedOrg}
           setSelectedOrg={setSelectedOrg}
           onGitHubConnected={handleGitHubConnected}
+          onConnectGitHub={handleConnectGitHub}
         />
         
         {isGitHubConnected && hasOrgPermissions ? (
@@ -161,11 +161,9 @@ const RepositoriesPage: React.FC = () => {
             />
           </div>
         ) : (
-          <EmptyState 
-            onConnect={handleConnectGitHub} 
-            className="mt-8"
-            noOrgAccess={isGitHubConnected && !hasOrgPermissions}
-          />
+          <div className="flex justify-center items-center min-h-[500px]">
+            <p className="text-muted-foreground">Please connect to GitHub to view your repositories.</p>
+          </div>
         )}
       </div>
       
