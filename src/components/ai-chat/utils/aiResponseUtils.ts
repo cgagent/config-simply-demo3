@@ -38,21 +38,35 @@ Severity: High
     return `Here are 3 recommended npm packages for making HTTP requests:
 
 1. **axios**
+
    • Description: Promise based HTTP client for the browser and node.js
+   
    • Latest version: 1.8.3
+   
    • [GitHub Repository](https://github.com/axios/axios)
+   
    • [NPM Package Page](https://www.npmjs.com/package/axios)
 
+
 2. **node-fetch**
+
    • Description: A light-weight module that brings window.fetch to node.js
+   
    • Latest version: 3.3.2
+   
    • [GitHub Repository](https://github.com/node-fetch/node-fetch)
+   
    • [NPM Package Page](https://www.npmjs.com/package/node-fetch)
 
+
 3. **request**
+
    • Description: Simplified HTTP request client
+   
    • Latest version: 2.88.2
+   
    • [GitHub Repository](https://github.com/request/request)
+   
    • [Homepage](https://request.js.org/)`;
   }
   else {
