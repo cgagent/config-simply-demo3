@@ -81,31 +81,9 @@ Severity: High
   else if (lowerQuery.includes('blocked') || lowerQuery.includes('blocked packages') || lowerQuery === "which packages were blocked in the last two weeks?") {
     return `In the past 2 weeks, we blocked the following malicious npm packages:
 
-1. **evil-package-101**
-
-   • Reason: Attempted to steal user credentials
-   
-   • Detected: 2024-09-04
-   
-   • Severity: Critical
-
-
-2. **malware-lib**
-
-   • Reason: Contained scripts to inject ransomware
-   
-   • Detected: 2024-09-08
-   
-   • Severity: Critical
-
-
-3. **bad-actor-addon**
-
-   • Reason: Had a payload to exfiltrate private data
-   
-   • Detected: 2024-09-12
-   
-   • Severity: High`;
+evil-package-101: Attempted to steal user credentials.
+malware-lib: Contained scripts to inject ransomware.
+bad-actor-addon: Had a payload to exfiltrate private data.`;
   }
   else if (lowerQuery.includes('sbom') || lowerQuery.includes('report for') || lowerQuery.includes('last 30 days')) {
     return `Here is the SBOM report for your packages from the last 30 days:
