@@ -27,11 +27,10 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-2">
-            <Link to="/dashboard" className="flex items-center gap-2">
+            <Link to="/dashboard" className="flex items-center">
               <div className="flex items-center justify-center w-10 h-10 rounded-md bg-primary text-white font-semibold">
                 R
               </div>
-              <span className="font-semibold text-lg">Repository Manager</span>
             </Link>
           </div>
 
