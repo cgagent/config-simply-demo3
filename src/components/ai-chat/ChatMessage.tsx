@@ -26,14 +26,14 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
     >
       <div className={cn(
         "flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center",
-        isUser ? "bg-primary text-primary-foreground" : "bg-primary/20 text-primary"
+        isUser ? "bg-primary text-white" : "bg-primary/10 text-primary"
       )}>
         {isUser ? <User className="h-5 w-5" /> : <Bot className="h-5 w-5" />}
       </div>
       
       <div className="flex-1 space-y-2">
-        <p className="text-sm font-medium text-foreground/90">{isUser ? 'You' : 'AI Assistant'}</p>
-        <div className="prose prose-sm prose-invert max-w-none text-foreground/90">
+        <p className="text-sm font-medium">{isUser ? 'You' : 'AI Assistant'}</p>
+        <div className="prose prose-sm max-w-none">
           <ReactMarkdown>{message.content}</ReactMarkdown>
         </div>
       </div>

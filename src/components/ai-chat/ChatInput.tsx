@@ -37,7 +37,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   };
 
   return (
-    <div className="relative border-t border-border/40 bg-muted/20 p-4">
+    <div className="relative">
       <Textarea
         ref={textareaRef}
         value={input}
@@ -45,13 +45,13 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         onKeyDown={handleKeyDown}
         placeholder="Ask anything..."
         disabled={isProcessing}
-        className="pr-12 resize-none overflow-hidden min-h-[56px] bg-background/80 focus:bg-background transition-colors"
+        className="pr-12 resize-none overflow-hidden min-h-[56px]"
         rows={1}
       />
       <Button
         type="submit"
         size="icon"
-        className="absolute right-6 top-1/2 -translate-y-1/2 text-primary hover:text-primary-foreground"
+        className="absolute right-2 top-1/2 -translate-y-1/2"
         disabled={!input.trim() || isProcessing}
         onClick={handleSendMessage}
         variant="ghost"
