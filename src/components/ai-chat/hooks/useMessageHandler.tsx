@@ -119,9 +119,9 @@ bad-actor-addon: Had a payload to exfiltrate private data.`;
   };
 
   const handleSelectQuery = (query: string) => {
+    // Modified: Instead of sending the message directly, just set it in the input field
     setInputValue(query);
-    // Automatically send the message when a suggested query is selected
-    handleSendMessage(query);
+    // Removed automatic message sending
   };
 
   return {
