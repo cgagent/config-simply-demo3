@@ -10,7 +10,7 @@ export const SUGGESTED_QUERIES = [
   },
   {
     label: "Public package",
-    query: "I would like to use axios, can you please share with me more details: what package should I use, any vulnerabilities I should know, what are the latest versions, and is there any reason why I should not use it?"
+    query: "recommend me for a 3 npm packages for making http requests."
   },
   {
     label: "Blocked packages",
