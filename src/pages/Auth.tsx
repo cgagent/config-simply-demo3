@@ -6,11 +6,13 @@ import { cn } from '@/lib/utils';
 import Button from '@/components/Button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import GitHubAuthFlow from '@/components/auth/GitHubAuthFlow';
 
 const Auth: React.FC = () => {
   const [isLogin, setIsLogin] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showGitHubAuth, setShowGitHubAuth] = useState(false);
 
   const handleEmailAuth = (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,8 +21,8 @@ const Auth: React.FC = () => {
   };
 
   const handleGithubAuth = () => {
-    // GitHub authentication logic would go here
-    console.log('GitHub auth initiated');
+    // Show GitHub auth flow dialog
+    setShowGitHubAuth(true);
   };
 
   const handleGoogleAuth = () => {
@@ -131,6 +133,14 @@ const Auth: React.FC = () => {
           </button>
         </div>
       </div>
+      
+      {/* GitHub Authentication Flow */}
+      {showGitHubAuth && (
+        <GitHubAuthFlow 
+          showDialog={showGitHubAuth} 
+          onClose={() => setShowGitHubAuth(false)} 
+        />
+      )}
     </div>
   );
 };
