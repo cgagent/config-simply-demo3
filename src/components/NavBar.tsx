@@ -85,6 +85,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
               {expanded && (
                 <div className="text-left">
                   <p className="text-sm font-medium">John Doe</p>
+                  <p className="text-xs text-muted-foreground">Admin</p>
                 </div>
               )}
             </DropdownMenuTrigger>
