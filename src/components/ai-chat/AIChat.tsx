@@ -5,7 +5,6 @@ import { MessageList } from './MessageList';
 import { ChatInput } from './ChatInput';
 import { SuggestedQueries } from './SuggestedQueries';
 import { useToast } from '@/hooks/use-toast';
-import { Bird, Plane } from 'lucide-react';
 
 // Sample queries that will be inserted when clicking the suggestion bubbles
 const SUGGESTED_QUERIES = [
@@ -32,6 +31,40 @@ const SUGGESTED_QUERIES = [
 ];
 
 const INITIAL_MESSAGES: Message[] = [];
+
+// Custom FlyFrog Icon component
+const FlyFrogIcon: React.FC = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="w-12 h-12"
+  >
+    {/* Frog body */}
+    <circle cx="12" cy="12" r="8" fill="#9b87f5" stroke="none" />
+    
+    {/* Frog features */}
+    <circle cx="9" cy="9" r="1.5" fill="white" stroke="none" /> {/* Left eye */}
+    <circle cx="15" cy="9" r="1.5" fill="white" stroke="none" /> {/* Right eye */}
+    <circle cx="9" cy="9" r="0.7" fill="black" stroke="none" /> {/* Left pupil */}
+    <circle cx="15" cy="9" r="0.7" fill="black" stroke="none" /> {/* Right pupil */}
+    
+    {/* Mouth */}
+    <path d="M9 13a3 2 0 0 0 6 0" stroke="#6E59A5" strokeWidth="1" />
+    
+    {/* Wings */}
+    <path d="M4 8c0 0 2,-4 6,-3" stroke="#F97316" fill="#FEC6A1" strokeWidth="1" />
+    <path d="M20 8c0 0 -2,-4 -6,-3" stroke="#F97316" fill="#FEC6A1" strokeWidth="1" />
+    
+    {/* Tiny front legs */}
+    <line x1="10" y1="16" x2="9" y2="18" stroke="#6E59A5" strokeWidth="1.5" />
+    <line x1="14" y1="16" x2="15" y2="18" stroke="#6E59A5" strokeWidth="1.5" />
+  </svg>
+);
 
 export const AIChat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
@@ -106,11 +139,7 @@ export const AIChat: React.FC = () => {
       <div className="flex flex-col items-center justify-center h-full pt-2">
         <div className="flex items-center justify-center mb-2">
           <div className="relative h-16 w-16 bg-primary/10 rounded-full flex items-center justify-center">
-            {/* Colorful Flying Frog Icon (represented by a Bird with a Plane) */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <Bird className="h-10 w-10 text-[#9b87f5]" />
-              <Plane className="h-6 w-6 text-[#F97316] absolute transform rotate-45 -translate-x-2 -translate-y-2" />
-            </div>
+            <FlyFrogIcon />
           </div>
         </div>
         <h1 className="text-2xl font-bold text-center mb-4">What do you want to know?</h1>
