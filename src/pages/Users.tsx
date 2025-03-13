@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   Table, 
@@ -58,17 +57,15 @@ const UsersPage: React.FC = () => {
 
   const handleFormSubmit = (userData: User) => {
     if (editingUser) {
-      // Update existing user
       setUsers(users.map(user => user.id === userData.id ? userData : user));
       toast({
         title: "User updated",
         description: `${userData.firstName} ${userData.lastName}'s information has been updated.`
       });
     } else {
-      // Add new user
       const newUser = {
         ...userData,
-        id: String(Date.now()), // Simple ID generation
+        id: String(Date.now()),
         lastLoginDate: new Date().toISOString()
       };
       setUsers([...users, newUser]);
@@ -94,12 +91,6 @@ const UsersPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="animate-fadeIn max-w-7xl mx-auto">
-        <div className="flex items-center gap-1 mb-2">
-          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Dashboard</span>
-          <span className="text-xs text-muted-foreground">/</span>
-          <span className="text-xs font-medium text-muted-foreground">User Management</span>
-        </div>
-        
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-foreground">User Management</h1>
           <Button onClick={handleAddUser} className="gap-2">
