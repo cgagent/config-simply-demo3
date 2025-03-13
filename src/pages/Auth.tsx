@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Github, Mail, ArrowRight } from 'lucide-react';
@@ -21,7 +20,7 @@ const Auth: React.FC = () => {
   };
 
   const handleGithubAuth = () => {
-    // Show GitHub auth flow dialog
+    // Show GitHub auth flow dialog - skip email/password step
     setShowGitHubAuth(true);
   };
 
@@ -134,7 +133,7 @@ const Auth: React.FC = () => {
         </div>
       </div>
       
-      {/* GitHub Authentication Flow */}
+      {/* GitHub Authentication Flow - Now skipping the email/password step */}
       {showGitHubAuth && (
         <GitHubAuthFlow 
           showDialog={showGitHubAuth} 

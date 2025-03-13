@@ -1,12 +1,11 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Github, ArrowRight, Check, ChevronLeft } from 'lucide-react';
 import Button from '@/components/Button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 
@@ -47,7 +46,7 @@ type GitHubAuthFlowProps = {
 const GitHubAuthFlow: React.FC<GitHubAuthFlowProps> = ({ onClose, showDialog }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [stage, setStage] = useState<'auth' | 'organization' | 'repositories'>('auth');
+  const [stage, setStage] = useState<'organization' | 'repositories'>('organization');
   const [selectedOrg, setSelectedOrg] = useState<typeof githubOrgs[0] | null>(null);
   const [selectedRepos, setSelectedRepos] = useState<Record<string, boolean>>({});
   const [selectAll, setSelectAll] = useState(false);
@@ -93,13 +92,6 @@ const GitHubAuthFlow: React.FC<GitHubAuthFlowProps> = ({ onClose, showDialog }) 
     setSelectAll(allSelected);
   };
   
-  const handleAuth = () => {
-    // Simulate GitHub authentication
-    setTimeout(() => {
-      setStage('organization');
-    }, 1000);
-  };
-  
   const handleComplete = () => {
     // Complete the GitHub auth flow
     toast({
@@ -114,8 +106,6 @@ const GitHubAuthFlow: React.FC<GitHubAuthFlowProps> = ({ onClose, showDialog }) 
   const handleBack = () => {
     if (stage === 'repositories') {
       setStage('organization');
-    } else if (stage === 'organization') {
-      setStage('auth');
     } else {
       onClose();
     }
@@ -127,36 +117,12 @@ const GitHubAuthFlow: React.FC<GitHubAuthFlowProps> = ({ onClose, showDialog }) 
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Github className="h-5 w-5" />
-            {stage === 'auth' && "Connect with GitHub"}
             {stage === 'organization' && "Select GitHub Organization"}
             {stage === 'repositories' && "Select Repositories"}
           </DialogTitle>
         </DialogHeader>
         
         <div className="space-y-4 py-2">
-          {stage === 'auth' && (
-            <div className="space-y-4">
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="github-user">GitHub Username or Email</Label>
-                <Input id="github-user" placeholder="username@example.com" />
-              </div>
-              
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="github-pass">Password</Label>
-                <Input id="github-pass" type="password" placeholder="••••••••" />
-              </div>
-              
-              <Button 
-                onClick={handleAuth}
-                className="w-full justify-center group transition-all duration-300 mt-2"
-                icon={<Github className="h-4 w-4" />}
-              >
-                Authenticate with GitHub
-                <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Button>
-            </div>
-          )}
-          
           {stage === 'organization' && (
             <div className="space-y-4">
               <p className="text-sm text-muted-foreground">Select the organization you want to connect:</p>
