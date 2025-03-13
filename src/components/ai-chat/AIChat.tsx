@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { InitialChatScreen } from './InitialChatScreen';
 import { ConversationScreen } from './ConversationScreen';
 import { useMessageHandler } from './hooks/useMessageHandler';
@@ -11,7 +11,9 @@ export const AIChat: React.FC = () => {
     inputValue,
     setInputValue,
     handleSendMessage,
-    handleSelectQuery
+    handleSelectQuery,
+    showCIConfig,
+    repository
   } = useMessageHandler();
 
   // Initial state (no messages yet)
@@ -35,6 +37,8 @@ export const AIChat: React.FC = () => {
       inputValue={inputValue}
       setInputValue={setInputValue}
       onSendMessage={handleSendMessage}
+      showCIConfig={showCIConfig}
+      repository={repository}
     />
   );
 };

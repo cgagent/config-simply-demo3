@@ -9,6 +9,8 @@ export const useMessageHandler = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [inputValue, setInputValue] = useState('');
+  const [showCIConfig, setShowCIConfig] = useState(false);
+  const [repository, setRepository] = useState<any>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -34,26 +36,21 @@ export const useMessageHandler = () => {
         const botResponse: Message = {
           id: (Date.now() + 1).toString(),
           role: 'bot',
-          content: "I'll help you set up CI integration. Let me redirect you to our CI configuration page..."
+          content: "I'll help you set up CI integration. Let me bring up our CI configuration assistant:"
         };
         
         setMessages(prev => [...prev, botResponse]);
         
-        // Redirect to CI configuration page after a brief delay
-        setTimeout(() => {
-          navigate('/ci-configuration', { 
-            state: { 
-              // Use a sample repository for demo purposes
-              repository: {
-                id: 'sample-repo-1',
-                name: 'sample-repository',
-                owner: 'flyfrog',
-                isConfigured: false,
-                language: 'JavaScript'
-              } 
-            } 
-          });
-        }, 1500);
+        // Show embedded CI configuration instead of redirecting
+        setRepository({
+          id: 'sample-repo-1',
+          name: 'sample-repository',
+          owner: 'flyfrog',
+          isConfigured: false,
+          language: 'JavaScript'
+        });
+        setShowCIConfig(true);
+        setIsProcessing(false);
         
       } else {
         // Handle other queries as before
@@ -88,6 +85,8 @@ export const useMessageHandler = () => {
     inputValue,
     setInputValue,
     handleSendMessage,
-    handleSelectQuery
+    handleSelectQuery,
+    showCIConfig,
+    repository
   };
 };
