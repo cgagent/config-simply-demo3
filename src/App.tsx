@@ -19,7 +19,7 @@ const MainLayout = () => {
   return (
     <div className="flex h-screen">
       <NavBar />
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 ml-16 transition-all duration-300">
         <Outlet />
       </div>
     </div>

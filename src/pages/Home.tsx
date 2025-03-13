@@ -1,15 +1,12 @@
 
 import React from 'react';
-import NavBar from '@/components/NavBar';
 import { AIChat } from '@/components/ai-chat/AIChat';
 
 const Home: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <NavBar />
-      
       <main className="flex-1 w-full mx-auto flex flex-col">
-        <div className="max-w-3xl w-full mx-auto px-4 sm:px-6 flex flex-col h-[calc(100vh-64px)] pt-0">
+        <div className="max-w-3xl w-full mx-auto px-4 sm:px-6 flex flex-col h-[calc(100vh-64px)] pt-6">
           <div className="flex-1 flex flex-col border-0 overflow-hidden bg-background">
             <div className="flex-1 flex flex-col p-4 overflow-hidden">
               <AIChat />
