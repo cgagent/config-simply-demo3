@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Github } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { AuthStageProvider } from './github-flow/AuthStageProvider';
 import StageRenderer from './github-flow/StageRenderer';
 
@@ -9,18 +9,18 @@ type GitHubAuthFlowProps = {
   onClose: () => void;
   showDialog: boolean;
   onComplete?: (hasOrgPermissions: boolean) => void;
-  skipInitialAuth?: boolean; // New prop to skip initial auth
+  skipInitialAuth?: boolean;
 };
 
 const GitHubAuthFlow: React.FC<GitHubAuthFlowProps> = ({ 
   onClose, 
   showDialog, 
   onComplete,
-  skipInitialAuth = false // Default to false if not provided
+  skipInitialAuth = false
 }) => {
   // Get the appropriate title for the current stage
   const getDialogTitle = () => {
-    return "GitHub Integration";
+    return skipInitialAuth ? "Connect GitHub Repositories" : "GitHub Integration";
   };
   
   return (
@@ -31,6 +31,11 @@ const GitHubAuthFlow: React.FC<GitHubAuthFlowProps> = ({
             <Github className="h-5 w-5" />
             {getDialogTitle()}
           </DialogTitle>
+          <DialogDescription>
+            {skipInitialAuth 
+              ? "Grant organization access to select and configure repositories" 
+              : "Connect to GitHub and configure your repositories"}
+          </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-4 py-2">

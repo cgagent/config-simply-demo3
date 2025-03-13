@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from '@/components/Button';
 import { useAuthStage } from './AuthStageProvider';
 import { useToast } from '@/hooks/use-toast';
+import { Check, ArrowRight } from 'lucide-react';
 
 interface ConfirmationStageProps {
   onClose: () => void;
@@ -50,18 +51,22 @@ const ConfirmationStage: React.FC<ConfirmationStageProps> = ({
       </div>
       
       <div className="flex flex-col space-y-2">
-        <button 
+        <Button 
           onClick={handleComplete}
-          className="inline-flex items-center justify-center gap-2 rounded-md bg-green-600 px-4 py-2 font-medium text-white hover:bg-green-700"
+          className="w-full justify-center group"
+          icon={<Check className="h-4 w-4" />}
         >
           Connect Repositories
-        </button>
-        <button
+          <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
+        </Button>
+        
+        <Button
           onClick={handleBack}
-          className="inline-flex items-center justify-center gap-2 rounded-md border border-input bg-background px-4 py-2 hover:bg-accent hover:text-accent-foreground"
+          variant="outline"
+          className="w-full justify-center"
         >
           Back
-        </button>
+        </Button>
       </div>
     </div>
   );

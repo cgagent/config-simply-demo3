@@ -8,30 +8,35 @@ interface AuthorizationScreenProps {
   onSkipOrgPermissions?: () => void;
   onCancel: () => void;
   isInitialAuth?: boolean;
+  title?: string;
+  description?: string;
 }
 
 const AuthorizationScreen: React.FC<AuthorizationScreenProps> = ({ 
   onAuthorize, 
   onSkipOrgPermissions,
   onCancel,
-  isInitialAuth = true
+  isInitialAuth = true,
+  title,
+  description
 }) => {
+  const screenTitle = title || (isInitialAuth ? "GitHub Account Connection" : "Repository Access");
+  const screenDescription = description || (isInitialAuth 
+    ? "Connect your GitHub account to import and configure your repositories. You'll be redirected to GitHub to authorize access."
+    : "Grant access to your organizations to select and configure repositories. This step is required to use the CI/CD features.");
+
   return (
     <div className="space-y-4">
       <div className="rounded-md bg-muted p-4">
         <p className="text-sm text-muted-foreground">
-          {isInitialAuth 
-            ? "Connect your GitHub account to import and configure your repositories. You'll be redirected to GitHub to authorize access."
-            : "Grant access to your organizations to select and configure repositories. This step is required to use the CI/CD features."}
+          {screenDescription}
         </p>
       </div>
       
       <div className="rounded-md border p-4">
         <div className="mb-2 flex items-center gap-2">
           <Github className="h-5 w-5" />
-          <h3 className="font-medium">
-            {isInitialAuth ? "GitHub Account Connection" : "Repository Access"}
-          </h3>
+          <h3 className="font-medium">{screenTitle}</h3>
         </div>
         <p className="text-sm text-muted-foreground">
           This app will request permission to:

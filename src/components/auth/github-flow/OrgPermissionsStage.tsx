@@ -19,7 +19,7 @@ const OrgPermissionsStage: React.FC<OrgPermissionsStageProps> = ({
   const { toast } = useToast();
   
   const handleRequestOrgPermissions = () => {
-    // Simulate granting org permissions
+    // Grant org permissions and move to organization selection
     setHasGrantedOrgPermissions(true);
     setStage('organization');
   };
@@ -32,7 +32,7 @@ const OrgPermissionsStage: React.FC<OrgPermissionsStageProps> = ({
     });
     
     if (onComplete) {
-      onComplete(false);
+      onComplete(false); // Indicate that org permissions were not granted
     } else {
       onClose();
       navigate('/repositories');
@@ -45,6 +45,8 @@ const OrgPermissionsStage: React.FC<OrgPermissionsStageProps> = ({
       onSkipOrgPermissions={handleSkipOrgPermissions}
       onCancel={onClose}
       isInitialAuth={false}
+      title="GitHub Organization Access"
+      description="Grant access to your organizations to select and configure repositories."
     />
   );
 };
