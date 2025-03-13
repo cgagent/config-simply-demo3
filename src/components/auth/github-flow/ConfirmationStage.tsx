@@ -20,11 +20,13 @@ const ConfirmationStage: React.FC<ConfirmationStageProps> = ({
   
   if (!selectedOrg) return null;
   
+  const selectedRepoCount = Object.values(selectedRepos).filter(Boolean).length;
+  
   const handleComplete = () => {
     // Complete the GitHub auth flow
     toast({
-      title: "GitHub Authentication Successful",
-      description: `Connected to ${selectedOrg.name} with ${Object.values(selectedRepos).filter(Boolean).length} repositories`,
+      title: "Repositories Connected Successfully",
+      description: `${selectedRepoCount} repositories from ${selectedOrg.name} have been connected.`,
     });
     
     // Call the onComplete callback if provided
@@ -39,12 +41,11 @@ const ConfirmationStage: React.FC<ConfirmationStageProps> = ({
   return (
     <div className="space-y-4">
       <div className="rounded-md bg-primary/10 p-4">
-        <p className="font-medium">This application is requesting access to:</p>
+        <p className="font-medium">Ready to connect {selectedRepoCount} repositories:</p>
         <ul className="mt-2 list-disc pl-5 text-sm">
-          <li>Read access to {selectedOrg.name}</li>
-          <li>Access to {Object.values(selectedRepos).filter(Boolean).length} repositories</li>
-          <li>Read and write content in repositories</li>
-          <li>Read organization members</li>
+          <li>From organization: {selectedOrg.name}</li>
+          <li>CI/CD will be configured for the selected repositories</li>
+          <li>You can add more repositories later</li>
         </ul>
       </div>
       
@@ -53,13 +54,13 @@ const ConfirmationStage: React.FC<ConfirmationStageProps> = ({
           onClick={handleComplete}
           className="inline-flex items-center justify-center gap-2 rounded-md bg-green-600 px-4 py-2 font-medium text-white hover:bg-green-700"
         >
-          Authorize {selectedOrg.name}
+          Connect Repositories
         </button>
         <button
           onClick={handleBack}
           className="inline-flex items-center justify-center gap-2 rounded-md border border-input bg-background px-4 py-2 hover:bg-accent hover:text-accent-foreground"
         >
-          Cancel
+          Back
         </button>
       </div>
     </div>

@@ -28,7 +28,7 @@ const OrgPermissionsStage: React.FC<OrgPermissionsStageProps> = ({
     // User chose to connect without granting organization permissions
     toast({
       title: "Organization Access Skipped",
-      description: "Connected to GitHub without organization permissions",
+      description: "You can always connect repositories later from the dashboard",
     });
     
     if (onComplete) {

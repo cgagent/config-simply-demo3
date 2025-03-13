@@ -36,7 +36,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({ className, onConnect, noOrgAcce
             className="button-shine group transition-all duration-300"
             size="lg"
           >
-            Grant Organization Access
+            Connect GitHub Repo
             <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Button>
         </>
@@ -44,7 +44,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({ className, onConnect, noOrgAcce
         <>
           <h2 className="text-2xl font-bold mb-3">Connect GitHub Repositories</h2>
           <p className="text-muted-foreground mb-3 max-w-md">
-            Grant organization access to view and configure your repositories with our CI/CD pipeline.
+            Connect your GitHub repositories to configure them with our CI/CD pipeline.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 my-8 w-full max-w-2xl">
             <div className="flex flex-col items-center p-4 rounded-lg bg-background border border-border">
@@ -72,11 +72,11 @@ const EmptyState: React.FC<EmptyStateProps> = ({ className, onConnect, noOrgAcce
           <div className="flex flex-col items-center">
             <Button 
               onClick={onConnect}
-              icon={<Building2 className="h-4 w-4" />}
+              icon={<Github className="h-4 w-4" />}
               className="button-shine group transition-all duration-300"
               size="lg"
             >
-              Grant Organization Access
+              Connect GitHub Repo
               <ArrowRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </div>

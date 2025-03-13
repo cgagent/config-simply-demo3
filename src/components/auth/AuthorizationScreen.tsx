@@ -22,7 +22,7 @@ const AuthorizationScreen: React.FC<AuthorizationScreenProps> = ({
         <p className="text-sm text-muted-foreground">
           {isInitialAuth 
             ? "Connect your GitHub account to import and configure your repositories. You'll be redirected to GitHub to authorize access."
-            : "Grant access to your organizations to import and configure repositories. This step is required to use the CI/CD features."}
+            : "Grant access to your organizations to select and configure repositories. This step is required to use the CI/CD features."}
         </p>
       </div>
       
@@ -30,7 +30,7 @@ const AuthorizationScreen: React.FC<AuthorizationScreenProps> = ({
         <div className="mb-2 flex items-center gap-2">
           <Github className="h-5 w-5" />
           <h3 className="font-medium">
-            {isInitialAuth ? "GitHub Access Permissions" : "Organization Access Permissions"}
+            {isInitialAuth ? "GitHub Account Connection" : "Repository Access"}
           </h3>
         </div>
         <p className="text-sm text-muted-foreground">
@@ -52,15 +52,15 @@ const AuthorizationScreen: React.FC<AuthorizationScreenProps> = ({
             <>
               <li className="flex items-start">
                 <span className="mr-2">•</span>
-                <span>Read your organizations and repositories</span>
+                <span>Access your repositories and organizations</span>
               </li>
               <li className="flex items-start">
                 <span className="mr-2">•</span>
-                <span>Set up CI workflows and deployment settings</span>
+                <span>Configure CI/CD workflows for selected repositories</span>
               </li>
               <li className="flex items-start">
                 <span className="mr-2">•</span>
-                <span>Access repository content for builds</span>
+                <span>Set up automated builds and deployments</span>
               </li>
             </>
           )}
@@ -73,7 +73,7 @@ const AuthorizationScreen: React.FC<AuthorizationScreenProps> = ({
           className="w-full justify-center"
           icon={<Github className="h-4 w-4" />}
         >
-          {isInitialAuth ? "Connect GitHub Account" : "Grant Organization Access"}
+          {isInitialAuth ? "Connect GitHub Account" : "Connect GitHub Repositories"}
           <ExternalLink className="ml-1 h-3 w-3" />
         </Button>
         
@@ -83,7 +83,7 @@ const AuthorizationScreen: React.FC<AuthorizationScreenProps> = ({
             variant="outline"
             className="w-full justify-center"
           >
-            Continue without Organization Access
+            Skip for now
           </Button>
         )}
         
