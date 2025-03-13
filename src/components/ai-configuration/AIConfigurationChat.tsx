@@ -44,8 +44,6 @@ const AIConfigurationChat: React.FC<AIConfigurationChatProps> = ({ repositoryNam
       </div>
       
       <ConfigInputForm 
-        input={input}
-        setInput={setInput}
         isProcessing={isProcessing}
         onSendMessage={handleSendMessage}
       />
