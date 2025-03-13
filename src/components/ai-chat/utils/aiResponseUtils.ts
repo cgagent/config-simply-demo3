@@ -21,17 +21,26 @@ export const simulateAIResponse = (query: string): string => {
     return `Here are the most popular packages used in your organization:
 
 **axios**
+
 - Most common version: 1.5.1 (published on 2024-08-31)
+
 - Latest Version published: 1.8.3
+
 - Your org version 1.5.1 has known vulnerabilities:
 
 **CVE-2024-39338**
+
 Description - axios 1.5.1 allows SSRF via unexpected behavior where requests for path relative URLs get processed as protocol relative URLs
+
 Severity: High
 
+
 **lodash**
+
 - Most common version: 4.17.21
+
 - Latest version: 4.17.21
+
 - Your most common version is secured`;
   }
   else if (lowerQuery.includes('http request') || lowerQuery.includes('making http request')) {
@@ -40,33 +49,33 @@ Severity: High
 1. **axios**
 
    • Description: Promise based HTTP client for the browser and node.js
-   
+
    • Latest version: 1.8.3
-   
+
    • [GitHub Repository](https://github.com/axios/axios)
-   
+
    • [NPM Package Page](https://www.npmjs.com/package/axios)
 
 
 2. **node-fetch**
 
    • Description: A light-weight module that brings window.fetch to node.js
-   
+
    • Latest version: 3.3.2
-   
+
    • [GitHub Repository](https://github.com/node-fetch/node-fetch)
-   
+
    • [NPM Package Page](https://www.npmjs.com/package/node-fetch)
 
 
 3. **request**
 
    • Description: Simplified HTTP request client
-   
+
    • Latest version: 2.88.2
-   
+
    • [GitHub Repository](https://github.com/request/request)
-   
+
    • [Homepage](https://request.js.org/)`;
   }
   else {
