@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -60,20 +61,20 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       if (currentSuggestion.length < rotatingPlaceholders[currentIndex].length) {
         const timer = setTimeout(() => {
           setCurrentSuggestion(rotatingPlaceholders[currentIndex].substring(0, currentSuggestion.length + 1));
-        }, 80);
+        }, 30); // Typing speed reduced from 80ms to 30ms
         return () => clearTimeout(timer);
       } else {
-        // Done typing, wait before starting to delete
+        // Done typing, wait before starting to delete - reduced from 2000ms to 1000ms
         const timer = setTimeout(() => {
           setIsTyping(false);
-        }, 2000);
+        }, 1000);
         return () => clearTimeout(timer);
       }
     } else {
       if (currentSuggestion.length > 0) {
         const timer = setTimeout(() => {
           setCurrentSuggestion(currentSuggestion.substring(0, currentSuggestion.length - 1));
-        }, 50);
+        }, 20); // Deleting speed reduced from 50ms to 20ms
         return () => clearTimeout(timer);
       } else {
         // Done deleting, move to next suggestion and start typing again
