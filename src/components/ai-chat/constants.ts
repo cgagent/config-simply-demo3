@@ -17,8 +17,8 @@ export const SUGGESTED_QUERIES = [
     query: "abc"
   },
   {
-    label: "Sbom",
-    query: "Generate an Sbom report for the last 30 days"
+    label: "SBOM",
+    query: "Can I get an SBOM report for my packages from the last 30 days?"
   }
 ];
 
