@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-import NavBar from '@/components/NavBar';
 import { 
   Table, 
   TableHeader, 
@@ -93,83 +92,79 @@ const UsersPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <NavBar />
-      
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8">
-        <div className="animate-fadeIn">
-          <div className="flex items-center gap-1 mb-2">
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Dashboard</span>
-            <span className="text-xs text-muted-foreground">/</span>
-            <span className="text-xs font-medium">User Management</span>
-          </div>
-          
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold">User Management</h1>
-            <Button onClick={handleAddUser} className="gap-2">
-              <UserPlus className="h-4 w-4" />
-              Add User
-            </Button>
-          </div>
-          
-          <div className="bg-white rounded-lg border border-border shadow-sm overflow-hidden">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Last Login</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {users.map((user) => (
-                  <TableRow key={user.id}>
-                    <TableCell className="font-medium">
-                      {user.firstName} {user.lastName}
-                    </TableCell>
-                    <TableCell className="flex items-center gap-2">
-                      <Mail className="h-4 w-4 text-muted-foreground" />
-                      {user.email}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        {user.role === 'Admin' ? (
-                          <>
-                            <Shield className="h-4 w-4 text-primary" />
-                            <span className="font-medium text-primary">Admin</span>
-                          </>
-                        ) : (
-                          <>
-                            <Code className="h-4 w-4 text-indigo-500" />
-                            <span className="font-medium text-indigo-500">Developer</span>
-                          </>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell className="flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-muted-foreground" />
-                      {formatDate(user.lastLoginDate)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        onClick={() => handleEditUser(user)}
-                        className="gap-2"
-                      >
-                        <UserCog className="h-4 w-4" />
-                        Edit
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+    <div className="min-h-screen bg-background p-6">
+      <div className="animate-fadeIn max-w-7xl mx-auto">
+        <div className="flex items-center gap-1 mb-2">
+          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Dashboard</span>
+          <span className="text-xs text-muted-foreground">/</span>
+          <span className="text-xs font-medium text-muted-foreground">User Management</span>
         </div>
-      </main>
+        
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold text-foreground">User Management</h1>
+          <Button onClick={handleAddUser} className="gap-2">
+            <UserPlus className="h-4 w-4" />
+            Add User
+          </Button>
+        </div>
+        
+        <div className="bg-card rounded-lg border border-border shadow-sm overflow-hidden">
+          <Table>
+            <TableHeader className="bg-muted/40">
+              <TableRow className="hover:bg-muted/60">
+                <TableHead className="text-foreground font-semibold">Name</TableHead>
+                <TableHead className="text-foreground font-semibold">Email</TableHead>
+                <TableHead className="text-foreground font-semibold">Role</TableHead>
+                <TableHead className="text-foreground font-semibold">Last Login</TableHead>
+                <TableHead className="text-right text-foreground font-semibold">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {users.map((user) => (
+                <TableRow key={user.id} className="border-border hover:bg-muted/30">
+                  <TableCell className="font-medium text-foreground">
+                    {user.firstName} {user.lastName}
+                  </TableCell>
+                  <TableCell className="flex items-center gap-2 text-muted-foreground">
+                    <Mail className="h-4 w-4 text-muted-foreground" />
+                    {user.email}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      {user.role === 'Admin' ? (
+                        <>
+                          <Shield className="h-4 w-4 text-primary" />
+                          <span className="font-medium text-primary">Admin</span>
+                        </>
+                      ) : (
+                        <>
+                          <Code className="h-4 w-4 text-indigo-400" />
+                          <span className="font-medium text-indigo-400">Developer</span>
+                        </>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className="flex items-center gap-2 text-muted-foreground">
+                    <Calendar className="h-4 w-4 text-muted-foreground" />
+                    {formatDate(user.lastLoginDate)}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => handleEditUser(user)}
+                      className="gap-2 hover:bg-muted/60"
+                    >
+                      <UserCog className="h-4 w-4" />
+                      Edit
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
 
       {isFormOpen && (
         <UserForm 
