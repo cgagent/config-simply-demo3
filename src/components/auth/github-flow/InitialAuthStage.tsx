@@ -13,10 +13,10 @@ const InitialAuthStage: React.FC<InitialAuthStageProps> = ({ onClose }) => {
   const { toast } = useToast();
   
   const handleConnectGitHub = () => {
-    // Simulate initial GitHub OAuth authentication (just the user, no org perms yet)
+    // Simulate initial GitHub OAuth authentication
     toast({
       title: "GitHub Account Connected",
-      description: "Your personal GitHub account has been connected.",
+      description: "Your personal GitHub account has been connected successfully.",
     });
     
     // Move to the next step (requesting org permissions)
