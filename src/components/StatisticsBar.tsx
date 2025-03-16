@@ -1,0 +1,62 @@
+
+import React from 'react';
+import { Card } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
+import { CheckCircle, Package, PackageX, Database } from 'lucide-react';
+import { formatNumber } from '@/lib/formatters';
+
+interface StatisticsBarProps {
+  ciCompletionPercentage: number;
+  blockedPackages: number;
+  totalPackages: number;
+  dataConsumption: number;
+}
+
+const StatisticsBar: React.FC<StatisticsBarProps> = ({
+  ciCompletionPercentage,
+  blockedPackages,
+  totalPackages,
+  dataConsumption
+}) => {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <Card className="p-4 flex flex-col">
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="text-sm font-medium text-muted-foreground">CI Completion</h3>
+          <CheckCircle className="h-5 w-5 text-primary" />
+        </div>
+        <p className="text-2xl font-bold mb-2">{ciCompletionPercentage}%</p>
+        <Progress value={ciCompletionPercentage} className="h-2" />
+      </Card>
+      
+      <Card className="p-4 flex flex-col">
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="text-sm font-medium text-muted-foreground">Blocked Packages</h3>
+          <PackageX className="h-5 w-5 text-destructive" />
+        </div>
+        <p className="text-2xl font-bold">{blockedPackages}</p>
+        <p className="text-xs text-muted-foreground mt-2">Last 30 days</p>
+      </Card>
+      
+      <Card className="p-4 flex flex-col">
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="text-sm font-medium text-muted-foreground">Total Packages</h3>
+          <Package className="h-5 w-5 text-blue-500" />
+        </div>
+        <p className="text-2xl font-bold">{formatNumber(totalPackages)}</p>
+        <p className="text-xs text-muted-foreground mt-2">Across all repositories</p>
+      </Card>
+      
+      <Card className="p-4 flex flex-col">
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="text-sm font-medium text-muted-foreground">Data Consumption</h3>
+          <Database className="h-5 w-5 text-amber-500" />
+        </div>
+        <p className="text-2xl font-bold">{formatNumber(dataConsumption)} MB</p>
+        <p className="text-xs text-muted-foreground mt-2">This month</p>
+      </Card>
+    </div>
+  );
+};
+
+export default StatisticsBar;
