@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { CheckCircle, Package, PackageX, Database } from 'lucide-react';
 import { formatNumber } from '@/lib/formatters';
+import { useNavigate } from 'react-router-dom';
 
 interface StatisticsBarProps {
   ciCompletionPercentage: number;
@@ -18,19 +19,36 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
   totalPackages,
   dataConsumption
 }) => {
+  const navigate = useNavigate();
+
+  const handleCICompletionClick = () => {
+    navigate('/repositories');
+  };
+
+  const handlePackageClick = () => {
+    // Navigate to the packages page when implemented
+    navigate('/home');
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-      <Card className="p-4 flex flex-col">
+      <Card 
+        className="p-4 flex flex-col cursor-pointer hover:shadow-md transition-shadow" 
+        onClick={handleCICompletionClick}
+      >
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-sm font-medium text-muted-foreground">CI Completion</h3>
           <CheckCircle className="h-5 w-5 text-primary" />
         </div>
         <p className="text-2xl font-bold mb-2">{ciCompletionPercentage}%</p>
         <Progress value={ciCompletionPercentage} className="h-2" />
-        <p className="text-xs text-muted-foreground mt-2">Last 30 days</p>
+        <p className="text-xs text-muted-foreground mt-2">Current CI Status</p>
       </Card>
       
-      <Card className="p-4 flex flex-col">
+      <Card 
+        className="p-4 flex flex-col cursor-pointer hover:shadow-md transition-shadow"
+        onClick={handlePackageClick}
+      >
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-sm font-medium text-muted-foreground">Blocked Packages</h3>
           <PackageX className="h-5 w-5 text-destructive" />
@@ -39,7 +57,10 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
         <p className="text-xs text-muted-foreground mt-2">Last 30 days</p>
       </Card>
       
-      <Card className="p-4 flex flex-col">
+      <Card 
+        className="p-4 flex flex-col cursor-pointer hover:shadow-md transition-shadow"
+        onClick={handlePackageClick}
+      >
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-sm font-medium text-muted-foreground">Total Packages</h3>
           <Package className="h-5 w-5 text-blue-500" />
@@ -48,7 +69,10 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
         <p className="text-xs text-muted-foreground mt-2">Last 30 days</p>
       </Card>
       
-      <Card className="p-4 flex flex-col">
+      <Card 
+        className="p-4 flex flex-col cursor-pointer hover:shadow-md transition-shadow"
+        onClick={handlePackageClick}
+      >
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-sm font-medium text-muted-foreground">Data Consumption</h3>
           <Database className="h-5 w-5 text-amber-500" />
