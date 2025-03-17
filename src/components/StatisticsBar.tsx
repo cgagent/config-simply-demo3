@@ -11,13 +11,15 @@ interface StatisticsBarProps {
   blockedPackages: number;
   totalPackages: number;
   dataConsumption: number;
+  onChatQuery?: (query: string) => void;
 }
 
 const StatisticsBar: React.FC<StatisticsBarProps> = ({
   ciCompletionPercentage,
   blockedPackages,
   totalPackages,
-  dataConsumption
+  dataConsumption,
+  onChatQuery
 }) => {
   const navigate = useNavigate();
 
@@ -25,9 +27,22 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
     navigate('/repositories');
   };
 
-  const handlePackageClick = () => {
-    // Navigate to the packages page when implemented
-    navigate('/home');
+  const handleBlockedPackagesClick = () => {
+    if (onChatQuery) {
+      onChatQuery("Show me detailed information about blocked packages in the last 30 days");
+    }
+  };
+
+  const handleTotalPackagesClick = () => {
+    if (onChatQuery) {
+      onChatQuery("What are the most popular packages in my organization?");
+    }
+  };
+
+  const handleDataConsumptionClick = () => {
+    if (onChatQuery) {
+      onChatQuery("Provide a breakdown of data consumption over the last 30 days");
+    }
   };
 
   return (
@@ -51,7 +66,7 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
       
       <Card 
         className="p-4 flex flex-col cursor-pointer hover:shadow-md transition-shadow border-l-4 border-l-destructive"
-        onClick={handlePackageClick}
+        onClick={handleBlockedPackagesClick}
       >
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-sm font-medium text-muted-foreground">Blocked Packages</h3>
@@ -60,14 +75,14 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
         <p className="text-2xl font-bold">{blockedPackages}</p>
         <p className="text-xs text-muted-foreground mt-2">Last 30 days</p>
         <div className="flex items-center text-destructive text-xs mt-2 font-medium">
-          <span>View details</span>
+          <span>Ask AI about blocked packages</span>
           <ArrowRight className="h-3 w-3 ml-1" />
         </div>
       </Card>
       
       <Card 
         className="p-4 flex flex-col cursor-pointer hover:shadow-md transition-shadow border-l-4 border-l-blue-500"
-        onClick={handlePackageClick}
+        onClick={handleTotalPackagesClick}
       >
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-sm font-medium text-muted-foreground">Total Packages</h3>
@@ -76,14 +91,14 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
         <p className="text-2xl font-bold">{formatNumber(totalPackages)}</p>
         <p className="text-xs text-muted-foreground mt-2">Last 30 days</p>
         <div className="flex items-center text-blue-500 text-xs mt-2 font-medium">
-          <span>View details</span>
+          <span>Ask AI about package usage</span>
           <ArrowRight className="h-3 w-3 ml-1" />
         </div>
       </Card>
       
       <Card 
         className="p-4 flex flex-col cursor-pointer hover:shadow-md transition-shadow border-l-4 border-l-amber-500"
-        onClick={handlePackageClick}
+        onClick={handleDataConsumptionClick}
       >
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-sm font-medium text-muted-foreground">Data Consumption</h3>
@@ -92,7 +107,7 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
         <p className="text-2xl font-bold">{formatNumber(dataConsumption)} MB</p>
         <p className="text-xs text-muted-foreground mt-2">Last 30 days</p>
         <div className="flex items-center text-amber-500 text-xs mt-2 font-medium">
-          <span>View details</span>
+          <span>Ask AI about data usage</span>
           <ArrowRight className="h-3 w-3 ml-1" />
         </div>
       </Card>

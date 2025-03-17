@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { InitialChatScreen } from './InitialChatScreen';
 import { ConversationScreen } from './ConversationScreen';
 import { useMessageHandler } from './hooks/useMessageHandler';
@@ -15,9 +15,15 @@ import { Link } from 'react-router-dom';
 
 interface AIChatProps {
   onChatStateChange?: (isChatActive: boolean) => void;
+  initialInputValue?: string;
+  clearInitialInputValue?: () => void;
 }
 
-export const AIChat: React.FC<AIChatProps> = ({ onChatStateChange }) => {
+export const AIChat: React.FC<AIChatProps> = ({ 
+  onChatStateChange, 
+  initialInputValue = '', 
+  clearInitialInputValue 
+}) => {
   const {
     messages,
     isProcessing,
@@ -29,8 +35,21 @@ export const AIChat: React.FC<AIChatProps> = ({ onChatStateChange }) => {
     repository
   } = useMessageHandler();
 
+  // Listen for initial input value changes
+  useEffect(() => {
+    if (initialInputValue && initialInputValue.trim() !== '') {
+      setInputValue(initialInputValue);
+      // Automatically send the message if it comes from a statistics panel
+      handleSendMessage(initialInputValue);
+      // Clear the initial value to prevent re-sending
+      if (clearInitialInputValue) {
+        clearInitialInputValue();
+      }
+    }
+  }, [initialInputValue, clearInitialInputValue]);
+
   // Notify parent component about chat state changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (onChatStateChange) {
       onChatStateChange(messages.length > 0);
     }

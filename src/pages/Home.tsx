@@ -5,6 +5,7 @@ import StatisticsBar from '@/components/StatisticsBar';
 
 const Home: React.FC = () => {
   const [isChatActive, setIsChatActive] = useState(false);
+  const [chatInputValue, setChatInputValue] = useState('');
   
   // Sample data for statistics - in a real app, this would come from an API or state
   const statsData = {
@@ -12,6 +13,12 @@ const Home: React.FC = () => {
     blockedPackages: 3,
     totalPackages: 12486,
     dataConsumption: 1528
+  };
+
+  // Handler for statistics panel queries
+  const handleChatQuery = (query: string) => {
+    setChatInputValue(query);
+    setIsChatActive(true);
   };
 
   return (
@@ -24,12 +31,17 @@ const Home: React.FC = () => {
               blockedPackages={statsData.blockedPackages}
               totalPackages={statsData.totalPackages}
               dataConsumption={statsData.dataConsumption}
+              onChatQuery={handleChatQuery}
             />
           )}
           
           <div className="flex-1 flex flex-col border-0 overflow-hidden bg-background dark:bg-background">
             <div className="flex-1 flex flex-col p-4 overflow-hidden">
-              <AIChat onChatStateChange={setIsChatActive} />
+              <AIChat 
+                onChatStateChange={setIsChatActive}
+                initialInputValue={chatInputValue}
+                clearInitialInputValue={() => setChatInputValue('')}
+              />
             </div>
           </div>
         </div>
