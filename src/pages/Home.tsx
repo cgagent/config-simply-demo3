@@ -58,6 +58,7 @@ const Home: React.FC = () => {
                 onChatStateChange={setIsChatActive}
                 initialInputValue={chatInputValue}
                 clearInitialInputValue={() => setChatInputValue('')}
+                key={isChatActive ? "active-chat" : "initial-chat"}
               />
             </div>
           </div>
