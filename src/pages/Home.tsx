@@ -53,6 +53,8 @@ const Home: React.FC = () => {
     
     // First completely clear the previous value
     setChatInputValue('');
+    
+    // Immediately activate the chat to skip the initial screen
     setIsChatActive(true);
     
     // Wait to ensure the clear has processed before setting new value

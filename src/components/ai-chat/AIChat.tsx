@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { InitialChatScreen } from './InitialChatScreen';
 import { ConversationScreen } from './ConversationScreen';
@@ -64,9 +63,8 @@ export const AIChat: React.FC<AIChatProps> = ({
   // Handle the shouldSendMessage flag
   useEffect(() => {
     if (shouldSendMessage && inputValue && !isProcessing && clearShouldSendMessage) {
-      // Send the message with the current input value
+      console.log("Auto-sending message:", inputValue);
       handleSendMessage(inputValue);
-      // Clear the flag to prevent sending again
       clearShouldSendMessage();
     }
   }, [shouldSendMessage, inputValue, isProcessing, handleSendMessage, clearShouldSendMessage]);
@@ -159,8 +157,12 @@ export const AIChat: React.FC<AIChatProps> = ({
     }
   }, [messages.length, onChatStateChange]);
 
-  // Initial state (no messages yet)
-  if (messages.length === 0) {
+  // We want to show the conversation screen immediately if there are messages,
+  // or if the parent has explicitly set isChatActive to true via initialInputValue
+  const hasInitialInput = initialInputValue && initialInputValue.trim() !== '';
+  
+  // Initial state (no messages yet and no initial input)
+  if (messages.length === 0 && !hasInitialInput) {
     return (
       <InitialChatScreen
         isProcessing={isProcessing}
@@ -188,7 +190,7 @@ export const AIChat: React.FC<AIChatProps> = ({
     }
   }
 
-  // Chat state (after user has sent at least one message)
+  // Chat state (after user has sent at least one message or when there's initial input)
   return (
     <ConversationScreen
       messages={displayMessages}
@@ -202,3 +204,4 @@ export const AIChat: React.FC<AIChatProps> = ({
     />
   );
 };
+
