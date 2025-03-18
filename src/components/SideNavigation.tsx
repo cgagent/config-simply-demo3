@@ -51,7 +51,7 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ className, onHomeLinkCl
   };
   
   return (
-    <nav className={cn("py-2", className)}>
+    <nav className={cn("py-2 bg-gradient-to-r from-ocean-900 to-ocean-800", className)}>
       <ul className="flex items-center space-x-2">
         {navItems.map((item) => {
           const active = isActive(item.path);
@@ -61,10 +61,10 @@ const SideNavigation: React.FC<SideNavigationProps> = ({ className, onHomeLinkCl
               <button
                 onClick={() => handleNavClick(item.path)}
                 className={cn(
-                  "flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors hover:bg-secondary",
+                  "flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors",
                   active 
-                    ? "bg-primary text-primary-foreground shadow-sm" 
-                    : "text-foreground hover:text-foreground"
+                    ? "bg-ocean-500 text-white shadow-sm" 
+                    : "text-ocean-100 hover:bg-ocean-700 hover:text-white"
                 )}
                 aria-current={active ? "page" : undefined}
               >

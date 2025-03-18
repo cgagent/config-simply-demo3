@@ -23,7 +23,7 @@ export const MessageList: React.FC<MessageListProps> = ({ messages }) => {
     <motion.div 
       className={cn(
         "flex-1 overflow-y-auto p-4 space-y-5 rounded-lg",
-        "bg-gradient-to-b from-card/80 to-background border border-border/50 shadow-md"
+        "bg-gradient-to-b from-background/90 to-background border border-border/50 shadow-md"
       )}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
