@@ -1,6 +1,7 @@
 
 import React, { useRef, useEffect } from 'react';
 import { ChatMessage, Message } from './ChatMessage';
+import { motion } from 'framer-motion';
 
 interface MessageListProps {
   messages: Message[];
@@ -18,11 +19,23 @@ export const MessageList: React.FC<MessageListProps> = ({ messages }) => {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-muted/10">
+    <motion.div 
+      className="flex-1 overflow-y-auto p-4 space-y-5 bg-card/50 rounded-lg"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+    >
+      {messages.length === 0 && (
+        <div className="h-full flex items-center justify-center">
+          <p className="text-muted-foreground text-center">
+            Start a conversation to get package information
+          </p>
+        </div>
+      )}
       {messages.map((message) => (
         <ChatMessage key={message.id} message={message} />
       ))}
       <div ref={messagesEndRef} />
-    </div>
+    </motion.div>
   );
 };

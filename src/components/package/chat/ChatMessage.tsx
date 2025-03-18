@@ -2,6 +2,8 @@
 import React from 'react';
 import { Bot, User, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
 
 export interface Message {
   id: string;
@@ -15,6 +17,7 @@ interface ChatMessageProps {
 
 export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   const { toast } = useToast();
+  const isUser = message.role === 'user';
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -91,39 +94,48 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   };
 
   return (
-    <div 
-      className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+    <motion.div 
+      className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
     >
-      <div 
-        className={`max-w-[80%] rounded-lg p-3 ${
-          message.role === 'user' 
-            ? 'bg-primary text-primary-foreground ml-12' 
-            : 'bg-muted mr-12'
+      <motion.div 
+        className={`max-w-[85%] rounded-lg p-4 shadow-sm border ${
+          isUser 
+            ? 'bg-primary text-primary-foreground ml-8 border-primary-foreground/20 rounded-tr-none' 
+            : 'bg-muted mr-8 border-muted-foreground/20 rounded-tl-none'
         }`}
+        whileHover={{ scale: 1.01 }}
+        transition={{ duration: 0.2 }}
       >
-        <div className="flex items-center mb-1">
-          {message.role === 'bot' ? (
-            <Bot className="w-4 h-4 mr-2" />
-          ) : (
-            <User className="w-4 h-4 mr-2" />
-          )}
-          <span className="text-xs font-medium">
-            {message.role === 'bot' ? 'Assistant' : 'You'}
+        <div className="flex items-center mb-2">
+          <div className={`p-1 rounded-full ${isUser ? 'bg-primary-foreground/20' : 'bg-muted-foreground/10'}`}>
+            {isUser ? (
+              <User className="w-4 h-4" />
+            ) : (
+              <Bot className="w-4 h-4" />
+            )}
+          </div>
+          <span className="text-xs font-medium ml-2">
+            {isUser ? 'You' : 'Assistant'}
           </span>
-          {message.role === 'bot' && (
-            <button 
-              className="ml-2 h-6 w-6 p-0 rounded-md inline-flex items-center justify-center text-muted-foreground hover:bg-muted hover:text-foreground"
+          {!isUser && (
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="ml-auto h-8 w-8 p-0 rounded-full hover:bg-muted-foreground/10"
               onClick={() => copyToClipboard(message.content)}
             >
-              <Copy className="h-3 w-3" />
-            </button>
+              <Copy className="h-3.5 w-3.5" />
+            </Button>
           )}
         </div>
         
         <div className="whitespace-pre-wrap">
           {formatPackageData(message.content)}
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };

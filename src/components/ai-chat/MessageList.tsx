@@ -2,6 +2,7 @@
 import React, { useRef, useEffect } from 'react';
 import { ChatMessage } from './ChatMessage';
 import { Message } from './constants';
+import { motion } from 'framer-motion';
 
 interface MessageListProps {
   messages: Message[];
@@ -19,7 +20,12 @@ export const MessageList: React.FC<MessageListProps> = ({ messages }) => {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto py-4 space-y-4">
+    <motion.div 
+      className="flex-1 overflow-y-auto py-4 space-y-5 bg-card/50 rounded-md"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+    >
       {messages.length === 0 && (
         <div className="h-full flex items-center justify-center">
           <p className="text-muted-foreground text-center text-sm">
@@ -31,6 +37,6 @@ export const MessageList: React.FC<MessageListProps> = ({ messages }) => {
         <ChatMessage key={message.id} message={message} />
       ))}
       <div ref={messagesEndRef} />
-    </div>
+    </motion.div>
   );
 };
