@@ -23,10 +23,12 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
 }) => {
   const navigate = useNavigate();
 
+  // Update the CI Completion click handler to use replace: true to ensure 
+  // it forces a complete navigation rather than just updating the URL
   const handleCICompletionClick = useCallback(() => {
-    // Navigate directly to CI configuration page
     console.log('Navigating to CI Configuration page');
-    navigate('/ci-configuration');
+    // Force a full navigation to ensure the page refreshes
+    navigate('/ci-configuration', { replace: true });
   }, [navigate]);
 
   const handleBlockedPackagesClick = useCallback(() => {
