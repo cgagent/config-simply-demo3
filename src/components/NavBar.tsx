@@ -59,7 +59,7 @@ const NavBar: React.FC<NavBarProps> = ({ className, onHomeLinkClick }) => {
   return (
     <div className={cn(
       "h-screen fixed left-0 top-0 z-50 flex flex-col py-4 border-r border-green-900/30 shadow-sm transition-all duration-300",
-      "bg-gradient-to-b from-[#40be46] to-black",
+      "bg-gradient-to-b from-black via-black to-black",
       expanded ? "w-56" : "w-16",
       className
     )}>
@@ -89,8 +89,8 @@ const NavBar: React.FC<NavBarProps> = ({ className, onHomeLinkClick }) => {
                   className={cn(
                     "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors w-full text-left",
                     active 
-                      ? "bg-green-600 text-white" 
-                      : "text-green-100 hover:bg-green-800/50 hover:text-white"
+                      ? "bg-green-600/50 text-white" 
+                      : "text-green-100/80 hover:bg-green-800/30 hover:text-white"
                   )}
                 >
                   <span>{item.icon}</span>
@@ -105,14 +105,14 @@ const NavBar: React.FC<NavBarProps> = ({ className, onHomeLinkClick }) => {
       <div className="mt-auto px-4">
         <DropdownMenu>
           <DropdownMenuTrigger className="flex items-center gap-2 outline-none w-full">
-            <Avatar className="h-8 w-8 border-2 border-green-600/50">
+            <Avatar className="h-8 w-8 border-2 border-green-600/30">
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>JD</AvatarFallback>
             </Avatar>
             {expanded && (
               <div className="text-left">
                 <p className="text-sm font-medium text-white">John Doe</p>
-                <p className="text-xs text-green-200">Admin</p>
+                <p className="text-xs text-green-200/80">Admin</p>
               </div>
             )}
           </DropdownMenuTrigger>
