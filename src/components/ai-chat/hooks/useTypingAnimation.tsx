@@ -12,9 +12,17 @@ export const useTypingAnimation = ({ messages, typingSpeed = 3 }: UseTypingAnima
   const [isAnimatingResponse, setIsAnimatingResponse] = useState(false);
   const typingTimerRef = useRef<number | null>(null);
   const latestMessageRef = useRef<string | null>(null);
+  const animationInProgressRef = useRef(false);
 
   // Simulate typing effect for AI responses with faster speed
   const simulateTypingResponse = (text: string) => {
+    if (animationInProgressRef.current) {
+      if (typingTimerRef.current) {
+        clearTimeout(typingTimerRef.current);
+      }
+    }
+    
+    animationInProgressRef.current = true;
     setIsAnimatingResponse(true);
     setDisplayedResponse('');
     
@@ -32,6 +40,7 @@ export const useTypingAnimation = ({ messages, typingSpeed = 3 }: UseTypingAnima
         typingTimerRef.current = window.setTimeout(typeNextCharacter, typingSpeed);
       } else {
         setIsAnimatingResponse(false);
+        animationInProgressRef.current = false;
       }
     };
     
@@ -58,6 +67,7 @@ export const useTypingAnimation = ({ messages, typingSpeed = 3 }: UseTypingAnima
       if (typingTimerRef.current) {
         clearTimeout(typingTimerRef.current);
       }
+      animationInProgressRef.current = false;
     };
   }, []);
 

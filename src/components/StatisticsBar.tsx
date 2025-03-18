@@ -24,8 +24,8 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
   const navigate = useNavigate();
 
   const handleCICompletionClick = useCallback(() => {
-    // Navigate to repositories page instead of opening chat
-    navigate('/repositories');
+    // Navigate to CI configuration page instead of repositories
+    navigate('/ci-configuration');
   }, [navigate]);
 
   const handleBlockedPackagesClick = useCallback(() => {

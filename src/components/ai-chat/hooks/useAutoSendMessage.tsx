@@ -16,36 +16,36 @@ export const useAutoSendMessage = ({
   clearShouldSendMessage,
   handleSendMessage
 }: UseAutoSendMessageProps) => {
-  const hasSentRef = useRef(false);
+  const hasAutoSentRef = useRef(false);
   
-  // Reset the flag when input value changes
   useEffect(() => {
-    hasSentRef.current = false;
-  }, [inputValue]);
-  
-  // Handle automatic message sending
-  useEffect(() => {
-    if (!shouldSendMessage || inputValue.trim() === '' || isProcessing || hasSentRef.current) {
-      return;
+    // Only attempt to auto-send when shouldSendMessage is true,
+    // input has value, and we're not already processing
+    if (shouldSendMessage && inputValue && !isProcessing && !hasAutoSentRef.current) {
+      console.log("Auto-sending message:", inputValue);
+      
+      // Set flag to prevent duplicate sends
+      hasAutoSentRef.current = true;
+      
+      // Add a small delay to ensure DOM is ready
+      const timer = setTimeout(() => {
+        handleSendMessage(inputValue);
+        
+        // Clear the flag after a delay to allow for next message
+        setTimeout(() => {
+          if (clearShouldSendMessage) {
+            clearShouldSendMessage();
+          }
+          hasAutoSentRef.current = false;
+        }, 100);
+      }, 100);
+      
+      return () => clearTimeout(timer);
     }
     
-    console.log("Auto-sending message:", inputValue);
-    hasSentRef.current = true;
-    
-    // Add a slight delay to ensure UI is ready
-    const sendTimeoutId = setTimeout(() => {
-      handleSendMessage(inputValue);
-      
-      // Clear the should-send flag after sending
-      if (clearShouldSendMessage) {
-        const clearTimeoutId = setTimeout(() => {
-          clearShouldSendMessage();
-        }, 100);
-        
-        return () => clearTimeout(clearTimeoutId);
-      }
-    }, 200);
-    
-    return () => clearTimeout(sendTimeoutId);
+    // Reset flag when shouldSendMessage becomes false
+    if (!shouldSendMessage) {
+      hasAutoSentRef.current = false;
+    }
   }, [shouldSendMessage, inputValue, isProcessing, clearShouldSendMessage, handleSendMessage]);
 };

@@ -12,6 +12,7 @@ const Home: React.FC = () => {
   const location = useLocation();
   const { toast } = useToast();
   const initialRender = useRef(true);
+  const chatQueryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   // Sample data for statistics - in a real app, this would come from an API or state
   const statsData = {
@@ -44,18 +45,38 @@ const Home: React.FC = () => {
   const handleChatQuery = useCallback((query: string) => {
     console.log("Chat query initiated:", query);
     
-    // Activate chat and prepare to send the query
+    // Clear any existing timeout
+    if (chatQueryTimeoutRef.current) {
+      clearTimeout(chatQueryTimeoutRef.current);
+    }
+    
+    // Activate chat
     setIsChatActive(true);
     
+    // Reset any existing state
+    setShouldSendMessage(false);
+    setChatInputValue('');
+    
     // Sequential operations with timeouts to ensure proper state updates
-    setTimeout(() => {
+    chatQueryTimeoutRef.current = setTimeout(() => {
+      // First set the input value
       setChatInputValue(query);
       
-      // Set flag to trigger automatic message sending after input is set
-      setTimeout(() => {
+      // Then trigger the send after a short delay
+      chatQueryTimeoutRef.current = setTimeout(() => {
         setShouldSendMessage(true);
-      }, 50);
-    }, 50);
+      }, 150);
+    }, 150);
+    
+  }, []);
+
+  // Clean up timeouts when component unmounts
+  useEffect(() => {
+    return () => {
+      if (chatQueryTimeoutRef.current) {
+        clearTimeout(chatQueryTimeoutRef.current);
+      }
+    };
   }, []);
 
   // Clear the shouldSendMessage flag after the message has been sent
