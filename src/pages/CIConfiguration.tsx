@@ -1,10 +1,9 @@
 
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import React from 'react';
 import { AIConfigurationChat } from '@/components/ai-configuration';
 
 const CIConfigurationPage: React.FC = () => {
-  const [repositoryName, setRepositoryName] = useState('example-repo');
+  const repositoryName = 'example-repo'; // This could be dynamic based on context
 
   return (
     <div className="container mx-auto py-8">

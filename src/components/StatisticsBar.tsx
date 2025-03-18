@@ -24,7 +24,8 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
   const navigate = useNavigate();
 
   const handleCICompletionClick = useCallback(() => {
-    // Navigate to CI configuration page instead of repositories
+    // Navigate directly to CI configuration page
+    console.log('Navigating to CI Configuration page');
     navigate('/ci-configuration');
   }, [navigate]);
 
