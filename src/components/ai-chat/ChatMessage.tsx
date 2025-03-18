@@ -34,24 +34,29 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
     >
       <motion.div
         className={cn(
-          "flex gap-3 p-4 rounded-lg shadow-sm border",
+          "flex gap-3 p-4 rounded-lg shadow-md border",
           isUser 
-            ? "bg-primary/10 border-primary/20 ml-8 rounded-tr-none" 
-            : "bg-background border-muted-foreground/15 mr-8 rounded-tl-none"
+            ? "bg-ocean-700/95 text-white border-ocean-600 ml-8 rounded-tr-none" 
+            : "bg-card border-border/60 mr-8 rounded-tl-none"
         )}
         whileHover={{ scale: 1.01 }}
         transition={{ duration: 0.2 }}
       >
         <div className={cn(
           "flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center",
-          isUser ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary"
+          isUser ? "bg-ocean-500 text-white" : "bg-primary/10 text-primary"
         )}>
           {isUser ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
         </div>
         
         <div className="flex-1 space-y-2">
           <div className="flex justify-between items-center">
-            <p className="text-sm font-medium">{isUser ? 'You' : 'AI Assistant'}</p>
+            <p className={cn(
+              "text-sm font-medium",
+              isUser ? "text-white" : "text-foreground"
+            )}>
+              {isUser ? 'You' : 'AI Assistant'}
+            </p>
             {!isUser && (
               <Button 
                 variant="ghost" 
@@ -63,7 +68,10 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
               </Button>
             )}
           </div>
-          <div className="prose prose-sm max-w-none text-sm">
+          <div className={cn(
+            "prose prose-sm max-w-none text-sm",
+            isUser ? "prose-invert" : ""
+          )}>
             <ReactMarkdown>{message.content}</ReactMarkdown>
           </div>
         </div>

@@ -6,6 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Message } from './types';
 import { CodeBlock } from './CodeBlock';
 import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 interface MessageItemProps {
   message: Message;
@@ -36,23 +37,30 @@ export const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
       transition={{ duration: 0.3 }}
     >
       <motion.div 
-        className={`max-w-[85%] rounded-lg p-4 shadow-sm border ${
+        className={cn(
+          "max-w-[85%] rounded-lg p-4 shadow-md border",
           isBot 
-            ? 'bg-muted mr-8 border-muted-foreground/20 rounded-tl-none' 
-            : 'bg-primary text-primary-foreground ml-8 border-primary-foreground/20 rounded-tr-none'
-        }`}
+            ? "bg-card border-border/60 mr-8 rounded-tl-none" 
+            : "bg-ocean-700/95 text-white border-ocean-600 ml-8 rounded-tr-none"
+        )}
         whileHover={{ scale: 1.01 }}
         transition={{ duration: 0.2 }}
       >
         <div className="flex items-center mb-2">
-          <div className={`p-1 rounded-full ${isBot ? 'bg-muted-foreground/10' : 'bg-primary-foreground/20'}`}>
+          <div className={cn(
+            "p-1 rounded-full",
+            isBot ? "bg-muted-foreground/10" : "bg-ocean-500/80"
+          )}>
             {isBot ? (
               <Bot className="w-4 h-4 mr-1" />
             ) : (
-              <User className="w-4 h-4 mr-1" />
+              <User className="w-4 h-4 mr-1 text-white" />
             )}
           </div>
-          <span className="text-xs font-medium ml-2">
+          <span className={cn(
+            "text-xs font-medium ml-2",
+            isBot ? "text-foreground" : "text-white"
+          )}>
             {isBot ? 'FlyFrog Assistant' : 'You'}
           </span>
           {isBot && (
@@ -67,7 +75,10 @@ export const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
           )}
         </div>
         
-        <div className="whitespace-pre-wrap">
+        <div className={cn(
+          "whitespace-pre-wrap",
+          !isBot && "text-white"
+        )}>
           {message.content.includes('```') ? (
             <CodeBlock 
               content={message.content} 

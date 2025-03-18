@@ -4,6 +4,7 @@ import { Bot, User, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 export interface Message {
   id: string;
@@ -101,23 +102,30 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
       transition={{ duration: 0.3 }}
     >
       <motion.div 
-        className={`max-w-[85%] rounded-lg p-4 shadow-sm border ${
+        className={cn(
+          "max-w-[85%] rounded-lg p-4 shadow-md border",
           isUser 
-            ? 'bg-primary text-primary-foreground ml-8 border-primary-foreground/20 rounded-tr-none' 
-            : 'bg-muted mr-8 border-muted-foreground/20 rounded-tl-none'
-        }`}
+            ? "bg-ocean-700/95 text-white border-ocean-600 ml-8 rounded-tr-none" 
+            : "bg-card border-border/60 mr-8 rounded-tl-none"
+        )}
         whileHover={{ scale: 1.01 }}
         transition={{ duration: 0.2 }}
       >
         <div className="flex items-center mb-2">
-          <div className={`p-1 rounded-full ${isUser ? 'bg-primary-foreground/20' : 'bg-muted-foreground/10'}`}>
+          <div className={cn(
+            "p-1 rounded-full",
+            isUser ? "bg-ocean-500/80" : "bg-muted-foreground/10"
+          )}>
             {isUser ? (
-              <User className="w-4 h-4" />
+              <User className="w-4 h-4 text-white" />
             ) : (
               <Bot className="w-4 h-4" />
             )}
           </div>
-          <span className="text-xs font-medium ml-2">
+          <span className={cn(
+            "text-xs font-medium ml-2",
+            isUser ? "text-white" : "text-foreground"
+          )}>
             {isUser ? 'You' : 'Assistant'}
           </span>
           {!isUser && (
