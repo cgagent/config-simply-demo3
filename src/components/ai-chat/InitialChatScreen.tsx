@@ -27,7 +27,7 @@ export const InitialChatScreen: React.FC<InitialChatScreenProps> = ({
           <FlyFrogIcon />
         </div>
       </div>
-      <h1 className="text-2xl font-bold text-center mb-3">What do you want to know?</h1>
+      <h1 className="text-2xl font-bold text-center mb-3">What do you want to do?</h1>
       <div className="w-full max-w-xl">
         <ChatInput 
           isProcessing={isProcessing} 
