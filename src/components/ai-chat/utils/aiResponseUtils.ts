@@ -1,4 +1,3 @@
-
 /**
  * Simulate AI response (would be replaced with actual API call)
  */
@@ -12,6 +11,11 @@ export const simulateAIResponse = (query: string): string => {
     containsBlock: lowerQuery.includes('block'),
     exactMatch: lowerQuery === "which packages were blocked in the last two weeks?"
   });
+  
+  // Special case for CI setup query
+  if (lowerQuery.includes('set up my ci') || lowerQuery.includes('set my ci') || lowerQuery.includes('configure ci')) {
+    return "Great! I'm here to help you configure JFrog with your CI workflow. I see that you using GitHub Actions. and i see that you have several package managers in your git repository. Which package managers do you would like to configure?";
+  }
   
   // Special case handling for blocked packages query (placed at the top to give it priority)
   if (

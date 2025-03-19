@@ -34,7 +34,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
       className={`flex ${isBot ? 'justify-start' : 'justify-end'}`}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.5 }}
     >
       <motion.div 
         className={cn(

@@ -1,4 +1,3 @@
-
 import { useToast } from '@/hooks/use-toast';
 import { useCIConfiguration } from './useCIConfiguration';
 import { useSpecialQueries } from './useSpecialQueries';
@@ -41,8 +40,11 @@ export const useMessageHandler = () => {
       // First, check if this is a CI configuration request
       const ciResult = handleCIConfiguration(content);
       if (ciResult.handled) {
-        addBotMessage(ciResult.response);
-        setIsProcessing(false);
+        // Add a 2.5-second delay for CI configuration response
+        setTimeout(() => {
+          addBotMessage(ciResult.response);
+          setIsProcessing(false);
+        }, 2500); // 2.5 seconds delay for "thinking"
         return;
       }
       

@@ -28,7 +28,7 @@ export const MessageList: React.FC<MessageListProps> = ({ messages }) => {
       )}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.5 }}
     >
       {messages.length === 0 && (
         <div className="h-full flex items-center justify-center">

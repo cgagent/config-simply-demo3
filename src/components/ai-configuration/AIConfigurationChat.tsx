@@ -1,23 +1,25 @@
-
 import React from 'react';
 import { MessageList } from './MessageList';
 import { ConfigInputForm } from './ConfigInputForm';
 import { useConfigChat } from './hooks/useConfigChat';
 import { SelectableOptions } from './SelectableOptions';
 import { FlyFrogIcon } from '@/components/ai-chat/FlyFrogIcon';
+import { useNavigate } from 'react-router-dom';
 
 interface AIConfigurationChatProps {
   repositoryName?: string;
 }
 
 const AIConfigurationChat: React.FC<AIConfigurationChatProps> = ({ repositoryName }) => {
+  const navigate = useNavigate();
+  
   const {
     messages,
     isProcessing,
     handleSendMessage,
     options,
     handleSelectOption,
-  } = useConfigChat(repositoryName);
+  } = useConfigChat(repositoryName, (path) => navigate(path));
 
   return (
     <div className="flex flex-col h-[600px] border rounded-lg overflow-hidden">
@@ -31,7 +33,7 @@ const AIConfigurationChat: React.FC<AIConfigurationChatProps> = ({ repositoryNam
       </div>
       
       <div className="flex-1 overflow-y-auto px-4 py-4">
-        <MessageList messages={messages} />
+        <MessageList messages={messages} isProcessing={isProcessing} />
         
         {!isProcessing && options && options.length > 0 && (
           <SelectableOptions 
