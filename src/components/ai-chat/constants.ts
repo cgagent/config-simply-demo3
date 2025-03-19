@@ -5,7 +5,7 @@ export const SUGGESTED_QUERIES = [
     query: "I would like to set up my CI to work with JFrog. Can you set it up for me?"
   },
   {
-    label: "My Packages",
+    label: "My packages",
     query: "What are the most common packages used in my organization in the last 30 days?"
   },
   {
