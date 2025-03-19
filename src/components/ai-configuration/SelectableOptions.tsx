@@ -25,8 +25,8 @@ export const SelectableOptions: React.FC<SelectableOptionsProps> = ({
           className="text-xs rounded-full px-4 hover:bg-primary hover:text-primary-foreground transition-colors flex items-center gap-1"
           onClick={() => onSelectOption(option)}
         >
-          <ArrowUp className="h-3 w-3" />
           {option.label}
+          <ArrowUp className="h-3 w-3" />
         </Button>
       ))}
     </div>

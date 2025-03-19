@@ -20,8 +20,8 @@ export const SuggestedQueries: React.FC<SuggestedQueriesProps> = ({ queries, onS
           className="text-xs rounded-full px-4 hover:bg-primary hover:text-primary-foreground transition-colors flex items-center gap-1"
           onClick={() => onSelectQuery(queryItem.query)}
         >
-          <ArrowUp className="h-3 w-3" />
           {queryItem.label}
+          <ArrowUp className="h-3 w-3" />
         </Button>
       ))}
     </div>

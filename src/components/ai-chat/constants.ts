@@ -15,10 +15,6 @@ export const SUGGESTED_QUERIES = [
   {
     label: "Check vulnerabilities",
     query: "Identify what packages are vulnerable and used in my organization"
-  },
-  {
-    label: "SBOM",
-    query: "Generate an SBOM report from the last 30 days"
   }
 ];
 

@@ -21,8 +21,8 @@ export const SuggestedQueries: React.FC<SuggestedQueriesProps> = ({ queries, onS
             className="text-xs flex items-center gap-1"
             onClick={() => onSelectQuery(query)}
           >
-            <ArrowUp className="h-3 w-3" />
             {query}
+            <ArrowUp className="h-3 w-3" />
           </Button>
         ))}
       </div>
