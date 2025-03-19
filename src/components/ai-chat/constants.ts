@@ -9,7 +9,7 @@ export const SUGGESTED_QUERIES = [
     query: "What are the most common packages used in my organization in the last 30 days?"
   },
   {
-    label: "Package Catalog",
+    label: "Open source packages",
     query: "Can you find a package that handles HTTP requests without critical vulnerabilities?"
   },
   {
