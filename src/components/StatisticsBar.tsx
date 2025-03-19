@@ -64,16 +64,22 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
         custom={0}
       >
         <Card 
-          className="p-4 flex flex-col cursor-pointer transition-all duration-300 border-l-4 border-l-primary rounded-xl overflow-hidden backdrop-blur-sm" 
+          className="p-4 flex flex-col cursor-pointer transition-all duration-300 
+                    border-l-4 border-l-primary rounded-xl overflow-hidden backdrop-blur-sm
+                    bg-white/90 dark:bg-gray-800/80 dark:border-l-primary/90 dark:text-gray-100" 
           onClick={handleCICompletionClick}
         >
           <div className="flex justify-between items-center mb-2">
-            <h3 className="text-sm font-medium text-muted-foreground">CI Completion</h3>
-            <CheckCircle className="h-5 w-5 text-primary" />
+            <h3 className="text-sm font-medium text-muted-foreground dark:text-gray-300">CI Completion</h3>
+            <CheckCircle className="h-5 w-5 text-primary dark:text-primary/90" />
           </div>
-          <p className="text-2xl font-bold mb-2">{ciCompletionPercentage}%</p>
-          <Progress value={ciCompletionPercentage} className="h-2" indicatorClassName="bg-gradient-to-r from-primary/80 to-primary" />
-          <p className="text-xs text-muted-foreground mt-2">Current CI Status</p>
+          <p className="text-2xl font-bold mb-2 dark:text-white">{ciCompletionPercentage}%</p>
+          <Progress 
+            value={ciCompletionPercentage} 
+            className="h-2 dark:bg-gray-700" 
+            indicatorClassName="bg-gradient-to-r from-primary/80 to-primary dark:from-primary/70 dark:to-primary/90" 
+          />
+          <p className="text-xs text-muted-foreground mt-2 dark:text-gray-400">Current CI Status</p>
         </Card>
       </motion.div>
       
@@ -86,15 +92,17 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
         custom={1}
       >
         <Card 
-          className="p-4 flex flex-col cursor-pointer transition-all duration-300 border-l-4 border-l-destructive rounded-xl overflow-hidden backdrop-blur-sm"
+          className="p-4 flex flex-col cursor-pointer transition-all duration-300 
+                   border-l-4 border-l-destructive rounded-xl overflow-hidden backdrop-blur-sm
+                   bg-white/90 dark:bg-gray-800/80 dark:border-l-destructive/90 dark:text-gray-100"
           onClick={handleBlockedPackagesClick}
         >
           <div className="flex justify-between items-center mb-2">
-            <h3 className="text-sm font-medium text-muted-foreground">Blocked Packages</h3>
-            <PackageX className="h-5 w-5 text-destructive" />
+            <h3 className="text-sm font-medium text-muted-foreground dark:text-gray-300">Blocked Packages</h3>
+            <PackageX className="h-5 w-5 text-destructive dark:text-destructive/90" />
           </div>
-          <p className="text-2xl font-bold">{blockedPackages}</p>
-          <p className="text-xs text-muted-foreground mt-2">Last 30 days</p>
+          <p className="text-2xl font-bold dark:text-white">{blockedPackages}</p>
+          <p className="text-xs text-muted-foreground mt-2 dark:text-gray-400">Last 30 days</p>
         </Card>
       </motion.div>
       
@@ -107,15 +115,17 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
         custom={2}
       >
         <Card 
-          className="p-4 flex flex-col cursor-pointer transition-all duration-300 border-l-4 border-l-blue-500 rounded-xl overflow-hidden backdrop-blur-sm"
+          className="p-4 flex flex-col cursor-pointer transition-all duration-300 
+                   border-l-4 border-l-blue-500 rounded-xl overflow-hidden backdrop-blur-sm
+                   bg-white/90 dark:bg-gray-800/80 dark:border-l-blue-500/80 dark:text-gray-100"
           onClick={handleTotalPackagesClick}
         >
           <div className="flex justify-between items-center mb-2">
-            <h3 className="text-sm font-medium text-muted-foreground">Total Packages</h3>
-            <Package className="h-5 w-5 text-blue-500" />
+            <h3 className="text-sm font-medium text-muted-foreground dark:text-gray-300">Total Packages</h3>
+            <Package className="h-5 w-5 text-blue-500 dark:text-blue-400" />
           </div>
-          <p className="text-2xl font-bold">{formatNumber(totalPackages)}</p>
-          <p className="text-xs text-muted-foreground mt-2">Last 30 days</p>
+          <p className="text-2xl font-bold dark:text-white">{formatNumber(totalPackages)}</p>
+          <p className="text-xs text-muted-foreground mt-2 dark:text-gray-400">Last 30 days</p>
         </Card>
       </motion.div>
       
@@ -128,15 +138,17 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
         custom={3}
       >
         <Card 
-          className="p-4 flex flex-col cursor-pointer transition-all duration-300 border-l-4 border-l-amber-500 rounded-xl overflow-hidden backdrop-blur-sm"
+          className="p-4 flex flex-col cursor-pointer transition-all duration-300 
+                   border-l-4 border-l-amber-500 rounded-xl overflow-hidden backdrop-blur-sm
+                   bg-white/90 dark:bg-gray-800/80 dark:border-l-amber-500/80 dark:text-gray-100"
           onClick={handleDataConsumptionClick}
         >
           <div className="flex justify-between items-center mb-2">
-            <h3 className="text-sm font-medium text-muted-foreground">Data Consumption</h3>
-            <Database className="h-5 w-5 text-amber-500" />
+            <h3 className="text-sm font-medium text-muted-foreground dark:text-gray-300">Data Consumption</h3>
+            <Database className="h-5 w-5 text-amber-500 dark:text-amber-400" />
           </div>
-          <p className="text-2xl font-bold">{formatNumber(dataConsumption)} MB</p>
-          <p className="text-xs text-muted-foreground mt-2">Last 30 days</p>
+          <p className="text-2xl font-bold dark:text-white">{formatNumber(dataConsumption)} MB</p>
+          <p className="text-xs text-muted-foreground mt-2 dark:text-gray-400">Last 30 days</p>
         </Card>
       </motion.div>
     </div>

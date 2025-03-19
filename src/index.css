@@ -120,6 +120,19 @@
     animation: shine 6s infinite;
   }
   
+  /* Add chat-specific styles for better dark mode */
+  .chat-message-container {
+    @apply bg-gray-50 dark:bg-gray-850 dark:border-gray-700;
+  }
+  
+  .chat-card {
+    @apply bg-white dark:bg-gray-800/80 backdrop-filter backdrop-blur-sm dark:border-gray-700;
+  }
+  
+  .stats-card {
+    @apply bg-white dark:bg-gray-800/90 hover:shadow-md dark:hover:shadow-gray-900/30 transition-all;
+  }
+  
   @keyframes shine {
     0% {
       transform: rotate(45deg) translate(0, -100%);

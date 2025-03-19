@@ -70,6 +70,23 @@ export default {
 					900: '#19488f',
 					950: '#142d58',
 				},
+				// Add more gray variations for better dark mode contrast
+				gray: {
+					50: '#f9fafb',
+					100: '#f3f4f6',
+					150: '#ebedf0',
+					200: '#e5e7eb',
+					300: '#d1d5db',
+					400: '#9ca3af',
+					500: '#6b7280',
+					600: '#4b5563',
+					700: '#374151',
+					750: '#2d3748',
+					800: '#1f2937',
+					850: '#18212f',
+					900: '#111827',
+					950: '#030712',
+				},
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
