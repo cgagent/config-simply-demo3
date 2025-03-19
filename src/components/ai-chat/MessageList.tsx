@@ -24,8 +24,8 @@ export const MessageList: React.FC<MessageListProps> = ({ messages }) => {
     <motion.div 
       className={cn(
         "flex-1 overflow-y-auto py-4 space-y-5 rounded-md",
-        "bg-gradient-to-b from-gray-100/90 to-white border border-border/50 shadow-md",
-        "dark:from-gray-850 dark:to-gray-900 dark:border-gray-800"
+        "bg-gradient-to-b from-gray-100/95 to-white/95 border border-border/50 shadow-md",
+        "dark:from-gray-850/95 dark:to-gray-900/95 dark:border-gray-800"
       )}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}

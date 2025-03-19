@@ -43,7 +43,7 @@ export const ConfigInputForm: React.FC<ConfigInputFormProps> = ({
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Type your configuration query..."
-          className="resize-none min-h-[60px] bg-muted/30 focus:bg-background transition-colors duration-200"
+          className="resize-none min-h-[60px] bg-gray-100 dark:bg-gray-850 transition-colors duration-200"
           disabled={isProcessing}
         />
         <motion.div whileTap={{ scale: 0.95 }}>

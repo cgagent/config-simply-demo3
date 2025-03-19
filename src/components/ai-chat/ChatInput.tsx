@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -32,18 +31,15 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     "show you what are the most common packages in your organization in the last...",
     "find a package that does...",
     "identify what packages are vulnerable and used in your organization",
-    "check what was your data consumption in the last...",
-    "generate an SBOM report from the last..."
+    "check what was your data consumption in the last..."
   ];
   
-  // Update local input when value prop changes
   useEffect(() => {
     if (value !== input) {
       setInput(value);
     }
   }, [value]);
   
-  // Effect for textarea auto-resize
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
@@ -51,7 +47,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     }
   }, [input]);
   
-  // Effect for animated typing/deleting placeholders
   useEffect(() => {
     if (!isInitialState) return;
     
@@ -61,10 +56,9 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       if (currentSuggestion.length < rotatingPlaceholders[currentIndex].length) {
         const timer = setTimeout(() => {
           setCurrentSuggestion(rotatingPlaceholders[currentIndex].substring(0, currentSuggestion.length + 1));
-        }, 30); // Typing speed reduced from 80ms to 30ms
+        }, 30);
         return () => clearTimeout(timer);
       } else {
-        // Done typing, wait before starting to delete - reduced from 2000ms to 1000ms
         const timer = setTimeout(() => {
           setIsTyping(false);
         }, 1000);
@@ -74,10 +68,9 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       if (currentSuggestion.length > 0) {
         const timer = setTimeout(() => {
           setCurrentSuggestion(currentSuggestion.substring(0, currentSuggestion.length - 1));
-        }, 20); // Deleting speed reduced from 50ms to 20ms
+        }, 20);
         return () => clearTimeout(timer);
       } else {
-        // Done deleting, move to next suggestion and start typing again
         const nextIndex = (currentIndex + 1) % rotatingPlaceholders.length;
         setCurrentIndex(nextIndex);
         setIsTyping(true);
@@ -90,7 +83,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     if (!input.trim()) return;
     onSendMessage(input);
     setInput('');
-    // Update parent's state if setValue is provided
     if (setValue) {
       setValue('');
     }
@@ -106,7 +98,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
     setInput(newValue);
-    // Update parent's state if setValue is provided
     if (setValue) {
       setValue(newValue);
     }
@@ -125,7 +116,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         disabled={isProcessing}
-        className={`pr-12 resize-none overflow-hidden min-h-[56px] font-normal ${isInitialState ? 'text-base' : 'text-sm'}`}
+        className={`pr-12 resize-none overflow-hidden min-h-[56px] font-normal bg-gray-100 dark:bg-gray-850 ${isInitialState ? 'text-base' : 'text-sm'}`}
         rows={1}
       />
       <Button

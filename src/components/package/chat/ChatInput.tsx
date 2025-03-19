@@ -33,7 +33,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ isProcessing, onSendMessag
         onKeyDown={handleKeyDown}
         placeholder="Ask me anything..."
         disabled={isProcessing}
-        className="flex-1"
+        className="flex-1 bg-gray-100 dark:bg-gray-850"
       />
       <Button 
         onClick={handleSendMessage} 
