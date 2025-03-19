@@ -4,14 +4,14 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { 
   Home, 
-  ServerCog, 
+  GitMerge, 
   Users,
   MessageSquare
 } from 'lucide-react';
 
 const navItems = [
   { name: 'Home', path: '/home', icon: <Home className="w-5 h-5" /> },
-  { name: 'CI', path: '/repositories', icon: <ServerCog className="w-5 h-5" /> },
+  { name: 'CI', path: '/repositories', icon: <GitMerge className="w-5 h-5" /> },
   { name: 'User Management', path: '/users', icon: <Users className="w-5 h-5" /> },
 ];
 
