@@ -29,7 +29,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   const rotatingPlaceholders = [
     "set up your CI with JFrog",
     "show you what are the most common packages in your organization in the last...",
-    "find a package that does...",
+    "search for open source packages and CVEs over 9 million worldwide",
     "identify what packages are vulnerable and used in your organization",
     "check what was your data consumption in the last..."
   ];
