@@ -8,7 +8,7 @@ export const useConfigChat = (repositoryName?: string) => {
     {
       id: '1',
       role: 'bot',
-      content: `Hi! I'm your FlyFrog CI configuration assistant. I can help you set up CI integration for ${repositoryName || 'your repository'}. What CI server are you using?`
+      content: `Hi! I'm your JFrog CI configuration assistant. I can help you set up CI integration for ${repositoryName || 'your repository'}. What CI server are you using?`
     }
   ]);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -50,7 +50,7 @@ export const useConfigChat = (repositoryName?: string) => {
       
       // Very simple rule-based responses for demo purposes
       if (/github|actions/i.test(content)) {
-        response = `Great! GitHub Actions is a popular choice. For your ${repositoryName || 'repository'}, you'll need to add the FlyFrog configuration to your workflow file. Which package managers do you use?`;
+        response = `Great! GitHub Actions is a popular choice. For your ${repositoryName || 'repository'}, you'll need to add the JFrog configuration to your workflow file. Which package managers do you use?`;
         newOptions = [
           { id: 'npm', label: 'npm / Node.js', value: 'I use npm and Node.js' },
           { id: 'docker', label: 'Docker', value: 'I use Docker' },
@@ -80,8 +80,8 @@ export const useConfigChat = (repositoryName?: string) => {
         response = `I'll add npm configuration to your setup. Here's a snippet you can add to your workflow file:
         
 \`\`\`yaml
-- name: Setup FlyFrog
-  uses: jfrog/setup-flyfrog@v1
+- name: Setup JFrog
+  uses: jfrog/setup-jfrog@v1
   with:
     subdomain: acme
 
@@ -99,8 +99,8 @@ Would you like to add any other package managers?`;
         response = `I'll add Docker configuration to your setup. Here's what you'll need:
         
 \`\`\`yaml
-- name: Setup FlyFrog
-  uses: jfrog/setup-flyfrog@v1
+- name: Setup JFrog
+  uses: jfrog/setup-jfrog@v1
   with:
     subdomain: acme
 
@@ -130,8 +130,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup FlyFrog
-        uses: jfrog/setup-flyfrog@v1
+      - name: Setup JFrog
+        uses: jfrog/setup-jfrog@v1
         with:
           subdomain: acme
           
@@ -141,13 +141,13 @@ jobs:
       # Other npm build steps
 \`\`\`
 
-Once you add this file to your repository and merge it to your main branch, FlyFrog will be connected with your workflow.`;
+Once you add this file to your repository and merge it to your main branch, JFrog will be connected with your workflow.`;
         newOptions = [
           { id: 'thanks', label: 'Thanks!', value: 'Thanks, this is exactly what I needed!' },
           { id: 'question', label: 'I have a question', value: 'I have a question about this configuration' }
         ];
       } else {
-        response = `I understand you're asking about "${content}". To configure FlyFrog with your CI workflow, I need to know which CI server you're using and which package managers your project uses. Could you provide more details?`;
+        response = `I understand you're asking about "${content}". To configure JFrog with your CI workflow, I need to know which CI server you're using and which package managers your project uses. Could you provide more details?`;
         newOptions = [
           { id: 'github', label: 'GitHub Actions', value: 'I use GitHub Actions' },
           { id: 'circleci', label: 'Circle CI', value: 'I use Circle CI' },

@@ -61,7 +61,7 @@ export const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
             "text-xs font-medium ml-2",
             isBot ? "text-foreground" : "text-white"
           )}>
-            {isBot ? 'FlyFrog Assistant' : 'You'}
+            {isBot ? 'JFrog Assistant' : 'You'}
           </span>
           {isBot && (
             <Button 

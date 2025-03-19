@@ -16,7 +16,7 @@ export const useCIConfiguration = () => {
       setRepository({
         id: 'sample-repo-1',
         name: 'sample-repository',
-        owner: 'flyfrog',
+        owner: 'jfrog',
         isConfigured: false,
         language: 'JavaScript'
       });

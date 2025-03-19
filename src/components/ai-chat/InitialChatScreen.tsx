@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { FlyFrogIcon } from './FlyFrogIcon';
 import { ChatInput } from './ChatInput';

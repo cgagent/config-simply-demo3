@@ -22,8 +22,8 @@ const SetupInstructions: React.FC<SetupInstructionsProps> = ({
   onPreviousStep
 }) => {
   const generateSetupSnippet = () => {
-    return `- name: Setup FlyFrog
-  uses: jfrog/setup-flyfrog@v1
+    return `- name: Setup JFrog
+  uses: jfrog/setup-jfrog@v1
   with:
     subdomain: acme`;
   };
@@ -43,8 +43,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup FlyFrog
-        uses: jfrog/setup-flyfrog@v1
+      - name: Setup JFrog
+        uses: jfrog/setup-jfrog@v1
         with:
           subdomain: acme
 ${selectedPackageTypes.includes('npm') ? 

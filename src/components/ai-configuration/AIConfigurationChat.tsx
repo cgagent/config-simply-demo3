@@ -26,7 +26,7 @@ const AIConfigurationChat: React.FC<AIConfigurationChatProps> = ({ repositoryNam
           <div className="w-8 h-8 mr-2 flex items-center justify-center">
             <FlyFrogIcon />
           </div>
-          FlyFrog AI Configuration Assistant
+          JFrog AI Configuration Assistant
         </h3>
       </div>
       
