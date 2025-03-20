@@ -77,7 +77,7 @@ const RepositoryList: React.FC<RepositoryListProps> = ({
               <RepositoryItem 
                 key={repo.id}
                 repository={repo}
-                onClick={handleConfigureClick}
+                onClick={() => console.log(repo)}
                 onConfigureClick={handleConfigureClick}
               />
             ))
