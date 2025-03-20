@@ -9,7 +9,7 @@ type NavigationCallback = (path: string) => void;
 type MergeSuccessCallback = (repoName: string, packageType: string) => void;
 
 export const useConfigChat = (
-  repositoryName?: string, 
+  repositoryName?: string,
   onNavigate?: NavigationCallback,
   onMergeSuccess?: MergeSuccessCallback
 ) => {
@@ -36,20 +36,20 @@ export const useConfigChat = (
       role: 'user',
       content: option.value
     };
-    
+
     // Handle special actions like navigation
     if (option.id === 'view_diff') {
       setMessages(prev => [...prev, userMessage]);
-      
+
       // Add a response acknowledging the navigation
       const botResponse: Message = {
         id: (Date.now() + 1).toString(),
         role: 'bot',
         content: 'Taking you to the CI Configuration section to see the detailed diff view...'
       };
-      
+
       setMessages(prev => [...prev, botResponse]);
-      
+
       // Navigate to CI Configuration section
       if (onNavigate) {
         setTimeout(() => {
@@ -62,13 +62,13 @@ export const useConfigChat = (
           variant: "destructive"
         });
       }
-      
+
       return;
     }
-    
+
     setMessages(prev => [...prev, userMessage]);
     setIsProcessing(true);
-    
+
     // If this is an npm configuration request, add a "working on it" message
     if (option.id === 'npm') {
       // Add a brief delay before showing the "working on it" message
@@ -80,7 +80,7 @@ export const useConfigChat = (
             content: 'Working on your npm configuration... Creating a pull request for your GitHub Actions workflow... Scanning your repository structure... This will take a moment.'
           };
           setMessages(prev => [...prev, workingMessage]);
-          
+
           // Add a second update message halfway through
           setTimeout(() => {
             const updateMessage: Message = {
@@ -93,7 +93,7 @@ export const useConfigChat = (
         }
       }, 300);
     }
-    
+
     // If this is a merge PR request, add merge-specific messages
     else if (option.id === 'Merge PR') {
       setTimeout(() => {
@@ -103,7 +103,7 @@ export const useConfigChat = (
           content: 'Merging the pull request to your main branch... Validating workflow syntax...'
         };
         setMessages(prev => [...prev, mergingMessage]);
-        
+
         // Add a second update message
         setTimeout(() => {
           const updateMessage: Message = {
@@ -115,7 +115,7 @@ export const useConfigChat = (
         }, 2000);
       }, 300);
     }
-    
+
     // If this is an abort PR request, add abort confirmation message
     else if (option.id === 'Abort PR') {
       setTimeout(() => {
@@ -127,7 +127,7 @@ export const useConfigChat = (
         setMessages(prev => [...prev, abortingMessage]);
       }, 300);
     }
-    
+
     // Process the selected option
     processMessage(option.value);
   };
@@ -140,7 +140,7 @@ export const useConfigChat = (
 
   const generateNpmWebAppSnippet = () => {
     const repoName = repositoryName || 'your-webapp';
-    
+
     return `name: NPM Web App CI
 
 on:
@@ -187,7 +187,7 @@ jobs:
 
   const generateNpmWebAppWithJFrogSnippet = () => {
     const repoName = repositoryName || 'your-webapp';
-    
+
     return `name: NPM Web App CI
 
 on:
@@ -204,16 +204,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         
-      - name: Setup JFrog
-        uses: jfrog/setup-jfrog@v1
-        with:
-          subdomain: acme
-
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
           cache: 'npm'
+
+      - name: Setup JFrog
+        uses: jfrog/setup-jfrog@v1
+        with:
+          subdomain: acme
 
       - name: Install dependencies
         run: npm ci
@@ -224,17 +224,8 @@ jobs:
       - name: Build application
         run: npm run build
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: \${repoName}-build
-          path: build/
-
-      - name: Deploy to staging
-        if: github.event_name != 'pull_request'
-        run: |
-          echo "Deploying to staging environment"
-          # Add your deployment commands here`;
+      - name: publish npm package
+        run: npm publish`;
   };
 
   const processMessage = (messageContent: string) => {
@@ -258,27 +249,27 @@ Your CI workflow is now fully integrated with JFrog!`;
           role: 'bot',
           content: successResponse
         };
-        
+
         setMessages(prev => [...prev, botResponse]);
-        
+
         // Update options to show what's next
         setOptions([
           { id: 'docker', label: 'Configure Docker', value: 'I also want to configure Docker' },
           { id: 'view_diff', label: 'View in CI Configuration', value: 'I want to see the CI Configuration' },
           { id: 'done', label: 'That\'s all I need', value: 'Thanks, that\'s all I need for now' }
         ]);
-        
+
         setIsProcessing(false);
-        
+
         // Call onMergeSuccess callback if provided
         if (onMergeSuccess && repositoryName) {
           onMergeSuccess(repositoryName, 'npm');
         }
       }, 4000);
-      
+
       return;
     }
-    
+
     // Check for abort PR requests
     if (messageContent.match(/I want to abort the pull request/i)) {
       // Use a 2-second delay for the abort confirmation
@@ -294,35 +285,35 @@ Would you like to try a different configuration instead?`;
           role: 'bot',
           content: abortResponse
         };
-        
+
         setMessages(prev => [...prev, botResponse]);
-        
+
         // Update options to show alternatives
         setOptions([
           { id: 'npm', label: 'Try npm again', value: "Let's try configuring npm again" },
           { id: 'docker', label: 'Configure Docker', value: 'I want to configure Docker instead' },
           { id: 'done', label: 'Cancel', value: 'I want to cancel the configuration' }
         ]);
-        
+
         setIsProcessing(false);
       }, 2000);
-      
+
       return;
     }
-    
+
     // Check specifically for npm setup requests
     if (messageContent.match(/Great! Let\'s configure your npm package manager/i)) {
       const originalWorkflow = generateNpmWebAppSnippet();
       const modifiedWorkflow = generateNpmWebAppWithJFrogSnippet();
-      
+
       // Create diff by comparing original and modified workflows
       const original = originalWorkflow.split('\n');
       const modified = modifiedWorkflow.split('\n');
-      
+
       // Find the line index where JFrog setup is added
       const jfrogStartIndex = modified.findIndex(line => line.includes('Setup JFrog'));
       let jfrogEndIndex = jfrogStartIndex;
-      
+
       // Find the end of the JFrog block (4 lines: name, uses, with, subdomain)
       if (jfrogStartIndex !== -1) {
         for (let i = jfrogStartIndex + 1; i < modified.length; i++) {
@@ -330,10 +321,10 @@ Would you like to try a different configuration instead?`;
           jfrogEndIndex = i;
         }
       }
-      
+
       // Create the diff output
       let diffOutput = '';
-      
+
       modified.forEach((line, index) => {
         // If this is part of the JFrog setup block, prefix with +
         if (index >= jfrogStartIndex && index <= jfrogEndIndex) {
@@ -342,7 +333,7 @@ Would you like to try a different configuration instead?`;
           diffOutput += `  ${line}\n`;
         }
       });
-      
+
       // Use a longer delay to ensure loading indicator shows
       setTimeout(() => {
         // Response content with a diff view
@@ -362,33 +353,33 @@ You can see a more detailed diff visualization in the CI Configuration section.`
           role: 'bot',
           content: responseContent
         };
-        
+
         setMessages(prev => [...prev, botResponse]);
-        
+
         // Update options based on the response
         setOptions([
           { id: 'Merge PR', label: 'Merge PR', value: 'I want to merge the pull request' },
           { id: 'Abort PR', label: 'Abort PR', value: 'I want to abort the pull request' },
         ]);
-        
+
         setIsProcessing(false);
       }, 8000);
-      
+
       return;
     }
 
     // Determine if this is a CI configuration related message
     const isCIConfigMessage = /github|actions|circleci|jenkins|gitlab|azure|ci|pipeline/i.test(messageContent);
-    
+
     // Use longer delay (2.5s) for CI config messages, standard delay (1.5s) for others
     const delay = isCIConfigMessage ? 2500 : 1500;
-    
+
     // Simulate AI processing with setTimeout
     setTimeout(() => {
       try {
         let response = '';
         let newOptions: ChatOption[] = [];
-        
+
         // Very simple rule-based responses for demo purposes
         if (/github|actions/i.test(messageContent)) {
           response = `Great! GitHub Actions is a popular choice. For your ${repositoryName || 'repository'}, you'll need to add the JFrog configuration to your workflow file. Which package managers do you use?`;
@@ -504,15 +495,15 @@ This workflow handles both npm and Docker configurations with JFrog. You'll need
           // Create enhanced response with diff visualization
           const originalWorkflow = generateNpmWebAppSnippet();
           const modifiedWorkflow = generateNpmWebAppWithJFrogSnippet();
-          
+
           // Create diff by comparing original and modified workflows
           const original = originalWorkflow.split('\n');
           const modified = modifiedWorkflow.split('\n');
-          
+
           // Find the line index where JFrog setup is added
           const jfrogStartIndex = modified.findIndex(line => line.includes('Setup JFrog'));
           let jfrogEndIndex = jfrogStartIndex;
-          
+
           // Find the end of the JFrog block (4 lines: name, uses, with, subdomain)
           if (jfrogStartIndex !== -1) {
             for (let i = jfrogStartIndex + 1; i < modified.length; i++) {
@@ -520,10 +511,10 @@ This workflow handles both npm and Docker configurations with JFrog. You'll need
               jfrogEndIndex = i;
             }
           }
-          
+
           // Create the diff output
           let diffOutput = '';
-          
+
           modified.forEach((line, index) => {
             // If this is part of the JFrog setup block, prefix with +
             if (index >= jfrogStartIndex && index <= jfrogEndIndex) {
@@ -532,7 +523,7 @@ This workflow handles both npm and Docker configurations with JFrog. You'll need
               diffOutput += `  ${line}\n`;
             }
           });
-          
+
           // Use setTimeout to ensure loading indicator shows
           const npmResponse = `I'll add npm configuration to your setup. Here's what your workflow file will look like:
 
@@ -549,7 +540,7 @@ You can see a more detailed diff visualization in the CI Configuration section.`
             { id: 'docker', label: 'Add Docker', value: 'I also use Docker' },
             { id: 'done', label: 'No, I\'m done', value: 'No, that\'s all I need' }
           ];
-          
+
           // Add a separate delay for npm handling within the general case
           setTimeout(() => {
             const botResponse: Message = {
@@ -557,12 +548,12 @@ You can see a more detailed diff visualization in the CI Configuration section.`
               role: 'bot',
               content: npmResponse
             };
-            
+
             setMessages(prev => [...prev, botResponse]);
             setOptions(npmOptions);
             setIsProcessing(false);
           }, 8000);
-          
+
           // Skip the rest of the processing
           return;
         } else {
@@ -573,7 +564,7 @@ You can see a more detailed diff visualization in the CI Configuration section.`
             { id: 'maven', label: 'Jenkins', value: 'I use Jenkins with Maven' }
           ];
         }
-         
+
         // Add bot response
         if (response) {
           const botResponse: Message = {
@@ -581,25 +572,25 @@ You can see a more detailed diff visualization in the CI Configuration section.`
             role: 'bot',
             content: response
           };
-          
+
           setMessages(prev => [...prev, botResponse]);
         }
-        
+
         // Update options if needed
         if (newOptions.length > 0) {
           setOptions(newOptions);
         }
-        
+
         setIsProcessing(false);
       } catch (error) {
         console.error('Error processing message:', error);
-        
+
         const botResponse: Message = {
           id: Date.now().toString(),
           role: 'bot',
           content: 'Sorry, I encountered an error while processing your request. Please try again.'
         };
-        
+
         setMessages(prev => [...prev, botResponse]);
         setIsProcessing(false);
       }
