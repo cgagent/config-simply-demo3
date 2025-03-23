@@ -60,7 +60,13 @@ const MainLayout = () => {
 const App = () => {
   // Set dark mode as default
   useEffect(() => {
+    // First add dark mode class immediately
     document.documentElement.classList.add('dark');
+    
+    // Then add transitions after a small delay to prevent initial transition
+    setTimeout(() => {
+      document.documentElement.classList.add('init-transitions');
+    },100);
   }, []);
 
   return (

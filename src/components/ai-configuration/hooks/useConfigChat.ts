@@ -17,7 +17,14 @@ export const useConfigChat = (
     {
       id: '1',
       role: 'bot',
-      content: `Great! I'm here to help you configure JFrog with your CI workflow. I see that you using GitHub Actions. and i see that you have several package managers in your git repository. Which package managers do you would like to configure?`
+      content: `Set up your CI workflow with JFrog so your packages will be:
+
+⬇️  Downloaded from JFrog
+⬆️  Published to JFrog
+🔍  Scanned for security vulnerabilities
+
+I've noticed that you use GitHub Actions and have several package managers in your Git repository. 
+Let's select the package managers you would like to configure from the list below:`
     }
   ]);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -39,7 +46,7 @@ export const useConfigChat = (
     // Use the selected option as the user's message
     const userMessage: Message = {
       id: Date.now().toString(),
-      role: 'user',
+      role: 'bot',
       content: option.value
     };
 
@@ -81,33 +88,39 @@ export const useConfigChat = (
           const workingMessage: Message = {
             id: (Date.now() + 1).toString(),
             role: 'bot',
-            content: 'Working on your npm configuration... Creating a pull request for your GitHub Actions workflow... Scanning your repository structure... This will take a moment.'
+            content: 'Scanning your git repository structure....'
           };
           setMessages(prev => [...prev, workingMessage]);
-
-          // Add a second update message halfway through
-          setTimeout(() => {
-            const updateMessage: Message = {
-              id: (Date.now() + 2).toString(),
-              role: 'bot',
-              content: 'Almost there! Finalizing the JFrog integration in your workflow file...'
-            };
-            setMessages(prev => [...prev, updateMessage]);
-          }, 4000);
         }
       }, 300);
+
+      setTimeout(() => {
+        setIsProcessing(true);
+        if (option.value.includes("Let's configure your npm")) {
+          const workflowMessage: Message = {
+            id: (Date.now() + 1).toString(),
+            role: 'bot',
+            content: 'Validating your workflow configuration....'
+          };
+          setMessages(prev => [...prev, workflowMessage]);
+        }
+      }, 1500);
+      setIsProcessing(true);
+      setTimeout(() => {
+      
+          const prMessage: Message = {
+            id: (Date.now() + 1).toString(),
+            role: 'bot',
+            content: 'Creating a pull request for your GitHub Actions workflow....'
+          };
+          setMessages(prev => [...prev, prMessage]); 
+      }, 5000);
+      
     }
 
     // If this is a merge PR request, add merge-specific messages
     else if (option.id === 'Merge PR') {
-      setTimeout(() => {
-        const mergingMessage: Message = {
-          id: (Date.now() + 1).toString(),
-          role: 'bot',
-          content: 'Merging the pull request to your main branch... Validating workflow syntax...'
-        };
-        setMessages(prev => [...prev, mergingMessage]);
-
+   
         // Add a second update message
         setTimeout(() => {
           const updateMessage: Message = {
@@ -117,7 +130,6 @@ export const useConfigChat = (
           };
           setMessages(prev => [...prev, updateMessage]);
         }, 2000);
-      }, 300);
     }
 
     // If this is an abort PR request, add abort confirmation message
@@ -129,7 +141,7 @@ export const useConfigChat = (
           content: 'Canceling the pull request...'
         };
         setMessages(prev => [...prev, abortingMessage]);
-      }, 300);
+      }, 1500);
     }
 
     // Process the selected option
@@ -234,15 +246,15 @@ jobs:
 
   const processMessage = (messageContent: string) => {
     // Check for merge PR requests
-    if (messageContent.match(/I want to merge the pull request/i)) {
+    if (messageContent.match(/Merging the pull request to your main branch/i)) {
       // Use a 4-second delay for the merge confirmation
       setTimeout(() => {
         // Success response after "merging" the PR
-        const successResponse = `Congratulations! 🎉 The pull request has been successfully merged. Your workflow is now configured with JFrog Artifactory 🐸
+        const successResponse = `Congratulations! 🎉 The pull request has been successfully merged. Your workflow is now configured with JFrog 🐸
 
 Your npm packages will now be:
-✅ Resolved from your JFrog Artifactory instance
-✅ Published to your JFrog Artifactory instance
+✅ Downloaded from JFrog 
+✅ Published to your JFrog
 ✅ Scanned for security vulnerabilities
 
 Your CI workflow is now fully integrated with JFrog!`;
@@ -341,15 +353,13 @@ Would you like to try a different configuration instead?`;
       // Use a longer delay to ensure loading indicator shows
       setTimeout(() => {
         // Response content with a diff view
-        const responseContent = `Great news! I've created a pull request on your GitHub repository with the JFrog configuration for npm. You can review the changes below:
+        const responseContent = `Great! I have created a pull request on your GitHub repository with the JFrog configuration for npm.
+You can review the changes below:
 
 \`\`\`diff
 ${diffOutput}
 \`\`\`
-
-The green lines show the JFrog configuration that you need to add to your workflow file.
-
-You can see a more detailed diff visualization in the CI Configuration section.`;
+You can review the changes on GitHub, or simply merge the pull request directly from this chat.`;
 
         // Response with the diff view
         const botResponse: Message = {
@@ -363,12 +373,12 @@ You can see a more detailed diff visualization in the CI Configuration section.`
         // Update options based on the response
         setOptions([
           { id: 'Check on GitHub', label: 'Check on GitHub', value: 'I want to check on GitHub' },
-          { id: 'Merge PR', label: 'Merge PR', value: 'I want to merge the pull request' },
+          { id: 'Merge PR', label: 'Merge PR', value: 'Merging the pull request to your main branch...' },
           { id: 'Abort PR', label: 'Abort PR', value: 'I want to abort the pull request' },
         ]);
 
         setIsProcessing(false);
-      }, 5000);
+      }, 9000);
 
       return;
     }

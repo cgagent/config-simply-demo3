@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { CheckCircle, Package, PackageX, Database } from 'lucide-react';
+import { CheckCircle, Package, PackageX, Database, MonitorDot } from 'lucide-react';
 import { formatNumber } from '@/lib/formatters';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -103,11 +103,11 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
         >
           <Card className="space-card p-6 h-full flex flex-col justify-between backdrop-blur-sm">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-medium text-blue-100/80">Blocked Packages</h3>
+              <h3 className="text-sm font-medium text-blue-100/80">Prevented Packages</h3>
               <PackageX className="h-5 w-5 text-red-400" />
             </div>
             <div>
-              <span className="text-xl font-semibold text-white space-glow">{blockedPackages}</span>
+              <span className="text-xl font-semibold text-white space-glow">{blockedPackages} / 1010</span>
               <p className="text-xs text-blue-200/60 mt-2">
                 Packages blocked due to security vulnerabilities
               </p>
@@ -127,11 +127,15 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
         >
           <Card className="space-card p-6 h-full flex flex-col justify-between backdrop-blur-sm">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-medium text-blue-100/80">Total Packages</h3>
+              <h3 className="text-sm font-medium text-blue-100/80">My Packages</h3>
               <Package className="h-5 w-5 text-blue-400" />
             </div>
             <div>
-              <span className="text-xl font-semibold text-white space-glow">{formatNumber(totalPackages)}</span>
+            <span className="text-sm font-semibold text-white space-glow"> <img className="w-20px" src="/lovable-uploads/docker.png" className="w-4 h-4 inline-block mr-2"></img>  {formatNumber(20)}</span>
+            <br></br>
+            <span className="text-sm font-semibold text-white space-glow"> <img className="w-20px" src="/lovable-uploads/maven.png" className="w-4 h-4 inline-block mr-2"></img>  {formatNumber(14)}</span>
+            <br></br>
+            <span className="text-sm font-semibold text-white space-glow"> <img src="/lovable-uploads/npm.png" className="w-4 h-4 inline-block mr-2"></img>  {formatNumber(120)}</span>
               <p className="text-xs text-blue-200/60 mt-2">
                 Total packages in your repositories
               </p>
@@ -151,13 +155,13 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
         >
           <Card className="space-card p-6 h-full flex flex-col justify-between backdrop-blur-sm">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-medium text-blue-100/80">Data Consumption</h3>
-              <Database className="h-5 w-5 text-blue-400" />
+              <h3 className="text-sm font-medium text-blue-100/80">Developers</h3>
+              <MonitorDot className="h-5 w-5 text-blue-400" />
             </div>
             <div>
-              <span className="text-xl font-semibold text-white space-glow">{dataConsumption} GB</span>
+              <span className="text-xl font-semibold text-white space-glow">21 / 30</span>
               <p className="text-xs text-blue-200/60 mt-2">
-                Used storage in the last 30 days
+                Developers connected to JFrog
               </p>
             </div>
           </Card>
