@@ -63,6 +63,9 @@ bad-actor-addon: Had a payload to exfiltrate private data.`;
 • **Vulnerabilities:** Your org version 1.5.1 has known vulnerabilities: CVE-2024-39338
 • **Vulnerability description:** axios 1.5.1 allows SSRF via unexpected behavior where requests for path relative URLs get processed as protocol relative URLs
 • **Severity:** High
+
+![Axios CVE](/lovable-uploads/axios_cve.png)
+
     `;
     return response;
   }
