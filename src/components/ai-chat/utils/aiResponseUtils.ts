@@ -104,7 +104,7 @@ bad-actor-addon: Had a payload to exfiltrate private data.`;
    
    • [GitHub Repository](https://github.com/request/request) 🔗
    
-   • [Homepage](https://request.js.org/) 🔗
+   • [NPM Package Page](https://www.npmjs.com/package/node-fetch) 🔗
 
    ![Request Catalog](/lovable-uploads/req_catalog.png)
     `;
