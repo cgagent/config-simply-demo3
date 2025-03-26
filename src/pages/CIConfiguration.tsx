@@ -35,7 +35,7 @@ const CIConfigurationPage: React.FC = () => {
         animate={{ y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
       >
-        CI Configuration
+    
       </motion.h1>
       
       <motion.div 
