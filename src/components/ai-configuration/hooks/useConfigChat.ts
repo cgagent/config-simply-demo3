@@ -20,10 +20,10 @@ export const useConfigChat = (
       content: `Set up your CI workflow with JFrog so your packages will be:
 
 ⬇️  Downloaded from JFrog
-⬆️  Published to JFrog
-🔍  Scanned for security vulnerabilities
+⬆️  Uploaded to JFrog
+🔍  Scanned for malicious packages
 
-I've noticed that you use GitHub Actions and have several package managers in your Git repository. 
+I see you're using GitHub Actions and various package managers in your it repo.
 Let's select the package managers you would like to configure from the list below:`
     }
   ]);
@@ -234,8 +234,8 @@ jobs:
 
 Your npm packages will now be:
 ✅ Downloaded from JFrog 
-✅ Published to your JFrog
-✅ Scanned for security vulnerabilities
+✅ Uploaded to JFrog
+✅ Scanned for malicious packages
 
 Your CI workflow is now fully integrated with JFrog!`;
 
@@ -251,7 +251,7 @@ Your CI workflow is now fully integrated with JFrog!`;
         // Update options to show what's next
         setOptions([
           { id: 'docker', label: 'Configure Docker', value: 'I also want to configure Docker' },
-          { id: 'view_diff', label: 'My CI connections', value: 'I want to see the Repositories' },
+          { id: 'view_diff', label: 'View Repositories', value: 'I want to see the Repositories' },
           { id: 'done', label: 'That\'s all I need', value: 'Thanks, that\'s all I need for now' }
         ]);
 
@@ -339,7 +339,7 @@ You can review the changes below:
 \`\`\`diff
 ${diffOutput}
 \`\`\`
-Additionaly, you can review the changes on GitHub, or simply merge the pull request directly from this chat.`;
+You can review the changes on GitHub, or simply merge the pull request directly from this chat.`;
 
         // Response with the diff view
         const botResponse: Message = {
