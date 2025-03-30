@@ -101,7 +101,9 @@ const UserTable: React.FC<UserTableProps> = ({
               </TableCell>
               <TableCell>
                 {user.status === 'pending' ? (
-                  <span className="text-muted-foreground text-sm italic">N/A</span>
+                  <div className="flex items-center justify-center">
+                    <span className="text-muted-foreground text-sm italic">N/A</span>
+                  </div>
                 ) : (
                   <UserDeveloperAppCell developerApp={user.developerApp} />
                 )}
