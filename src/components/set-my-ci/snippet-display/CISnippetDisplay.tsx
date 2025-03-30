@@ -4,6 +4,7 @@ import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
 import { Copy, Code, FileText } from 'lucide-react';
 import FullSnippetView from './FullSnippetView';
 import { 
@@ -16,15 +17,13 @@ import {
 interface CISnippetDisplayProps {
   selectedCI: 'github' | 'other';
   selectedPackages: string[];
-  onNextStep?: () => void;
-  onPreviousStep?: () => void;
-  inChatMode?: boolean;
+  onNextStep: () => void;
+  onPreviousStep: () => void;
 }
 
 const CISnippetDisplay: React.FC<CISnippetDisplayProps> = ({
   selectedCI,
-  selectedPackages,
-  inChatMode = false
+  selectedPackages
 }) => {
   const [viewMode, setViewMode] = useState<'snippet' | 'full'>('snippet');
   const [snippets, setSnippets] = useState({
@@ -66,12 +65,8 @@ const CISnippetDisplay: React.FC<CISnippetDisplayProps> = ({
     });
   };
 
-  const containerClass = inChatMode 
-    ? "bg-white p-3 rounded-lg border border-gray-200 shadow-sm my-3" 
-    : "bg-white p-3 rounded-lg border border-gray-200 shadow-sm animate-fadeIn";
-
   return (
-    <div className={containerClass}>
+    <div className="bg-white p-3 rounded-lg border border-gray-200 shadow-sm animate-fadeIn">
       <div className="flex items-center justify-between mb-1">
         <h2 className="text-lg font-bold text-gray-900">Step 3: Configuration Snippet</h2>
         {isUpdating && (
