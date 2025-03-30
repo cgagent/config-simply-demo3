@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const formSchema = z.object({
   id: z.string().optional(),
@@ -38,6 +39,7 @@ const formSchema = z.object({
     required_error: "Please select a role.",
   }),
   lastLoginDate: z.string().optional(),
+  developerApp: z.boolean().default(false),
 });
 
 interface UserFormProps {
@@ -57,6 +59,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, isOpen, onClose, onSubmit }) 
       lastName: '',
       email: '',
       role: 'Developer',
+      developerApp: false,
     },
   });
 
@@ -68,6 +71,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, isOpen, onClose, onSubmit }) 
       email: values.email,
       role: values.role,
       lastLoginDate: values.lastLoginDate || new Date().toISOString(),
+      developerApp: values.developerApp,
     });
   };
 
@@ -146,6 +150,33 @@ const UserForm: React.FC<UserFormProps> = ({ user, isOpen, onClose, onSubmit }) 
                       <SelectItem value="Developer">Developer</SelectItem>
                     </SelectContent>
                   </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="developerApp"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>Developer App Status</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={(value) => field.onChange(value === "true")}
+                      defaultValue={field.value ? "true" : "false"}
+                      className="flex flex-row space-x-4"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="true" id="using" />
+                        <FormLabel htmlFor="using" className="cursor-pointer">Using</FormLabel>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="false" id="not-using" />
+                        <FormLabel htmlFor="not-using" className="cursor-pointer">Not Using</FormLabel>
+                      </div>
+                    </RadioGroup>
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

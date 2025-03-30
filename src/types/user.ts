@@ -6,4 +6,5 @@ export interface User {
   email: string;
   role: 'Admin' | 'Developer';
   lastLoginDate: string;
+  developerApp: boolean;
 }

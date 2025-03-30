@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { 
   Table, 
@@ -8,10 +9,17 @@ import {
   TableCell 
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { UserPlus, UserCog, Calendar, Mail, Shield, Code } from 'lucide-react';
+import { UserPlus, UserCog, Calendar, Mail, Shield, Code, Check, X } from 'lucide-react';
 import UserForm from '@/components/UserForm';
 import { User } from '@/types/user';
 import { useToast } from '@/components/ui/use-toast';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 const UsersPage: React.FC = () => {
   const { toast } = useToast();
@@ -22,7 +30,8 @@ const UsersPage: React.FC = () => {
       lastName: 'Doe',
       email: 'john.doe@example.com',
       role: 'Admin',
-      lastLoginDate: '2023-10-15T14:30:00Z'
+      lastLoginDate: '2023-10-15T14:30:00Z',
+      developerApp: true
     },
     {
       id: '2',
@@ -30,7 +39,8 @@ const UsersPage: React.FC = () => {
       lastName: 'Smith',
       email: 'jane.smith@example.com',
       role: 'Developer',
-      lastLoginDate: '2023-10-14T09:15:00Z'
+      lastLoginDate: '2023-10-14T09:15:00Z',
+      developerApp: false
     },
     {
       id: '3',
@@ -38,7 +48,8 @@ const UsersPage: React.FC = () => {
       lastName: 'Johnson',
       email: 'mike.johnson@example.com',
       role: 'Developer',
-      lastLoginDate: '2023-10-13T16:45:00Z'
+      lastLoginDate: '2023-10-13T16:45:00Z',
+      developerApp: true
     }
   ]);
 
@@ -66,7 +77,8 @@ const UsersPage: React.FC = () => {
       const newUser = {
         ...userData,
         id: String(Date.now()),
-        lastLoginDate: new Date().toISOString()
+        lastLoginDate: new Date().toISOString(),
+        developerApp: false
       };
       setUsers([...users, newUser]);
       toast({
@@ -75,6 +87,23 @@ const UsersPage: React.FC = () => {
       });
     }
     setIsFormOpen(false);
+  };
+
+  const handleRoleChange = (userId: string, newRole: 'Admin' | 'Developer') => {
+    setUsers(users.map(user => {
+      if (user.id === userId) {
+        return { ...user, role: newRole };
+      }
+      return user;
+    }));
+    
+    const user = users.find(u => u.id === userId);
+    if (user) {
+      toast({
+        title: "Role updated",
+        description: `${user.firstName} ${user.lastName}'s role has been updated to ${newRole}.`
+      });
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -107,7 +136,7 @@ const UsersPage: React.FC = () => {
                 <TableHead className="text-foreground font-semibold">Email</TableHead>
                 <TableHead className="text-foreground font-semibold">Role</TableHead>
                 <TableHead className="text-foreground font-semibold">Last Login</TableHead>
-                <TableHead className="text-right text-foreground font-semibold">Actions</TableHead>
+                <TableHead className="text-foreground font-semibold">Developer App</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -121,34 +150,59 @@ const UsersPage: React.FC = () => {
                     {user.email}
                   </TableCell>
                   <TableCell>
-                    <div className="flex items-center gap-2">
-                      {user.role === 'Admin' ? (
-                        <>
-                          <Shield className="h-4 w-4 text-primary" />
-                          <span className="font-medium text-primary">Admin</span>
-                        </>
-                      ) : (
-                        <>
-                          <Code className="h-4 w-4 text-indigo-400" />
-                          <span className="font-medium text-indigo-400">Developer</span>
-                        </>
-                      )}
-                    </div>
+                    <Select
+                      value={user.role}
+                      onValueChange={(value: 'Admin' | 'Developer') => handleRoleChange(user.id, value)}
+                    >
+                      <SelectTrigger className="w-[130px]">
+                        <div className="flex items-center gap-2">
+                          {user.role === 'Admin' ? (
+                            <>
+                              <Shield className="h-4 w-4 text-primary" />
+                              <span className="font-medium text-primary">Admin</span>
+                            </>
+                          ) : (
+                            <>
+                              <Code className="h-4 w-4 text-indigo-400" />
+                              <span className="font-medium text-indigo-400">Developer</span>
+                            </>
+                          )}
+                        </div>
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Admin">
+                          <div className="flex items-center gap-2">
+                            <Shield className="h-4 w-4 text-primary" />
+                            <span>Admin</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="Developer">
+                          <div className="flex items-center gap-2">
+                            <Code className="h-4 w-4 text-indigo-400" />
+                            <span>Developer</span>
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
                   </TableCell>
                   <TableCell className="flex items-center gap-2 text-muted-foreground">
                     <Calendar className="h-4 w-4 text-muted-foreground" />
                     {formatDate(user.lastLoginDate)}
                   </TableCell>
-                  <TableCell className="text-right">
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={() => handleEditUser(user)}
-                      className="gap-2 hover:bg-muted/60"
-                    >
-                      <UserCog className="h-4 w-4" />
-                      Edit
-                    </Button>
+                  <TableCell>
+                    <div className="flex items-center justify-center">
+                      {user.developerApp ? (
+                        <div className="flex items-center gap-1 text-green-500">
+                          <Check className="h-5 w-5" />
+                          <span>Using</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1 text-red-500">
+                          <X className="h-5 w-5" />
+                          <span>Not using</span>
+                        </div>
+                      )}
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
