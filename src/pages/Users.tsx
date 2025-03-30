@@ -1,40 +1,12 @@
 
 import React, { useState } from 'react';
-import { 
-  Table, 
-  TableHeader, 
-  TableBody, 
-  TableHead, 
-  TableRow, 
-  TableCell 
-} from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { UserPlus, UserCog, Calendar, Mail, Shield, Code, Check, X, Trash2 } from 'lucide-react';
-import UserForm from '@/components/UserForm';
+import { UserPlus } from 'lucide-react';
 import { User } from '@/types/user';
-import { useToast } from '@/components/ui/use-toast';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger
-} from '@/components/ui/tooltip';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { useToast } from '@/hooks/use-toast';
+import UserTable from '@/components/users/UserTable';
+import UserFormWrapper from '@/components/users/UserFormWrapper';
+import DeleteUserDialog from '@/components/users/DeleteUserDialog';
 
 const UsersPage: React.FC = () => {
   const { toast } = useToast();
@@ -163,157 +135,28 @@ const UsersPage: React.FC = () => {
           </Button>
         </div>
         
-        <div className="bg-card rounded-lg border border-border shadow-sm overflow-hidden">
-          <Table>
-            <TableHeader className="bg-muted/40">
-              <TableRow className="hover:bg-muted/60">
-                <TableHead className="text-foreground font-semibold">Name</TableHead>
-                <TableHead className="text-foreground font-semibold">Email</TableHead>
-                <TableHead className="text-foreground font-semibold">Role</TableHead>
-                <TableHead className="text-foreground font-semibold">Last Login</TableHead>
-                <TableHead className="text-foreground font-semibold">Developer App</TableHead>
-                <TableHead className="text-foreground font-semibold w-20"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {users.map((user) => (
-                <TableRow key={user.id} className="border-border hover:bg-muted/30 group">
-                  <TableCell className="font-medium text-foreground">
-                    {user.firstName} {user.lastName}
-                  </TableCell>
-                  <TableCell className="flex items-center gap-2 text-muted-foreground">
-                    <Mail className="h-4 w-4 text-muted-foreground" />
-                    {user.email}
-                  </TableCell>
-                  <TableCell>
-                    <Select
-                      value={user.role}
-                      onValueChange={(value: 'Admin' | 'Developer') => handleRoleChange(user.id, value)}
-                    >
-                      <SelectTrigger className="w-[130px]">
-                        <div className="flex items-center gap-2">
-                          {user.role === 'Admin' ? (
-                            <>
-                              <Shield className="h-4 w-4 text-primary" />
-                              <span className="font-medium text-primary">Admin</span>
-                            </>
-                          ) : (
-                            <>
-                              <Code className="h-4 w-4 text-indigo-400" />
-                              <span className="font-medium text-indigo-400">Developer</span>
-                            </>
-                          )}
-                        </div>
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Admin">
-                          <div className="flex items-center gap-2">
-                            <Shield className="h-4 w-4 text-primary" />
-                            <span>Admin</span>
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="Developer">
-                          <div className="flex items-center gap-2">
-                            <Code className="h-4 w-4 text-indigo-400" />
-                            <span>Developer</span>
-                          </div>
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </TableCell>
-                  <TableCell className="flex items-center gap-2 text-muted-foreground">
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
-                    {formatDate(user.lastLoginDate)}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center justify-center">
-                      {user.developerApp ? (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <div className="flex items-center gap-1 text-green-500">
-                              <Check className="h-5 w-5" />
-                              <span>Using</span>
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p className="text-xs">User is using developer app</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      ) : (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <div className="flex items-center gap-1 text-red-500">
-                              <X className="h-5 w-5" />
-                              <span>Not using</span>
-                            </div>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p className="text-xs">User is not using developer app</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button 
-                            onClick={() => handleDeleteClick(user)} 
-                            variant="ghost" 
-                            size="icon"
-                            className="text-red-500 hover:text-red-700 hover:bg-red-100/30"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p className="text-xs">Delete user</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+        <UserTable 
+          users={users}
+          onEditUser={handleEditUser}
+          onRoleChange={handleRoleChange}
+          onDeleteClick={handleDeleteClick}
+          formatDate={formatDate}
+        />
       </div>
 
-      {isFormOpen && (
-        <UserForm 
-          user={editingUser} 
-          isOpen={isFormOpen}
-          onClose={() => setIsFormOpen(false)}
-          onSubmit={handleFormSubmit}
-        />
-      )}
+      <UserFormWrapper
+        isOpen={isFormOpen}
+        editingUser={editingUser}
+        onClose={() => setIsFormOpen(false)}
+        onSubmit={handleFormSubmit}
+      />
 
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure you want to delete this user?</AlertDialogTitle>
-            <AlertDialogDescription>
-              {userToDelete && (
-                <>
-                  This will permanently remove <span className="font-semibold">{userToDelete.firstName} {userToDelete.lastName}</span> from JFrog.
-                  <br /><br />
-                  This user will no longer be assigned and cannot use JFrog anymore.
-                </>
-              )}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={handleDeleteUser} 
-              className="bg-red-600 hover:bg-red-700 text-white"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteUserDialog
+        isOpen={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        userToDelete={userToDelete}
+        onConfirmDelete={handleDeleteUser}
+      />
     </div>
   );
 };

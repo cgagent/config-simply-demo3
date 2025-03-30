@@ -1,0 +1,76 @@
+
+import React from 'react';
+import { 
+  Table, 
+  TableHeader, 
+  TableBody, 
+  TableHead, 
+  TableRow, 
+  TableCell 
+} from '@/components/ui/table';
+import { Calendar, Mail } from 'lucide-react';
+import { User } from '@/types/user';
+import UserRoleCell from './UserRoleCell';
+import UserDeveloperAppCell from './UserDeveloperAppCell';
+import UserActionsCell from './UserActionsCell';
+
+interface UserTableProps {
+  users: User[];
+  onEditUser: (user: User) => void;
+  onRoleChange: (userId: string, newRole: 'Admin' | 'Developer') => void;
+  onDeleteClick: (user: User) => void;
+  formatDate: (dateString: string) => string;
+}
+
+const UserTable: React.FC<UserTableProps> = ({ 
+  users, 
+  onEditUser, 
+  onRoleChange, 
+  onDeleteClick,
+  formatDate
+}) => {
+  return (
+    <div className="bg-card rounded-lg border border-border shadow-sm overflow-hidden">
+      <Table>
+        <TableHeader className="bg-muted/40">
+          <TableRow className="hover:bg-muted/60">
+            <TableHead className="text-foreground font-semibold">Name</TableHead>
+            <TableHead className="text-foreground font-semibold">Email</TableHead>
+            <TableHead className="text-foreground font-semibold">Role</TableHead>
+            <TableHead className="text-foreground font-semibold">Last Login</TableHead>
+            <TableHead className="text-foreground font-semibold">Developer App</TableHead>
+            <TableHead className="text-foreground font-semibold w-20"></TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {users.map((user) => (
+            <TableRow key={user.id} className="border-border hover:bg-muted/30 group">
+              <TableCell className="font-medium text-foreground">
+                {user.firstName} {user.lastName}
+              </TableCell>
+              <TableCell className="flex items-center gap-2 text-muted-foreground">
+                <Mail className="h-4 w-4 text-muted-foreground" />
+                {user.email}
+              </TableCell>
+              <TableCell>
+                <UserRoleCell user={user} onRoleChange={onRoleChange} />
+              </TableCell>
+              <TableCell className="flex items-center gap-2 text-muted-foreground">
+                <Calendar className="h-4 w-4 text-muted-foreground" />
+                {formatDate(user.lastLoginDate)}
+              </TableCell>
+              <TableCell>
+                <UserDeveloperAppCell developerApp={user.developerApp} />
+              </TableCell>
+              <TableCell>
+                <UserActionsCell user={user} onDeleteClick={onDeleteClick} />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
+};
+
+export default UserTable;
