@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Bot } from 'lucide-react';
 import SelectCIType from './SelectCIType';
@@ -13,12 +12,7 @@ const CIChatFlow: React.FC = () => {
     {
       id: '1',
       role: 'bot',
-      content: 'Welcome to the CI Setup Assistant. Let\'s configure your CI system to work with JFrog.'
-    },
-    {
-      id: '2',
-      role: 'bot',
-      content: 'Step 1 - Select CI System\nStreamline your CI pipeline with JFrog\nIntegrating JFrog with your CI system enhances security and improves artifact management.'
+      content: 'Select your CI system to get started with JFrog integration.'
     }
   ]);
   const [currentStep, setCurrentStep] = useState<number>(1);
