@@ -29,28 +29,36 @@ const SelectCIType: React.FC<SelectCITypeProps> = ({
         </AlertDescription>
       </Alert>
       
-      <div className="space-y-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         <div 
-          className={`flex items-center border rounded-lg p-6 cursor-pointer hover:bg-muted transition-colors ${selectedCI === 'github' ? 'border-primary ring-2 ring-primary/20' : 'border-border'}`}
+          className={`flex items-center border rounded-lg p-6 cursor-pointer hover:bg-blue-50 transition-colors ${
+            selectedCI === 'github' 
+              ? 'border-primary bg-blue-100 ring-2 ring-primary/20 shadow-md' 
+              : 'border-border'
+          }`}
           onClick={() => onSelectCI('github')}
         >
-          <Github className="h-12 w-12 mr-6" />
+          <Github className="h-12 w-12 mr-6 text-blue-600" />
           <div>
-            <h3 className="font-medium">GitHub Actions</h3>
-            <p className="text-sm text-muted-foreground mt-1">
+            <h3 className="font-medium text-blue-800">GitHub Actions</h3>
+            <p className="text-sm text-blue-600 mt-1">
               Configure JFrog with GitHub Actions workflows
             </p>
           </div>
         </div>
         
         <div 
-          className={`flex items-center border rounded-lg p-6 cursor-pointer hover:bg-muted transition-colors ${selectedCI === 'other' ? 'border-primary ring-2 ring-primary/20' : 'border-border'}`}
+          className={`flex items-center border rounded-lg p-6 cursor-pointer hover:bg-blue-50 transition-colors ${
+            selectedCI === 'other' 
+              ? 'border-primary bg-blue-100 ring-2 ring-primary/20 shadow-md' 
+              : 'border-border'
+          }`}
           onClick={() => onSelectCI('other')}
         >
-          <Code className="h-12 w-12 mr-6" />
+          <Code className="h-12 w-12 mr-6 text-blue-600" />
           <div>
-            <h3 className="font-medium">Other CI Systems</h3>
-            <p className="text-sm text-muted-foreground mt-1">
+            <h3 className="font-medium text-blue-800">Other CI Systems</h3>
+            <p className="text-sm text-blue-600 mt-1">
               Circle CI, Jenkins, GitLab CI, and others
             </p>
           </div>
