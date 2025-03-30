@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
+import { LoaderCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import SetupSnippetTab from './SetupSnippetTab';
 import PackageSnippetTab from './PackageSnippetTab';
@@ -69,7 +70,10 @@ const CISnippetDisplay: React.FC<CISnippetDisplayProps> = ({
       <div className="flex items-center justify-between mb-1">
         <h2 className="text-lg font-bold text-gray-900">Step 3: Configuration Snippet</h2>
         {isUpdating && (
-          <span className="text-xs text-gray-500 animate-pulse">Updating...</span>
+          <div className="flex items-center text-xs text-gray-500 gap-1">
+            <LoaderCircle className="animate-spin h-3 w-3" />
+            <span>Updating...</span>
+          </div>
         )}
       </div>
       <p className="text-gray-700 text-xs mb-2">
