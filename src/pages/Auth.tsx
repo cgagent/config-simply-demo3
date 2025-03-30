@@ -16,30 +16,59 @@ const Auth: React.FC = () => {
 
   const handleEmailAuth = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate successful authentication
-    toast({
-      title: isLogin ? "Successfully signed in" : "Account created successfully",
-      description: `Welcome ${email}`,
-    });
-    navigate('/home');
+    
+    if (isLogin) {
+      // Simulate successful login
+      toast({
+        title: "Successfully signed in",
+        description: `Welcome ${email}`,
+      });
+      navigate('/home');
+    } else {
+      // Simulate successful signup
+      toast({
+        title: "Account created successfully",
+        description: "Please complete your profile setup.",
+      });
+      // Redirect to account setup page for signup
+      navigate('/account-setup');
+    }
   };
 
   const handleGithubAuth = () => {
-    // Simulate GitHub authentication
-    toast({
-      title: "GitHub authentication successful",
-      description: "Welcome back!",
-    });
-    navigate('/home');
+    if (isLogin) {
+      // Simulate GitHub login
+      toast({
+        title: "GitHub authentication successful",
+        description: "Welcome back!",
+      });
+      navigate('/home');
+    } else {
+      // Simulate GitHub signup
+      toast({
+        title: "GitHub account connected",
+        description: "Please complete your profile setup.",
+      });
+      navigate('/account-setup');
+    }
   };
 
   const handleGoogleAuth = () => {
-    // Simulate Google authentication
-    toast({
-      title: "Google authentication successful",
-      description: "Welcome back!",
-    });
-    navigate('/home');
+    if (isLogin) {
+      // Simulate Google login
+      toast({
+        title: "Google authentication successful",
+        description: "Welcome back!",
+      });
+      navigate('/home');
+    } else {
+      // Simulate Google signup
+      toast({
+        title: "Google account connected",
+        description: "Please complete your profile setup.",
+      });
+      navigate('/account-setup');
+    }
   };
 
   return (
