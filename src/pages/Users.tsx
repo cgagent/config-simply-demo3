@@ -20,6 +20,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger
+} from '@/components/ui/tooltip';
 
 const UsersPage: React.FC = () => {
   const { toast } = useToast();
@@ -192,15 +197,29 @@ const UsersPage: React.FC = () => {
                   <TableCell>
                     <div className="flex items-center justify-center">
                       {user.developerApp ? (
-                        <div className="flex items-center gap-1 text-green-500">
-                          <Check className="h-5 w-5" />
-                          <span>Using</span>
-                        </div>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <div className="flex items-center gap-1 text-green-500">
+                              <Check className="h-5 w-5" />
+                              <span>Using</span>
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="text-xs">User is using developer app</p>
+                          </TooltipContent>
+                        </Tooltip>
                       ) : (
-                        <div className="flex items-center gap-1 text-red-500">
-                          <X className="h-5 w-5" />
-                          <span>Not using</span>
-                        </div>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <div className="flex items-center gap-1 text-red-500">
+                              <X className="h-5 w-5" />
+                              <span>Not using</span>
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="text-xs">User is not using developer app</p>
+                          </TooltipContent>
+                        </Tooltip>
                       )}
                     </div>
                   </TableCell>
