@@ -13,6 +13,7 @@ import { User } from '@/types/user';
 import UserRoleCell from './UserRoleCell';
 import UserDeveloperAppCell from './UserDeveloperAppCell';
 import UserActionsCell from './UserActionsCell';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface UserTableProps {
   users: User[];
@@ -46,7 +47,18 @@ const UserTable: React.FC<UserTableProps> = ({
           {users.map((user) => (
             <TableRow key={user.id} className="border-border hover:bg-muted/30 group">
               <TableCell className="font-medium text-foreground">
-                {user.firstName} {user.lastName}
+                <div className="flex items-center gap-3">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage 
+                      src={`https://i.pravatar.cc/150?u=${user.email}`} 
+                      alt={`${user.firstName} ${user.lastName}`} 
+                    />
+                    <AvatarFallback>
+                      {user.firstName[0]}{user.lastName[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span>{user.firstName} {user.lastName}</span>
+                </div>
               </TableCell>
               <TableCell className="flex items-center gap-2 text-muted-foreground">
                 <Mail className="h-4 w-4 text-muted-foreground" />

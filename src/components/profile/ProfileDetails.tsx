@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Mail, Calendar, UserCircle, User } from 'lucide-react';
+import { Mail, Calendar, UserCircle, User, Check, X } from 'lucide-react';
 import ProfileInfoItem from './ProfileInfoItem';
 
 interface ProfileDetailsProps {
@@ -41,7 +41,11 @@ const ProfileDetails: React.FC<ProfileDetailsProps> = ({
       <ProfileInfoItem
         icon={<User className="h-5 w-5 text-blue-300" />}
         label="Developer App"
-        value={developerApp ? 'Using' : 'Not Using'}
+        value={
+          developerApp ? 
+            <Check className="h-5 w-5 text-green-500" /> : 
+            <X className="h-5 w-5 text-red-500" />
+        }
       />
     </div>
   );

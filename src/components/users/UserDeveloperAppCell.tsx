@@ -17,9 +17,8 @@ const UserDeveloperAppCell: React.FC<UserDeveloperAppCellProps> = ({ developerAp
       {developerApp ? (
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className="flex items-center gap-1 text-green-500">
+            <div className="text-green-500">
               <Check className="h-5 w-5" />
-              <span>Using</span>
             </div>
           </TooltipTrigger>
           <TooltipContent>
@@ -29,9 +28,8 @@ const UserDeveloperAppCell: React.FC<UserDeveloperAppCellProps> = ({ developerAp
       ) : (
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className="flex items-center gap-1 text-red-500">
+            <div className="text-red-500">
               <X className="h-5 w-5" />
-              <span>Not using</span>
             </div>
           </TooltipTrigger>
           <TooltipContent>
