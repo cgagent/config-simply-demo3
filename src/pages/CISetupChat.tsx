@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { MessageList } from '@/components/ai-chat/MessageList';
 import { ChatInput } from '@/components/ai-chat/ChatInput';
@@ -7,11 +6,14 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { simulateAIResponse } from '@/components/ai-chat/utils/aiResponseUtils';
 import { Button } from '@/components/ui/button';
+import { Check } from 'lucide-react';
 
 const CISetupChat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [inputValue, setInputValue] = useState('');
+  const [selectedPackages, setSelectedPackages] = useState<string[]>([]);
+  const [showPackageOptions, setShowPackageOptions] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -58,18 +60,66 @@ const CISetupChat: React.FC = () => {
     // Simulate bot response after a delay
     setTimeout(() => {
       try {
-        let responseContent = "";
-        
-        if (option === "Github Actions") {
-          responseContent = "Great choice! GitHub Actions is well integrated with JFrog. What package managers are you using in your repository?";
-        } else {
-          responseContent = "Which specific CI tool are you using? We support Jenkins, GitLab CI, Circle CI, and others.";
-        }
-        
         const botMessage: Message = {
           id: (Date.now() + 1).toString(),
           role: 'bot',
-          content: responseContent
+          content: "Amazing, now lets select the package managers you would like to set up."
+        };
+        
+        setMessages(prev => [...prev, botMessage]);
+        setShowPackageOptions(true);
+      } catch (error) {
+        console.error("Error generating response:", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to generate response. Please try again."
+        });
+      } finally {
+        setIsProcessing(false);
+      }
+    }, 1500);
+  };
+
+  const handlePackageSelection = (packageName: string) => {
+    setSelectedPackages(prev => {
+      // If already selected, remove it
+      if (prev.includes(packageName)) {
+        return prev.filter(p => p !== packageName);
+      }
+      // Otherwise add it
+      return [...prev, packageName];
+    });
+  };
+
+  const handleContinueWithPackages = () => {
+    if (selectedPackages.length === 0) {
+      toast({
+        title: "Selection required",
+        description: "Please select at least one package manager.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Add user selection as a message
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: `Selected packages: ${selectedPackages.join(', ')}`
+    };
+    
+    setMessages(prev => [...prev, userMessage]);
+    setIsProcessing(true);
+    setShowPackageOptions(false);
+    
+    // Simulate bot response after a delay
+    setTimeout(() => {
+      try {
+        const botMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: 'bot',
+          content: `Great! I'll help you configure JFrog with ${selectedPackages.join(', ')}. Would you like me to generate a sample configuration for you?`
         };
         
         setMessages(prev => [...prev, botMessage]);
@@ -152,6 +202,35 @@ const CISetupChat: React.FC = () => {
                     onClick={() => handleCIOption("Other CI")}
                   >
                     Other CI
+                  </Button>
+                </div>
+              )}
+
+              {showPackageOptions && !isProcessing && (
+                <div className="mb-4 mt-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-4">
+                    {["Docker", "Python", "npm", "Maven", "Go", "Nuget"].map((pkg) => (
+                      <Button
+                        key={pkg}
+                        variant="outline"
+                        className={`justify-between ${
+                          selectedPackages.includes(pkg)
+                            ? "border-blue-500 bg-blue-950"
+                            : "bg-blue-900/20"
+                        }`}
+                        onClick={() => handlePackageSelection(pkg)}
+                      >
+                        {pkg}
+                        {selectedPackages.includes(pkg) && <Check className="h-4 w-4 ml-2" />}
+                      </Button>
+                    ))}
+                  </div>
+                  <Button
+                    onClick={handleContinueWithPackages}
+                    disabled={selectedPackages.length === 0}
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
+                    Continue
                   </Button>
                 </div>
               )}
