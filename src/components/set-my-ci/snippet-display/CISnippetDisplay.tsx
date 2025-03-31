@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -12,7 +11,7 @@ import {
   generatePackageSpecificSnippets,
   generateFullGitHubSnippet,
   generateFullOtherCISnippet
-} from './snippetGenerators';
+} from './generators';
 
 interface CISnippetDisplayProps {
   selectedCI: 'github' | 'other';
