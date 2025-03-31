@@ -1,54 +1,15 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft } from 'lucide-react';
-import SelectCIType from '@/components/set-my-ci/SelectCIType';
-import SelectPackageManagers from '@/components/set-my-ci/SelectPackageManagers';
-import CISnippetDisplay from '@/components/set-my-ci/snippet-display';
-import ImplementationGuide from '@/components/set-my-ci/ImplementationGuide';
-import { useToast } from '@/hooks/use-toast';
+import CISetupChat from '@/components/set-my-ci/CISetupChat';
 
 const SetMyCI = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const [selectedCI, setSelectedCI] = useState<'github' | 'other' | null>(null);
-  const [selectedPackages, setSelectedPackages] = useState<string[]>([]);
-  const [showSection, setShowSection] = useState({
-    ciType: true,
-    packageManagers: false,
-    snippetDisplay: false,
-    implementationGuide: false
-  });
-  
-  // Update sections visibility based on selections
-  useEffect(() => {
-    setShowSection({
-      ciType: true,
-      packageManagers: !!selectedCI,
-      snippetDisplay: !!selectedCI && selectedPackages.length > 0,
-      implementationGuide: !!selectedCI && selectedPackages.length > 0
-    });
-  }, [selectedCI, selectedPackages]);
-  
-  // Handle going back to previous page
+
   const handleGoBack = () => {
     navigate('/home');
-  };
-
-  // Handle CI selection
-  const handleCISelect = (ci: 'github' | 'other') => {
-    setSelectedCI(ci);
-  };
-
-  // Toggle package manager selection
-  const handleTogglePackage = (packageType: string) => {
-    if (selectedPackages.includes(packageType)) {
-      setSelectedPackages(selectedPackages.filter(p => p !== packageType));
-    } else {
-      setSelectedPackages([...selectedPackages, packageType]);
-    }
-    // Toast notifications removed
   };
 
   return (
@@ -69,43 +30,8 @@ const SetMyCI = () => {
             </h1>
           </div>
 
-          <div className="space-y-3">
-            {showSection.ciType && (
-              <SelectCIType
-                selectedCI={selectedCI}
-                onSelectCI={handleCISelect}
-                canProceed={true}
-                onNextStep={() => {}}
-              />
-            )}
-
-            {showSection.packageManagers && (
-              <SelectPackageManagers
-                selectedPackages={selectedPackages}
-                onTogglePackage={handleTogglePackage}
-                canProceed={true}
-                onNextStep={() => {}}
-                onPreviousStep={() => {}}
-              />
-            )}
-
-            {showSection.snippetDisplay && (
-              <CISnippetDisplay
-                selectedCI={selectedCI!}
-                selectedPackages={selectedPackages}
-                onNextStep={() => {}}
-                onPreviousStep={() => {}}
-              />
-            )}
-
-            {showSection.implementationGuide && (
-              <ImplementationGuide
-                selectedCI={selectedCI!}
-                selectedPackages={selectedPackages}
-                onPreviousStep={() => {}}
-                onFinish={handleGoBack}
-              />
-            )}
+          <div className="mt-4">
+            <CISetupChat />
           </div>
         </div>
       </main>
