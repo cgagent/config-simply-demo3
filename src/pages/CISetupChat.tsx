@@ -2,7 +2,7 @@
 import React from 'react';
 import { MessageList } from '@/components/ai-chat/MessageList';
 import { ChatInput } from '@/components/ai-chat/ChatInput';
-import { useCISetupChat } from '@/hooks/useCISetupChat';
+import { useCISetupChat } from '@/hooks/ci-setup';
 import CIToolSelection from '@/components/ci-setup/CIToolSelection';
 import PackageSelection from '@/components/ci-setup/PackageSelection';
 import CodeSnippets from '@/components/ci-setup/CodeSnippets';
