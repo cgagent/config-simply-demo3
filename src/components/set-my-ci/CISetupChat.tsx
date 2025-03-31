@@ -1,212 +1,86 @@
 
-import React, { useState, useRef, useEffect } from 'react';
-import { ChatMessage } from './ChatMessage';
-import { CIButtonGroup } from './CIButtonGroup';
-import CISnippetDisplay from './snippet-display/CISnippetDisplay';
-import { generateFullSnippet } from '../ci-configuration/setup-instructions/snippetGenerators';
+import React, { useRef, useEffect, useState } from 'react';
+import { useCISetupState } from './hooks/useCISetupState';
+import StepOne from './steps/StepOne';
+import StepTwo from './steps/StepTwo';
+import StepThree from './steps/StepThree';
+import StepFour from './steps/StepFour';
+import CompletionStep from './steps/CompletionStep';
 
 const CISetupChat = () => {
-  const [messages, setMessages] = useState<Array<{id: number, type: 'system' | 'button-group', content: string | React.ReactNode}>>([
-    {
-      id: 1,
-      type: 'system',
-      content: 'Step 1: Select CI System\n\nStreamline your CI pipeline with JFrog\nIntegrating JFrog with your CI system enhances security and improves artifact management.'
-    },
-    {
-      id: 2,
-      type: 'button-group',
-      content: <CIButtonGroup 
-        options={[
-          { id: 'github', label: 'GitHub Actions', description: 'Configure JFrog with GitHub Actions' },
-          { id: 'other', label: 'Other CI Systems', description: 'Circle CI, Jenkins, GitLab CI' }
-        ]}
-        onSelect={handleCISelection}
-      />
-    }
+  const {
+    selectedCI,
+    selectedPackages,
+    currentStep,
+    handleCISelection,
+    handlePackageSelection,
+    handleContinueToStep3,
+    handleContinueToStep4,
+    handlePreviousStep,
+    getSelectedPackagesText
+  } = useCISetupState();
+  
+  const [messages, setMessages] = useState<Array<{ id: number, component: React.ReactNode }>>([
+    { id: 1, component: <StepOne onSelectCI={handleCISelection} selectedCI={selectedCI} /> }
   ]);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [selectedCI, setSelectedCI] = useState<string | null>(null);
-  const [selectedPackages, setSelectedPackages] = useState<string[]>([]);
-  const [currentStep, setCurrentStep] = useState(1);
+  const [setupComplete, setSetupComplete] = useState(false);
 
-  // Function to handle CI selection
-  function handleCISelection(ciType: string) {
-    setSelectedCI(ciType);
-    setCurrentStep(2);
-    
-    // Add message acknowledging selection
-    const ciName = ciType === 'github' ? 'GitHub Actions' : 'Other CI Systems';
-    setMessages(prev => [
-      ...prev,
-      {
-        id: Date.now(),
-        type: 'system',
-        content: `You've selected ${ciName}. Great choice!`
-      },
-      {
-        id: Date.now() + 1,
-        type: 'system',
-        content: 'Step 2: Select Package Managers\n\nChoose the package managers used in your project.'
-      },
-      {
-        id: Date.now() + 2,
-        type: 'button-group',
-        content: <CIButtonGroup 
-          options={[
-            { id: 'docker', label: 'Docker' },
-            { id: 'npm', label: 'npm' },
-            { id: 'nuget', label: 'NuGet' },
-            { id: 'python', label: 'Python' },
-            { id: 'maven', label: 'Maven' },
-            { id: 'go', label: 'Go' }
-          ]}
-          onSelect={handlePackageSelection}
-          multiSelect
-          selectedOptions={selectedPackages}
-          showContinueButton={selectedPackages.length > 0}
-          onContinue={handleContinueToStep3}
-        />
-      }
-    ]);
-  }
-
-  // Function to handle package manager selection
-  function handlePackageSelection(packageType: string) {
-    setSelectedPackages(prevSelected => {
-      if (prevSelected.includes(packageType)) {
-        // Remove if already selected
-        const newSelected = prevSelected.filter(p => p !== packageType);
-        
-        // Update button group with new selected packages
-        const lastMessage = messages[messages.length - 1];
-        if (lastMessage.type === 'button-group') {
-          setMessages(prev => [
-            ...prev.slice(0, -1),
-            {
-              ...lastMessage,
-              id: Date.now(),
-              content: <CIButtonGroup 
-                options={[
-                  { id: 'docker', label: 'Docker' },
-                  { id: 'npm', label: 'npm' },
-                  { id: 'nuget', label: 'NuGet' },
-                  { id: 'python', label: 'Python' },
-                  { id: 'maven', label: 'Maven' },
-                  { id: 'go', label: 'Go' }
-                ]}
-                onSelect={handlePackageSelection}
-                multiSelect
-                selectedOptions={newSelected}
-                showContinueButton={newSelected.length > 0}
-                onContinue={handleContinueToStep3}
-              />
-            }
-          ]);
+  // Update messages when steps change
+  useEffect(() => {
+    if (currentStep === 2 && selectedCI) {
+      const ciName = selectedCI === 'github' ? 'GitHub Actions' : 'Other CI Systems';
+      setMessages(prev => [
+        ...prev,
+        { 
+          id: Date.now(), 
+          component: (
+            <StepTwo 
+              ciName={ciName} 
+              onPackageSelection={handlePackageSelection} 
+              selectedPackages={selectedPackages} 
+              onContinue={handleContinueToStep3} 
+            />
+          )
         }
-        
-        return newSelected;
-      } else {
-        // Add if not already selected
-        const newSelected = [...prevSelected, packageType];
-        
-        // Update button group with new selected packages
-        const lastMessage = messages[messages.length - 1];
-        if (lastMessage.type === 'button-group') {
-          setMessages(prev => [
-            ...prev.slice(0, -1),
-            {
-              ...lastMessage,
-              id: Date.now(),
-              content: <CIButtonGroup 
-                options={[
-                  { id: 'docker', label: 'Docker' },
-                  { id: 'npm', label: 'npm' },
-                  { id: 'nuget', label: 'NuGet' },
-                  { id: 'python', label: 'Python' },
-                  { id: 'maven', label: 'Maven' },
-                  { id: 'go', label: 'Go' }
-                ]}
-                onSelect={handlePackageSelection}
-                multiSelect
-                selectedOptions={newSelected}
-                showContinueButton={newSelected.length > 0}
-                onContinue={handleContinueToStep3}
-              />
-            }
-          ]);
+      ]);
+    } else if (currentStep === 3) {
+      setMessages(prev => [
+        ...prev,
+        { 
+          id: Date.now(), 
+          component: (
+            <StepThree 
+              packagesText={getSelectedPackagesText()} 
+              selectedCI={selectedCI} 
+              selectedPackages={selectedPackages} 
+              onNextStep={handleContinueToStep4}
+              onPreviousStep={handlePreviousStep}
+            />
+          )
         }
-        
-        return newSelected;
-      }
-    });
-  }
-
-  // Function to continue to step 3
-  function handleContinueToStep3() {
-    setCurrentStep(3);
-    
-    // Format the selected packages as a comma-separated list
-    const packagesText = selectedPackages.join(', ');
-    
-    setMessages(prev => [
-      ...prev,
-      {
-        id: Date.now(),
-        type: 'system',
-        content: `You've selected the following package managers: ${packagesText}.`
-      },
-      {
-        id: Date.now() + 1,
-        type: 'system',
-        content: 'Step 3: Configuration Snippets\n\nBelow are the configuration snippets you can add to your workflow:'
-      },
-      {
-        id: Date.now() + 2,
-        type: 'button-group',
-        content: <CISnippetDisplay 
-          selectedCI={selectedCI as 'github' | 'other'} 
-          selectedPackages={selectedPackages}
-          onNextStep={() => handleContinueToStep4()}
-          onPreviousStep={() => {/* For future implementation */}}
-        />
-      }
-    ]);
-  }
-
-  // Function to continue to step 4 (completion)
-  function handleContinueToStep4() {
-    setCurrentStep(4);
-    
-    setMessages(prev => [
-      ...prev,
-      {
-        id: Date.now(),
-        type: 'system',
-        content: 'Step 4: Implementation Guide\n\nFollow these steps to implement the JFrog integration in your CI system:'
-      },
-      {
-        id: Date.now() + 1,
-        type: 'button-group',
-        content: <CIButtonGroup 
-          options={[
-            { id: 'finish', label: 'Finish Setup', description: 'Complete the CI setup process' }
-          ]}
-          onSelect={() => {
-            // Add completion message
-            setMessages(prev => [
-              ...prev,
-              {
-                id: Date.now(),
-                type: 'system',
-                content: 'Setup completed successfully! Your CI system is now integrated with JFrog.'
-              }
-            ]);
-          }}
-        />
-      }
-    ]);
-  }
+      ]);
+    } else if (currentStep === 4) {
+      setMessages(prev => [
+        ...prev,
+        { 
+          id: Date.now(), 
+          component: (
+            <StepFour 
+              onComplete={() => {
+                setSetupComplete(true);
+                setMessages(prevMessages => [
+                  ...prevMessages,
+                  { id: Date.now(), component: <CompletionStep /> }
+                ]);
+              }} 
+            />
+          )
+        }
+      ]);
+    }
+  }, [currentStep]);
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -218,11 +92,7 @@ const CISetupChat = () => {
       <div className="bg-white rounded-lg shadow-md border border-gray-200 p-4 overflow-y-auto h-[500px]">
         <div className="space-y-4">
           {messages.map((message) => (
-            <ChatMessage 
-              key={message.id}
-              type={message.type}
-              content={message.content}
-            />
+            <div key={message.id}>{message.component}</div>
           ))}
           <div ref={messagesEndRef} />
         </div>
