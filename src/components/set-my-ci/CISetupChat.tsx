@@ -2,6 +2,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChatMessage } from './ChatMessage';
 import { CIButtonGroup } from './CIButtonGroup';
+import CISnippetDisplay from './snippet-display/CISnippetDisplay';
+import { generateFullSnippet } from '../ci-configuration/setup-instructions/snippetGenerators';
 
 const CISetupChat = () => {
   const [messages, setMessages] = useState<Array<{id: number, type: 'system' | 'button-group', content: string | React.ReactNode}>>([
@@ -95,10 +97,34 @@ const CISetupChat = () => {
       {
         id: Date.now() + 1,
         type: 'system',
-        content: 'Step 3: Configuration Complete\n\nYour CI configuration is now ready. You can view your configuration and implementation guide below.'
+        content: 'Step 3: Configuration Snippets\n\nBelow are the configuration snippets you can add to your workflow:'
       },
       {
         id: Date.now() + 2,
+        type: 'button-group',
+        content: <CISnippetDisplay 
+          selectedCI={selectedCI as 'github' | 'other'} 
+          selectedPackages={selectedPackages}
+          onNextStep={() => handleContinueToStep4()}
+          onPreviousStep={() => {/* For future implementation */}}
+        />
+      }
+    ]);
+  }
+
+  // Function to continue to step 4 (completion)
+  function handleContinueToStep4() {
+    setCurrentStep(4);
+    
+    setMessages(prev => [
+      ...prev,
+      {
+        id: Date.now(),
+        type: 'system',
+        content: 'Step 4: Implementation Guide\n\nFollow these steps to implement the JFrog integration in your CI system:'
+      },
+      {
+        id: Date.now() + 1,
         type: 'button-group',
         content: <CIButtonGroup 
           options={[

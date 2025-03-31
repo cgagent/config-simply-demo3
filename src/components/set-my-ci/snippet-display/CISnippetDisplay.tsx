@@ -23,7 +23,9 @@ interface CISnippetDisplayProps {
 
 const CISnippetDisplay: React.FC<CISnippetDisplayProps> = ({
   selectedCI,
-  selectedPackages
+  selectedPackages,
+  onNextStep,
+  onPreviousStep
 }) => {
   const [viewMode, setViewMode] = useState<'snippet' | 'full'>('snippet');
   const [snippets, setSnippets] = useState({
@@ -135,6 +137,22 @@ const CISnippetDisplay: React.FC<CISnippetDisplayProps> = ({
           </pre>
         </div>
       )}
+      
+      <div className="flex justify-end mt-4">
+        <Button
+          variant="outline"
+          className="mr-2 bg-gray-800 text-white hover:bg-gray-700 border-gray-700"
+          onClick={onPreviousStep}
+        >
+          Back
+        </Button>
+        <Button
+          className="bg-gray-800 text-white hover:bg-gray-700"
+          onClick={onNextStep}
+        >
+          Continue
+        </Button>
+      </div>
     </div>
   );
 };

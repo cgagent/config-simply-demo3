@@ -1,94 +1,82 @@
 
-export const generateJFrogSetupSnippet = (selectedCI: 'github' | 'other') => {
-  if (selectedCI === 'github') {
-    return `- name: Setup JFrog
+// Function to generate JFrog setup snippet based on CI system
+export const generateJFrogSetupSnippet = (ciSystem: 'github' | 'other'): string => {
+  if (ciSystem === 'github') {
+    return `# Add this to your GitHub Actions workflow
+- name: Setup JFrog
   uses: jfrog/setup-jfrog@v1
   with:
-    jfrog-cli-version: latest`;
+    subdomain: acme`;
   } else {
-    return `# Download JFrog CLI
-curl -fL https://getcli.jfrog.io | sh
-# Add JFrog CLI to PATH
-export PATH=$PATH:$HOME/.jfrog/jfrog`;
+    return `# Add this to your CI configuration
+# For Jenkins, GitLab CI, CircleCI, etc.
+export JFROG_PLATFORM_URL="https://acme.jfrog.io"
+export JFROG_API_KEY="YOUR_API_KEY"
+`;
   }
 };
 
-export const generatePackageSpecificSnippets = (selectedPackages: string[]) => {
+// Function to generate package-specific snippets
+export const generatePackageSpecificSnippets = (packageTypes: string[]): string => {
   let snippets = '';
   
-  if (selectedPackages.includes('npm')) {
-    snippets += `
-# Configure npm
-jfrog npm-config --global
-
-# Install dependencies
-npm install
-
-# Publish package (when ready)
-jfrog npm publish`;
+  if (packageTypes.includes('npm')) {
+    snippets += `\n# NPM Configuration
+- name: Configure npm
+  run: |
+    npm config set registry https://acme.jfrog.io/artifactory/api/npm/npm/
+    echo "//acme.jfrog.io/artifactory/api/npm/npm/:_auth=\${JFROG_API_KEY}" > .npmrc
+`;
   }
   
-  if (selectedPackages.includes('docker')) {
-    snippets += `
-# Login to JFrog Docker registry
-jfrog docker login
-
-# Build and push Docker image
-docker build -t your-registry.jfrog.io/your-image:tag .
-docker push your-registry.jfrog.io/your-image:tag`;
+  if (packageTypes.includes('docker')) {
+    snippets += `\n# Docker Configuration
+- name: Login to JFrog
+  run: |
+    echo $JFROG_API_KEY | docker login acme.jfrog.io -u admin --password-stdin
+`;
   }
   
-  if (selectedPackages.includes('maven')) {
-    snippets += `
-# Configure Maven
-jfrog maven-config --global
-
-# Run Maven with JFrog
-jfrog mvn clean install`;
+  if (packageTypes.includes('maven')) {
+    snippets += `\n# Maven Configuration
+- name: Configure Maven
+  run: |
+    mkdir -p ~/.m2
+    echo "<settings><servers><server><id>jfrog</id><username>admin</username><password>\${JFROG_API_KEY}</password></server></servers></settings>" > ~/.m2/settings.xml
+`;
   }
   
-  if (selectedPackages.includes('python')) {
-    snippets += `
-# Configure Python pip
-jfrog pip-config --global
-
-# Install packages
-pip install -r requirements.txt
-
-# Publish package (when ready)
-jfrog pip-publish`;
+  if (packageTypes.includes('python')) {
+    snippets += `\n# Python Configuration
+- name: Configure Python
+  run: |
+    pip config set global.index-url https://acme.jfrog.io/artifactory/api/pypi/pypi/simple
+    pip config set global.trusted-host acme.jfrog.io
+`;
   }
-  
-  if (selectedPackages.includes('go')) {
-    snippets += `
-# Configure Go
-jfrog go-config --global
 
-# Get dependencies
-jfrog go get
-
-# Build
-jfrog go build`;
+  if (packageTypes.includes('go')) {
+    snippets += `\n# Go Configuration
+- name: Configure Go
+  run: |
+    go env -w GOPROXY=https://acme.jfrog.io/artifactory/api/go/go
+`;
   }
-  
-  if (selectedPackages.includes('nuget')) {
-    snippets += `
-# Configure NuGet
-jfrog nuget-config --global
 
-# Restore packages
-jfrog nuget restore
-
-# Pack and publish (when ready)
-jfrog nuget pack
-jfrog nuget publish`;
+  if (packageTypes.includes('nuget')) {
+    snippets += `\n# NuGet Configuration
+- name: Configure NuGet
+  run: |
+    dotnet nuget add source https://acme.jfrog.io/artifactory/api/nuget/nuget -n jfrog
+`;
   }
   
   return snippets;
 };
 
-export const generateFullGitHubSnippet = (selectedPackages: string[]) => {
-  return `name: JFrog CI Integration
+// Function to generate full GitHub workflow
+export const generateFullGitHubSnippet = (packageTypes: string[]): string => {
+  return `name: CI Pipeline with JFrog
 
 on:
   push:
@@ -107,134 +95,123 @@ jobs:
       - name: Setup JFrog
         uses: jfrog/setup-jfrog@v1
         with:
-          jfrog-cli-version: latest
-${selectedPackages.includes('npm') ? `
+          subdomain: acme
+${packageTypes.includes('npm') ? `
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
           
       - name: Configure npm
-        run: jfrog npm-config --global
-        
+        run: |
+          npm config set registry https://acme.jfrog.io/artifactory/api/npm/npm/
+          echo "//acme.jfrog.io/artifactory/api/npm/npm/:_auth=\${JFROG_API_KEY}" > .npmrc
+          
       - name: Install dependencies
-        run: npm ci` : ''}
-${selectedPackages.includes('docker') ? `
-      - name: Login to JFrog Docker registry
-        run: jfrog docker login
-        
+        run: npm ci
+` : ''}${packageTypes.includes('docker') ? `
+      - name: Login to JFrog
+        run: |
+          echo $JFROG_API_KEY | docker login acme.jfrog.io -u admin --password-stdin
+          
       - name: Build and push Docker image
         run: |
-          docker build -t your-registry.jfrog.io/your-image:tag .
-          docker push your-registry.jfrog.io/your-image:tag` : ''}
-${selectedPackages.includes('maven') ? `
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-          
-      - name: Configure Maven
-        run: jfrog maven-config --global
-        
-      - name: Build with Maven
-        run: jfrog mvn clean install` : ''}
-${selectedPackages.includes('python') ? `
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-          
-      - name: Configure Python pip
-        run: jfrog pip-config --global
-        
-      - name: Install dependencies
-        run: pip install -r requirements.txt` : ''}
-${selectedPackages.includes('go') ? `
-      - name: Setup Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: '1.19'
-          
-      - name: Configure Go
-        run: jfrog go-config --global
-        
-      - name: Get dependencies
-        run: jfrog go get
-        
-      - name: Build
-        run: jfrog go build` : ''}
-${selectedPackages.includes('nuget') ? `
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '6.0.x'
-          
-      - name: Configure NuGet
-        run: jfrog nuget-config --global
-        
-      - name: Restore dependencies
-        run: jfrog nuget restore` : ''}`;
+          docker build -t acme.jfrog.io/docker-local/myapp:latest .
+          docker push acme.jfrog.io/docker-local/myapp:latest
+` : ''}`;
 };
 
-export const generateFullOtherCISnippet = (selectedPackages: string[]) => {
-  return `# Download and install JFrog CLI
-curl -fL https://getcli.jfrog.io | sh
-export PATH=$PATH:$HOME/.jfrog/jfrog
-
-# Configure JFrog CLI
-jfrog c add --url https://your-instance.jfrog.io --user $JFROG_USER --password $JFROG_PASSWORD
-jfrog c use your-server-id
-${selectedPackages.map(pkg => {
-  switch(pkg) {
-    case 'npm':
-      return `
-# Configure npm
-jfrog npm-config --global
-
-# Install dependencies
-npm ci`;
-    case 'docker':
-      return `
-# Login to JFrog Docker registry
-jfrog docker login
-
-# Build and push Docker image
-docker build -t your-registry.jfrog.io/your-image:tag .
-docker push your-registry.jfrog.io/your-image:tag`;
-    case 'maven':
-      return `
-# Configure Maven
-jfrog maven-config --global
-
-# Build with Maven
-jfrog mvn clean install`;
-    case 'python':
-      return `
-# Configure Python pip
-jfrog pip-config --global
-
-# Install dependencies
-pip install -r requirements.txt`;
-    case 'go':
-      return `
-# Configure Go
-jfrog go-config --global
-
-# Get dependencies
-jfrog go get
-
-# Build
-jfrog go build`;
-    case 'nuget':
-      return `
-# Configure NuGet
-jfrog nuget-config --global
-
-# Restore dependencies
-jfrog nuget restore`;
-    default:
-      return '';
+// Function to generate full snippet for other CI systems
+export const generateFullOtherCISnippet = (packageTypes: string[]): string => {
+  if (packageTypes.includes('npm')) {
+    return `# Jenkins Pipeline Example with JFrog
+pipeline {
+    agent any
+    
+    environment {
+        JFROG_PLATFORM_URL = "https://acme.jfrog.io"
+        JFROG_API_KEY = credentials('jfrog-api-key')
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        
+        stage('Setup') {
+            steps {
+                sh 'npm config set registry https://acme.jfrog.io/artifactory/api/npm/npm/'
+                sh 'echo "//acme.jfrog.io/artifactory/api/npm/npm/:_auth=\${JFROG_API_KEY}" > .npmrc'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                sh 'npm ci'
+                sh 'npm run build'
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                sh 'npm test'
+            }
+        }
+        
+        stage('Publish') {
+            steps {
+                sh 'npm publish'
+            }
+        }
+    }
+}`;
+  } else {
+    return `# Jenkins Pipeline Example with JFrog
+pipeline {
+    agent any
+    
+    environment {
+        JFROG_PLATFORM_URL = "https://acme.jfrog.io"
+        JFROG_API_KEY = credentials('jfrog-api-key')
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        
+        stage('Setup') {
+            steps {
+                sh 'echo "Setting up JFrog connection"'
+                // Add your package-specific setup steps here
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                sh 'echo "Building application"'
+                // Add your build steps here
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                sh 'echo "Running tests"'
+                // Add your test steps here
+            }
+        }
+        
+        stage('Publish') {
+            steps {
+                sh 'echo "Publishing to JFrog"'
+                // Add your publish steps here
+            }
+        }
+    }
+}`;
   }
-}).join('\n')}`;
 };
