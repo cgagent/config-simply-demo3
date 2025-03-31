@@ -39,12 +39,12 @@ export const CIButtonGroup: React.FC<CIButtonGroupProps> = ({
 
   return (
     <div className="space-y-3 ml-12">
-      <div className={`grid ${options.length > 3 ? 'grid-cols-2 gap-2' : 'grid-cols-1 gap-2'}`}>
+      <div className="flex flex-row space-x-3">
         {options.map((option) => (
           <Button
             key={option.id}
             variant={selectedOptions?.includes(option.id) ? "default" : "outline"}
-            className="justify-start py-3 px-4 h-auto text-left"
+            className="justify-start py-3 px-4 h-auto text-left bg-gray-800 text-white hover:bg-gray-700 border-gray-700"
             onClick={() => onSelect(option.id)}
           >
             <div className="flex items-center space-x-2">
@@ -65,7 +65,7 @@ export const CIButtonGroup: React.FC<CIButtonGroupProps> = ({
         <div className="flex justify-end mt-4">
           <Button 
             onClick={onContinue}
-            className="px-4"
+            className="px-4 bg-gray-800 text-white hover:bg-gray-700"
           >
             Continue <ArrowRight className="ml-1 h-4 w-4" />
           </Button>
