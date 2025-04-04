@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { InitialChatScreen } from './InitialChatScreen';
 import { ConversationScreen } from './ConversationScreen';
@@ -32,6 +31,7 @@ export const AIChat: React.FC<AIChatProps> = ({
     setInputValue,
     handleSendMessage,
     handleSelectQuery,
+    handleSecurityRemediation,
     showCIConfig,
     repository,
     resetMessages
@@ -94,6 +94,7 @@ export const AIChat: React.FC<AIChatProps> = ({
       setInputValue={setInputValue}
       onSendMessage={handleSendMessage}
       onSelectQuery={handleSelectQuery}
+      onSelectOption={handleSecurityRemediation}
       showCIConfig={showCIConfig}
       repository={repository}
     />

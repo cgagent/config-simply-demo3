@@ -7,13 +7,15 @@ import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import CVECard from '../CVECard';
-
+import { SelectableOptions } from '../ai-configuration/SelectableOptions';
+import { ChatOption } from '../ai-configuration/types';
 
 interface ChatMessageProps {
   message: Message;
+  onSelectOption?: (option: ChatOption) => void;
 }
 
-export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
+export const ChatMessage: React.FC<ChatMessageProps> = ({ message, onSelectOption }) => {
   const isUser = message.role === 'user';
   const { toast } = useToast();
 
@@ -25,6 +27,11 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
       });
     });
   };
+
+  const securityRemediationOptions: ChatOption[] = [
+    { id: 'git', label: 'Create Git Issue', value: 'I want to create a Git issue for this vulnerability' },
+    { id: 'email', label: 'Send Email', value: 'I want to send an email about this vulnerability' }
+  ];
 
   return (
    
@@ -77,6 +84,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5, duration: 0.5 }}
+          className="space-y-4"
         >
           <CVECard
             cveId="CVE-2024-39338"
@@ -90,6 +98,14 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
             epssScore="0.09%"
             percentile="22.52%"
           />
+          {onSelectOption && (
+            <div className="mt-4">
+              <SelectableOptions 
+                options={securityRemediationOptions}
+                onSelectOption={onSelectOption}
+              />
+            </div>
+          )}
         </motion.div>
       )}
  

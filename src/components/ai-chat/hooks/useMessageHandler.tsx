@@ -2,6 +2,8 @@ import { useToast } from '@/hooks/use-toast';
 import { useCIConfiguration } from './useCIConfiguration';
 import { useSpecialQueries } from './useSpecialQueries';
 import { useMessageState } from './useMessageState';
+import { ChatOption } from '@/components/ai-configuration/types';
+import { generateSecurityRemidiationResponse } from '../utils/chatResponses';
 
 export const useMessageHandler = () => {
   const { toast } = useToast();
@@ -25,6 +27,19 @@ export const useMessageHandler = () => {
   } = useCIConfiguration();
   
   const { processSpecialQuery } = useSpecialQueries();
+
+  const handleSecurityRemediation = (option: ChatOption) => {
+    // Add user's selection as a message
+    addUserMessage(option.value);
+    setIsProcessing(true);
+
+    // Handle the remediation action using predefined responses
+    setTimeout(() => {
+      const response = generateSecurityRemidiationResponse(option.id);
+      addBotMessage(response);
+      setIsProcessing(false);
+    }, 1000);
+  };
 
   const handleSendMessage = async (content: string) => {
     if (!content.trim()) return;
@@ -102,6 +117,7 @@ export const useMessageHandler = () => {
     setInputValue,
     handleSendMessage,
     handleSelectQuery,
+    handleSecurityRemediation,
     showCIConfig,
     repository,
     resetMessages: fullReset // Use the combined reset function

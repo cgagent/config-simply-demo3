@@ -4,6 +4,7 @@ import { Message } from './constants';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Bot } from 'lucide-react';
+import { ChatOption } from '@/components/ai-configuration/types';
 
 // Thinking animation component with three dots
 const ThinkingAnimation = () => {
@@ -31,9 +32,10 @@ const ThinkingAnimation = () => {
 interface MessageListProps {
   messages: Message[];
   isProcessing?: boolean;
+  onSelectOption?: (option: ChatOption) => void;
 }
 
-export const MessageList: React.FC<MessageListProps> = ({ messages, isProcessing = false }) => {
+export const MessageList: React.FC<MessageListProps> = ({ messages, isProcessing = false, onSelectOption }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -64,7 +66,11 @@ export const MessageList: React.FC<MessageListProps> = ({ messages, isProcessing
       )}
       <div className="px-4 space-y-5">
         {messages.map((message) => (
-          <ChatMessage key={message.id} message={message} />
+          <ChatMessage 
+            key={message.id} 
+            message={message} 
+            onSelectOption={onSelectOption}
+          />
         ))}
         
         {/* Thinking animation when processing */}

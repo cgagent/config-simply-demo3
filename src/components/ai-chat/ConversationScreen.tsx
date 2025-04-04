@@ -7,6 +7,12 @@ import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { SuggestedQueries } from './SuggestedQueries';
 import { useNavigate } from 'react-router-dom';
 import { useRepositories } from '@/contexts/RepositoryContext';
+import { ChatOption } from '@/components/ai-configuration/types';
+
+interface Repository {
+  name: string;
+  // Add other repository properties as needed
+}
 
 interface ConversationScreenProps {
   messages: Message[];
@@ -15,8 +21,9 @@ interface ConversationScreenProps {
   setInputValue: (value: string) => void;
   onSendMessage: (content: string) => void;
   onSelectQuery: (query: string) => void;
+  onSelectOption?: (option: ChatOption) => void;
   showCIConfig: boolean;
-  repository?: any;
+  repository?: Repository;
 }
 
 export const ConversationScreen: React.FC<ConversationScreenProps> = ({
@@ -26,54 +33,41 @@ export const ConversationScreen: React.FC<ConversationScreenProps> = ({
   setInputValue,
   onSendMessage,
   onSelectQuery,
+  onSelectOption,
   showCIConfig,
   repository
 }) => {
   const navigate = useNavigate();
-  const { updateRepositoryStatus } = useRepositories();
-  
-  // Use the shared repository update function
-  const handleMergeSuccess = (repoName: string, packageType: string) => {
-    updateRepositoryStatus(repoName, packageType);
-  };
-  
+  const { repositories } = useRepositories();
+
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-hidden flex flex-col">
-        <MessageList messages={messages} isProcessing={isProcessing} />
-      </div>
+      <MessageList 
+        messages={messages} 
+        isProcessing={isProcessing}
+        onSelectOption={onSelectOption}
+      />
       
-      {showCIConfig && (
-        <div className="border-t border-blue-800/30 pt-2 space-card rounded-lg shadow-lg mb-4">
-          <h3 className="text-lg font-semibold px-4 py-2 text-blue-100 space-glow">CI Configuration Assistant</h3>
-          <div className="p-4 max-h-[500px] overflow-y-auto">
-            <AIConfigurationChat 
-              repositoryName="infrastructure" 
-              onMergeSuccess={handleMergeSuccess}
-            />
-          </div>
-        </div>
-      )}
-      
-      <div className="pt-2">
-        <ChatInput 
-          isProcessing={isProcessing} 
-          onSendMessage={onSendMessage} 
-          isInitialState={false}
+      <div className="flex-none p-4 border-t border-border/50">
+        <ChatInput
+          isProcessing={isProcessing}
+          onSendMessage={onSendMessage}
           value={inputValue}
           setValue={setInputValue}
         />
-        
-        {!isProcessing && (
-          <div className="mt-4 mb-2">
-            <p className="text-blue-200/70 mb-2 text-xs">Quick questions:</p>
-            <SuggestedQueries 
-              queries={SUGGESTED_QUERIES} 
-              onSelectQuery={onSelectQuery} 
-            />
-          </div>
-        )}
       </div>
+
+      <Sheet open={showCIConfig} onOpenChange={() => navigate('/repositories')}>
+        <SheetContent side="right" className="w-[600px] sm:w-[800px]">
+          <AIConfigurationChat
+            repositoryName={repository?.name}
+            onMergeSuccess={(repoName, packageType) => {
+              // Handle merge success
+              console.log(`Successfully merged configuration for ${repoName} with ${packageType}`);
+            }}
+          />
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };
