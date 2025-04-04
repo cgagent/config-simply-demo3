@@ -116,7 +116,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         disabled={isProcessing}
-        className={`pr-12 resize-none overflow-hidden min-h-[56px] font-normal bg-gray-100 dark:bg-gray-850 ${isInitialState ? 'text-base' : 'text-sm'}`}
+        className={`pr-12 resize-none overflow-hidden min-h-[70px] font-normal bg-gray-100 dark:bg-gray-850 ${isInitialState ? 'text-base' : 'text-sm'}`}
         rows={1}
       />
       <Button
