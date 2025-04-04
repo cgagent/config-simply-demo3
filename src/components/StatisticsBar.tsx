@@ -74,13 +74,13 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
       >
         <Card className="space-card p-6 h-full flex flex-col justify-between backdrop-blur-sm">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-medium text-blue-100/80">CI Completion</h3>
+            <h3 className="text-sm font-medium text-blue-100/80">CI Covarage</h3>
             <CheckCircle className="h-5 w-5 text-blue-400" />
           </div>
           <div>
             <div className="flex items-center justify-between mb-1.5">
               <span className="text-xl font-semibold text-white space-glow">{configuredRepos} / {totalRepos}</span>
-              <span className="text-xs text-blue-200/70">repositories</span>
+              <span className="text-xs text-blue-200/70">git repositories configured</span>
             </div>
             <Progress 
               value={ciCompletionPercentage} 
@@ -88,7 +88,9 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
               indicatorClassName="bg-gradient-to-r from-blue-600 to-blue-400"
             />
             <p className="text-xs text-blue-200/60 mt-2">
-              Click to view CI configuration details
+              {configuredRepos === totalRepos 
+                ? "All git repositories are configured"
+                : 1 === totalRepos - configuredRepos ? "⚠️ 1 git repository is not protected" : `⚠️ ${totalRepos - configuredRepos} git repositories are not protected`}
             </p>
           </div>
         </Card>
@@ -173,8 +175,10 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
             <MonitorDot className="h-5 w-5 text-blue-400" />
           </div>
           <div>
-            <span className="text-xl font-semibold">21 / 30</span>
-            <br></br>
+          <div className="flex items-center justify-between mb-1.5">
+              <span className="text-xl font-semibold text-white space-glow">21 / 30</span>
+              <span className="text-xs text-blue-200/70">developers connected</span>
+            </div>
             <p className="text-xs text-blue-200/60 mt-2">
               ⚠️ 9 Developers are not protected
             </p>
