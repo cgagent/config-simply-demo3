@@ -22,7 +22,8 @@ const PACKAGE_MANAGER_PATTERNS = {
 
 const SECURITY_REMIDIATION_PATTERNS = {
   git: ['git issue', 'create git issue'],
-  email: ['email yahavi@acme.com', 'ping yahavi@acme.com']
+  email: ['email yahavi@acme.com', 'ping yahavi@acme.com'],
+  slack: ['slack', 'ping in slack', 'notify in slack']
 } as const;
 
 const SECURITY_RISK_PATTERNS = {
@@ -67,8 +68,10 @@ export const generateSecurityRemidiationResponse = (action: string): string => {
       return "Creating a Git issue for yahavi@acme.com to upgrade axios version in the ACME/frontend-app and ACME/backend-api repositories.";
     case 'email':
       return "Sending an email to yahavi@acme.com to upgrade axios version in the ACME/frontend-app and ACME/backend-api repositories.";
+    case 'slack':
+      return "Sending a Slack notification to *yahavi* about upgrading axios version in the ACME/frontend-app and ACME/backend-api repositories.";
     default:
-      return "I'll help you address this security vulnerability. Would you like to create a Git issue or send an email?";
+      return "I'll help you address this security vulnerability. Would you like to create a Git issue, send an email, or notify in Slack?";
   }
 };
 
