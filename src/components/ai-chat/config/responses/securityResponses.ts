@@ -38,7 +38,21 @@ export const generateSecurityRiskResponse = (): string => {
  * This includes both blocked packages and packages at risk
  */
 export const generateMaliciousPackagesResponse = (): string => {
-  return `# Malicious Packages Summary
+  return `# Security Alert: Packages Requiring Immediate Attention
+
+## ⚠️ Packages at Risk (1)
+The following package has critical security vulnerabilities that require immediate action:
+
+### 📦 axios
+• **Used version:** 1.5.1
+• **Latest version published:** 1.8.3
+• **Vulnerabilities:** CVE-2024-39338
+• **Severity:** Critical
+• **Affected repositories:** ACME/frontend-app, ACME/backend-api
+
+Would you like to take action on this vulnerable package?
+
+---
 
 ## 🚫 Blocked Packages (3)
 The following malicious packages were blocked in the last two weeks:
@@ -56,19 +70,7 @@ The following malicious packages were blocked in the last two weeks:
 ### bad-actor-addon
 • **Type:** npm
 • **Blocked at:** 2024-03-05
-• **Reason:** Had a payload to exfiltrate private data
-
-## ⚠️ Packages at Risk (1)
-The following package has security vulnerabilities that need attention:
-
-### axios
-• **Used version:** 1.5.1
-• **Latest version published:** 1.8.3
-• **Vulnerabilities:** CVE-2024-39338
-• **Severity:** Critical
-• **Affected repositories:** ACME/frontend-app, ACME/backend-api
-
-Would you like to take action on the vulnerable package?`;
+• **Reason:** Had a payload to exfiltrate private data`;
 };
 
 /**

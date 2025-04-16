@@ -31,7 +31,7 @@ export const maliciousPackagesFlow: ConversationFlow = {
   name: 'Malicious Packages',
   steps: [
     {
-      id: 'malicious-packages',
+      id: 'packages-at-risk',
       patterns: securityRiskPatterns.maliciousPackages,
       response: securityRiskResponses.maliciousPackages,
       nextSteps: ['remediation-action-selection']
