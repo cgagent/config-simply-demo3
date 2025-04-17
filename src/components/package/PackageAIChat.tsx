@@ -1,19 +1,13 @@
-
-import React, { useState } from 'react';
+import React from 'react';
 import { Package } from '@/types/package';
 import { PackageSummary } from './PackageSummary';
-import { MessageList } from './chat/MessageList';
-import { ChatInput } from './chat/ChatInput';
-import { SuggestedQueries } from './chat/SuggestedQueries';
-import { processUserQuery, getInitialMessage, DEFAULT_SUGGESTED_QUERIES } from './chat/chatUtils';
-import { Message } from './chat/ChatMessage';
+import { AIChat } from '@/components/ai-chat/AIChat';
 import { Bot, Home } from 'lucide-react';
 import { 
   Breadcrumb,
   BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbLink,
-  BreadcrumbSeparator 
 } from "@/components/ui/breadcrumb";
 import { useNavigate } from 'react-router-dom';
 
@@ -22,8 +16,6 @@ interface PackageAIChatProps {
 }
 
 const PackageAIChat: React.FC<PackageAIChatProps> = ({ packages }) => {
-  const [messages, setMessages] = useState<Message[]>([getInitialMessage()]);
-  const [isProcessing, setIsProcessing] = useState(false);
   const navigate = useNavigate();
 
   // Calculate summary metrics
@@ -31,37 +23,6 @@ const PackageAIChat: React.FC<PackageAIChatProps> = ({ packages }) => {
   const totalConsumption = packages.reduce((acc, pkg) => acc + pkg.downloads, 0);
   const totalStorage = packages.reduce((acc, pkg) => acc + pkg.size, 0);
   const maliciousPackages = packages.filter(pkg => pkg.vulnerabilities > 2).length;
-
-  const handleSendMessage = async (input: string) => {
-    if (!input.trim()) return;
-    
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      role: 'user',
-      content: input
-    };
-    
-    setMessages(prev => [...prev, userMessage]);
-    setIsProcessing(true);
-    
-    // Simulate AI processing
-    setTimeout(() => {
-      const response = processUserQuery(input, packages);
-      
-      const botMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'bot',
-        content: response
-      };
-      
-      setMessages(prev => [...prev, botMessage]);
-      setIsProcessing(false);
-    }, 1000);
-  };
-
-  const handleSelectQuery = (query: string) => {
-    handleSendMessage(query);
-  };
 
   const handleBackToHome = () => {
     navigate('/home');
@@ -105,21 +66,9 @@ const PackageAIChat: React.FC<PackageAIChatProps> = ({ packages }) => {
         />
       </div>
       
-      <MessageList messages={messages} />
-      
-      {/* Suggested queries */}
-      {messages.length < 3 && (
-        <SuggestedQueries 
-          queries={DEFAULT_SUGGESTED_QUERIES} 
-          onSelectQuery={handleSelectQuery} 
-        />
-      )}
-      
-      <div className="p-3 border-t bg-background">
-        <ChatInput 
-          isProcessing={isProcessing} 
-          onSendMessage={handleSendMessage} 
-        />
+      {/* Generic AIChat component */}
+      <div className="flex-1 overflow-hidden">
+        <AIChat />
       </div>
     </div>
   );
