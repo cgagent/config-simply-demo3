@@ -51,32 +51,35 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     if (!isInitialState) return;
     
     const prefix = "Ask JFrog to ";
+    let timeoutId: NodeJS.Timeout;
     
     if (isTyping) {
       if (currentSuggestion.length < rotatingPlaceholders[currentIndex].length) {
-        const timer = setTimeout(() => {
+        timeoutId = setTimeout(() => {
           setCurrentSuggestion(rotatingPlaceholders[currentIndex].substring(0, currentSuggestion.length + 1));
         }, 30);
-        return () => clearTimeout(timer);
       } else {
-        const timer = setTimeout(() => {
+        timeoutId = setTimeout(() => {
           setIsTyping(false);
         }, 1000);
-        return () => clearTimeout(timer);
       }
     } else {
       if (currentSuggestion.length > 0) {
-        const timer = setTimeout(() => {
+        timeoutId = setTimeout(() => {
           setCurrentSuggestion(currentSuggestion.substring(0, currentSuggestion.length - 1));
         }, 20);
-        return () => clearTimeout(timer);
       } else {
         const nextIndex = (currentIndex + 1) % rotatingPlaceholders.length;
         setCurrentIndex(nextIndex);
         setIsTyping(true);
-        return undefined;
       }
     }
+
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, [currentSuggestion, isTyping, currentIndex, isInitialState, rotatingPlaceholders]);
 
   const handleSendMessage = () => {
@@ -132,3 +135,4 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     </div>
   );
 };
+

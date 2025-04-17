@@ -39,16 +39,23 @@ const Home: React.FC = () => {
       return;
     }
 
-    // Reset chat whenever location state has resetChat flag
-    if (location.pathname === '/home' && location.state && location.state.resetChat) {
-      console.log("Resetting chat state from location state change");
+    // Reset chat whenever location state has resetChat flag or when navigating to home
+    if (location.pathname === '/home') {
+      console.log("Resetting chat state from navigation");
       setIsChatActive(false);
       setChatInputValue('');
       setShouldSendMessage(false);
       // Clear the state to avoid repeating this action
       window.history.replaceState({}, document.title);
     }
-  }, [location]);
+
+    // Cleanup function to reset state when component unmounts
+    return () => {
+      setIsChatActive(false);
+      setChatInputValue('');
+      setShouldSendMessage(false);
+    };
+  }, [location.pathname]);
 
   const handleChatQuery = useCallback((query: string) => {
     setChatInputValue(query);
