@@ -1,7 +1,7 @@
 import React from 'react';
 import { MessageList } from './MessageList';
 import { ConfigInputForm } from './ConfigInputForm';
-import { useConfigChat } from './hooks/useConfigChat';
+import { useConfigChat } from '../ai-chat/hooks/useConfigChat';
 import { SelectableOptions } from './SelectableOptions';
 import { useNavigate } from 'react-router-dom';
 

@@ -1,10 +1,9 @@
 import React from 'react';
 import { MessageList } from './MessageList';
 import { ChatInput } from './ChatInput';
-import { Message, SUGGESTED_QUERIES } from './constants';
+import { Message } from './constants';
 import { AIConfigurationChat } from '@/components/ai-configuration';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
-import { SuggestedQueries } from './SuggestedQueries';
 import { useNavigate } from 'react-router-dom';
 import { useRepositories } from '@/contexts/RepositoryContext';
 import { ChatOption } from '@/components/ai-configuration/types';
