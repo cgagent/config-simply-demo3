@@ -13,8 +13,8 @@ export const SUGGESTED_QUERIES = [
     query: "I would like to release a new package. Can you help me with that?"
   },
   {
-    label: "Common packages",
-    query: "Identify which packages are vulnerable and currently used in my organization."
+    label: "Invite a user",
+    query: "I would like to invite a user to my organization. Can you help me with that?"
   }
 ];
 
