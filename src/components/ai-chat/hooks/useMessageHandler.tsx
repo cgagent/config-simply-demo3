@@ -1,7 +1,7 @@
 import { useToast } from '@/hooks/use-toast';
 import { useMessageState } from './useMessageState';
 import { ChatOption } from '@/components/ai-configuration/types';
-import { generateSecurityRemidiationResponse } from '../utils/chatResponses';
+import { generateSecurityRemediationResponse } from '../config/responses/securityResponses';
 import { isCIConfigurationQuery, getSampleRepository, Repository } from '../config/patterns/ciPatterns';
 import { checkSpecialQuery } from '../config/patterns/specialQueriesPatterns';
 import { getRandomResponse } from '../utils/aiResponseUtils';
@@ -30,7 +30,7 @@ export const useMessageHandler = () => {
 
     // Handle the remediation action using predefined responses
     setTimeout(() => {
-      const response = generateSecurityRemidiationResponse(option.id);
+      const response = generateSecurityRemediationResponse(option.id);
       addBotMessage(response);
       setIsProcessing(false);
     }, 1000);

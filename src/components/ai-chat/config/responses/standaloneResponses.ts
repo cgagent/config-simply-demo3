@@ -83,7 +83,7 @@ bad-actor-addon: Had a payload to exfiltrate private data.`
     patterns: ['sbom', 'report for', 'last 30 days'],
     response: `Here is the SBOM report for your packages from the last 30 days:
 
-Package: lodash
+Package: lodash1
 Version: 4.17.21
 License: MIT
 Dependencies:

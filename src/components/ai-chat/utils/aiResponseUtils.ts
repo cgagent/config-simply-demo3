@@ -1,4 +1,5 @@
-import { conversationFlows, standaloneResponses } from './chatResponses';
+import { conversationFlows } from '../config/flows';
+import { standaloneResponses } from '../config/responses/standaloneResponses';
 
 // Track conversation state
 let currentFlow: string | null = null;
