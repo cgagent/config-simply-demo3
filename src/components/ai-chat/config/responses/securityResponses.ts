@@ -1,15 +1,16 @@
 import { ChatOption } from '@/components/shared/types';
+import { securityRemediationOptions, SECURITY_REMEDIATION_ACTIONS } from '../constants/securityConstants';
 
 /**
  * Generates a response for security remediation actions
  */
 export const generateSecurityRemediationResponse = (action: string): string => {
   switch (action) {
-    case 'git':
+    case SECURITY_REMEDIATION_ACTIONS.GIT:
       return "Creating a Git issue for yahavi@acme.com to upgrade axios version in the ACME/frontend-app and ACME/backend-api repositories.";
-    case 'email':
+    case SECURITY_REMEDIATION_ACTIONS.EMAIL:
       return "Sending an email to yahavi@acme.com to upgrade axios version in the ACME/frontend-app and ACME/backend-api repositories.";
-    case 'slack':
+    case SECURITY_REMEDIATION_ACTIONS.SLACK:
       return "Sending a Slack notification to *yahavi* about upgrading axios version in the ACME/frontend-app and ACME/backend-api repositories.";
     default:
       return "I'll help you address this security vulnerability. Would you like to create a Git issue, send an email, or notify in Slack?";
@@ -72,14 +73,8 @@ The following malicious packages were blocked in the last two weeks:
 • **Reason:** Had a payload to exfiltrate private data`;
 };
 
-/**
- * Security remediation options
- */
-export const securityRemediationOptions: ChatOption[] = [
-  { id: 'git', label: 'Create Git Issue', value: 'I want to create a Git issue for this vulnerability' },
-  { id: 'slack', label: 'Notify in Slack', value: 'I want to notify in Slack about this vulnerability' },
-  { id: 'email', label: 'Send Email', value: 'I want to send an email about this vulnerability' }
-];
+// Re-export the security remediation options from the constants file
+export { securityRemediationOptions };
 
 /**
  * Security risk flow responses

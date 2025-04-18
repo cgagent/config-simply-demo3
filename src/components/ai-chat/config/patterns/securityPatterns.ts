@@ -1,3 +1,5 @@
+import { SECURITY_REMEDIATION_PATTERNS, getAllSecurityRemediationPatterns } from '../constants/securityConstants';
+
 /**
  * Patterns for security risk identification
  */
@@ -18,27 +20,14 @@ export const SECURITY_RISK_PATTERNS = {
   ]
 } as const;
 
-/**
- * Patterns for security remediation actions
- */
-export const SECURITY_REMIDIATION_PATTERNS = {
-  git: ['git issue', 'create git issue'],
-  email: ['email yahavi@acme.com', 'ping yahavi@acme.com'],
-  slack: ['slack', 'ping in slack', 'notify in slack']
-} as const;
+// Re-export the security remediation patterns from the constants file
+export { SECURITY_REMEDIATION_PATTERNS, getAllSecurityRemediationPatterns };
 
 /**
  * Get all security risk patterns as a flat array
  */
 export const getAllSecurityRiskPatterns = (): string[] => {
   return Object.values(SECURITY_RISK_PATTERNS).flat();
-};
-
-/**
- * Get all security remediation patterns as a flat array
- */
-export const getAllSecurityRemediationPatterns = (): string[] => {
-  return Object.values(SECURITY_REMIDIATION_PATTERNS).flat();
 };
 
 /**

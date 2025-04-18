@@ -1,6 +1,7 @@
 import { ConversationFlow } from '../../utils/types';
 import { securityRiskPatterns } from '../patterns/securityPatterns';
-import { securityRiskResponses, securityRemediationOptions } from '../responses/securityResponses';
+import { securityRiskResponses } from '../responses/securityResponses';
+import { securityRemediationOptions } from '../constants/securityConstants';
 
 /**
  * Security risk flow

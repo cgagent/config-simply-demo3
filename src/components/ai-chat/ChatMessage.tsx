@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import CVECard from '../CVECard';
 import { SelectableOptions } from '../ai-configuration/SelectableOptions';
 import { ChatOption } from '@/components/shared/types';
+import { securityRemediationOptions } from './config/constants/securityConstants';
 
 interface ChatMessageProps {
   message: Message;
@@ -27,12 +28,6 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, onSelectOptio
       });
     });
   };
-
-  const securityRemediationOptions: ChatOption[] = [
-    { id: 'git', label: 'Create Git Issue', value: 'I want to create a Git issue for this vulnerability' },
-    { id: 'slack', label: 'Notify in Slack', value: 'I want to notify in Slack about this vulnerability' },
-    { id: 'email', label: 'Send Email', value: 'I want to send an email about this vulnerability' }
-  ];
 
   return (
    
