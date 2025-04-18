@@ -8,6 +8,16 @@ export interface Package {
   size: number; // in bytes
 }
 
+export interface LatestPackage {
+  id: string;
+  name: string;
+  version: string;
+  type: string;
+  releaseDate: string;
+  repository: string;
+  status: 'passed' | 'warning' | 'failed';
+}
+
 export interface BlockedPackage {
   id: string;
   name: string;
@@ -32,6 +42,7 @@ export interface PackageStatistics {
     severity: string;
     affectedRepos: string[];
   }[];
+  latestPackages: LatestPackage[];
 }
 
 // Default demo data
@@ -52,6 +63,53 @@ export const defaultPackageStatistics: PackageStatistics = {
       severity: 'Critical',
       affectedRepos: ['ACME/frontend-app', 'ACME/backend-api']
     }
+  ],
+  latestPackages: [
+    {
+      id: '1',
+      name: 'frontend-app',
+      version: '1.2.3',
+      type: 'npm',
+      releaseDate: '2024-06-15T14:30:00Z',
+      repository: 'production',
+      status: 'passed'
+    },
+    {
+      id: '2',
+      name: 'backend-api',
+      version: '2.0.1',
+      type: 'maven',
+      releaseDate: '2025-04-14T10:15:00Z',
+      repository: 'staging',
+      status: 'warning'
+    },
+    {
+      id: '3',
+      name: 'shared-components',
+      version: '0.5.0',
+      type: 'npm',
+      releaseDate: '2024-06-13T16:45:00Z',
+      repository: 'production',
+      status: 'passed'
+    },
+    // {
+    //   id: '4',
+    //   name: 'infrastructure',
+    //   version: '1.0.0',
+    //   type: 'docker',
+    //   releaseDate: '2024-06-12T09:30:00Z',
+    //   repository: 'production',
+    //   status: 'passed'
+    // },
+    // {
+    //   id: '5',
+    //   name: 'data-processor',
+    //   version: '0.8.2',
+    //   type: 'python',
+    //   releaseDate: '2024-06-11T11:20:00Z',
+    //   repository: 'staging',
+    //   status: 'failed'
+    // }
   ]
 };
 

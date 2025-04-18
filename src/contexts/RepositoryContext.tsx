@@ -1,11 +1,12 @@
 import React, { createContext, useContext, ReactNode, useCallback } from 'react';
-import { Repository } from '@/types/repository';
+import { Repository, PackageType } from '@/types/repository';
 import { useCILocalStorage } from '@/hooks/useCILocalStorage';
+import { PackageStatistics, BlockedPackage } from '@/types/package';
 
 /**
  * Type for package manager types supported by the system
  */
-export type PackageManagerType = 'npm' | 'maven' | 'both';
+export type PackageManagerType = PackageType | 'both';
 
 /**
  * Interface defining the shape of the repository context
@@ -21,6 +22,14 @@ interface RepositoryContextType {
   removeRepository: (repoName: string) => void;
   /** Function to check if a repository exists */
   hasRepository: (repoName: string) => boolean;
+  /** Package statistics data */
+  packageStats: PackageStatistics;
+  /** Function to update package statistics */
+  setPackageStats: (stats: PackageStatistics) => void;
+  /** Blocked packages data */
+  blockedPackages: BlockedPackage[];
+  /** Function to update blocked packages */
+  setBlockedPackages: (packages: BlockedPackage[]) => void;
 }
 
 /**
@@ -52,7 +61,16 @@ interface RepositoryProviderProps {
  * Provider component for repository context
  */
 export const RepositoryProvider: React.FC<RepositoryProviderProps> = ({ children }) => {
-  const { repositories, updateRepositoryStatus, addRepository, removeRepository } = useCILocalStorage();
+  const { 
+    repositories, 
+    updateRepositoryStatus, 
+    addRepository, 
+    removeRepository,
+    packageStats,
+    setPackageStats,
+    blockedPackages,
+    setBlockedPackages
+  } = useCILocalStorage();
 
   /**
    * Check if a repository exists by name
@@ -69,7 +87,14 @@ export const RepositoryProvider: React.FC<RepositoryProviderProps> = ({ children
       console.warn(`Repository ${repoName} not found. Status update skipped.`);
       return;
     }
-    updateRepositoryStatus(repoName, packageType);
+    
+    // Handle the 'both' case by updating both npm and maven
+    if (packageType === 'both') {
+      updateRepositoryStatus(repoName, 'npm');
+      updateRepositoryStatus(repoName, 'maven');
+    } else {
+      updateRepositoryStatus(repoName, packageType);
+    }
   }, [hasRepository, updateRepositoryStatus]);
 
   /**
@@ -99,7 +124,11 @@ export const RepositoryProvider: React.FC<RepositoryProviderProps> = ({ children
     updateRepositoryStatus: handleUpdateRepositoryStatus,
     addRepository: handleAddRepository,
     removeRepository: handleRemoveRepository,
-    hasRepository
+    hasRepository,
+    packageStats,
+    setPackageStats,
+    blockedPackages,
+    setBlockedPackages
   };
 
   return (

@@ -1,12 +1,13 @@
 import React, { useCallback } from 'react';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { CheckCircle, Package, PackageX, Database, ShieldBan, MonitorDot, Biohazard, Skull } from 'lucide-react';
+import { CheckCircle, Package, PackageX, Database, ShieldBan, MonitorDot, Biohazard, Skull, AlertTriangle, XCircle } from 'lucide-react';
 import { formatNumber } from '@/lib/formatters';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { usePackageLocalStorage } from '@/hooks/usePackageLocalStorage';
 import { useRepositories } from '@/contexts/RepositoryContext';
+import { formatDistanceToNow } from 'date-fns';
+import { packageTypeColors } from '@/types/package';
 
 interface StatisticsBarProps {
   ciCompletionPercentage: number;
@@ -24,8 +25,7 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
   onChatQuery
 }) => {
   const navigate = useNavigate();
-  const { packageStats } = usePackageLocalStorage();
-  const { repositories } = useRepositories();
+  const { repositories, packageStats } = useRepositories();
 
   // Calculate repository statistics
   const totalRepos = repositories.length;
@@ -54,10 +54,50 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
     }
   }, [onChatQuery]);
 
+  const handleLatestPackagesClick = useCallback(() => {
+    if (onChatQuery) {
+      onChatQuery("show me the latest package releases in my organization");
+    }
+  }, [onChatQuery]);
+
   const cardVariants = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
     hover: { scale: 1.02 }
+  };
+
+  // Helper function to get status icon
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'passed':
+        return <CheckCircle className="h-4 w-4 text-green-500" />;
+      case 'warning':
+        return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+      case 'failed':
+        return <XCircle className="h-4 w-4 text-red-500" />;
+      default:
+        return null;
+    }
+  };
+
+  // Helper function to get package type icon
+  const getPackageTypeIcon = (type: string) => {
+    switch (type.toLowerCase()) {
+      case 'docker':
+        return <img src="/lovable-uploads/docker.png" className="w-4 h-4" alt="Docker" />;
+      case 'maven':
+        return <img src="/lovable-uploads/maven.png" className="w-4 h-4" alt="Maven" />;
+      case 'npm':
+        return <img src="/lovable-uploads/npm.png" className="w-4 h-4" alt="NPM" />;
+      case 'python':
+        return <img src="/lovable-uploads/python.png" className="w-4 h-4" alt="Python" />;
+      case 'debian':
+        return <img src="/lovable-uploads/debian.png" className="w-4 h-4" alt="Debian" />;
+      case 'rpm':
+        return <img src="/lovable-uploads/rpm.png" className="w-4 h-4" alt="RPM" />;
+      default:
+        return <Package className="h-4 w-4" />;
+    }
   };
 
   return (
@@ -131,7 +171,7 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
         </Card>
       </motion.div>
 
-      {/* Releases Card */}
+      {/* Latest Package Card */}
       <motion.div
         variants={cardVariants}
         initial="initial"
@@ -139,31 +179,46 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
         whileHover="hover"
         transition={{ duration: 0.3, delay: 0.2 }}
         className="cursor-pointer"
-        onClick={handleTotalPackagesClick}
+        onClick={handleLatestPackagesClick}
       >
         <Card className="space-card p-6 h-full flex flex-col justify-between backdrop-blur-sm">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-medium text-blue-100/80">Releases</h3>
+            <h3 className="text-sm font-medium text-blue-100/80">Latest Package</h3>
             <Package className="h-5 w-5 text-blue-400" />
           </div>
           <div>
-            <span className="text-sm font-semibold text-white space-glow">
-              <img src="/lovable-uploads/docker.png" className="w-4 h-4 inline-block mr-2" alt="Docker"/>
-              {formatNumber(packageStats.packageTypeCounts.docker)}
-            </span>
-            <br></br>
-            <span className="text-sm font-semibold text-white space-glow">
-              <img src="/lovable-uploads/maven.png" className="w-4 h-4 inline-block mr-2" alt="Maven"/>
-              {formatNumber(packageStats.packageTypeCounts.maven)}
-            </span>
-            <br></br>
-            <span className="text-sm font-semibold text-white space-glow">
-              <img src="/lovable-uploads/npm.png" className="w-4 h-4 inline-block mr-2" alt="NPM"/>
-              {formatNumber(packageStats.packageTypeCounts.npm)}
-            </span>
-            <p className="text-xs text-blue-200/60 mt-2">
-              Packages released in the last 30 days
-            </p>
+            {packageStats.latestPackages && packageStats.latestPackages.length > 0 ? (
+              <div className="space-y-3">
+                {packageStats.latestPackages.slice(0, 5).map((pkg) => (
+                  <div key={pkg.id} className="flex items-start justify-between">
+                    <div>
+                      <div className="flex items-center">
+                        <div className="mr-2">
+                          {getPackageTypeIcon(pkg.type)}
+                        </div>
+                        <span className="text-sm font-semibold text-white space-glow">{pkg.name}</span>
+                        <span className="text-xs text-blue-200/70 ml-2">v{pkg.version}</span>
+                      </div>
+                      <div className="flex items-center text-xs text-blue-200/60 mt-1">
+                        <span>{pkg.repository}</span>
+                        <span className="mx-1">•</span>
+                        <span>{formatDistanceToNow(new Date(pkg.releaseDate), { addSuffix: true })}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      {getStatusIcon(pkg.status)}
+                    </div>
+                  </div>
+                ))}
+                {packageStats.latestPackages.length > 5 && (
+                  <p className="text-xs text-blue-200/60 mt-2">
+                    +{packageStats.latestPackages.length - 5} more releases
+                  </p>
+                )}
+              </div>
+            ) : (
+              <p className="text-xs text-blue-200/60">No recent package releases</p>
+            )}
           </div>
         </Card>
       </motion.div>

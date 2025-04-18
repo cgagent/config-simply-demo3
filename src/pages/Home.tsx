@@ -4,7 +4,6 @@ import StatisticsBar from '@/components/StatisticsBar';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { useRepositories } from '@/contexts/RepositoryContext';
-import { usePackageLocalStorage } from '@/hooks/usePackageLocalStorage';
 
 const Home: React.FC = () => {
   const [isChatActive, setIsChatActive] = useState(false);
@@ -15,15 +14,14 @@ const Home: React.FC = () => {
   const { toast } = useToast();
   const initialRender = useRef(true);
   const chatQueryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const { repositories } = useRepositories();
-  const { packageStats } = usePackageLocalStorage();
+  const { repositories, packageStats } = useRepositories();
   
   // Calculate CI completion numbers in the same way as StatusSummary
   const totalRepos = repositories.length;
   const configuredRepos = repositories.filter(repo => repo.isConfigured).length;
   const ciCompletionPercentage = totalRepos > 0 ? Math.round((configuredRepos / totalRepos) * 100) : 0;
 
-  // Use package statistics from local storage
+  // Use package statistics from context
   const statsData = {
     ciCompletionPercentage,
     totalPackages: packageStats.totalPackages,

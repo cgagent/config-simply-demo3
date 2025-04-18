@@ -1,7 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Repository, PackageType, Workflow, SupportedLanguage } from '@/types/repository';
+import { PackageStatistics, BlockedPackage, defaultPackageStatistics, defaultBlockedPackages, LatestPackage } from '@/types/package';
 
 const STORAGE_KEY = 'ci_repositories';
+const PACKAGE_STATS_KEY = 'package_statistics';
+const BLOCKED_PACKAGES_KEY = 'blocked_packages';
 
 /**
  * Creates an empty package type status record
@@ -132,6 +135,10 @@ export const useCILocalStorage = () => {
     }
   });
 
+  // Add package statistics and blocked packages state
+  const [packageStats, setPackageStats] = useState<PackageStatistics>(defaultPackageStatistics);
+  const [blockedPackages, setBlockedPackages] = useState<BlockedPackage[]>(defaultBlockedPackages);
+
   // Save to localStorage whenever repositories change
   useEffect(() => {
     try {
@@ -140,6 +147,46 @@ export const useCILocalStorage = () => {
       console.error('Error saving repositories to localStorage:', error);
     }
   }, [repositories]);
+
+  // Save package statistics and blocked packages to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem(PACKAGE_STATS_KEY, JSON.stringify(packageStats));
+    } catch (error) {
+      console.error('Error saving package statistics to localStorage:', error);
+    }
+  }, [packageStats]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(BLOCKED_PACKAGES_KEY, JSON.stringify(blockedPackages));
+    } catch (error) {
+      console.error('Error saving blocked packages to localStorage:', error);
+    }
+  }, [blockedPackages]);
+
+  // Load package statistics and blocked packages from localStorage on mount
+  useEffect(() => {
+    try {
+      const storedStats = localStorage.getItem(PACKAGE_STATS_KEY);
+      const storedBlocked = localStorage.getItem(BLOCKED_PACKAGES_KEY);
+      
+      if (storedStats) {
+        const parsedStats = JSON.parse(storedStats);
+        // Ensure latestPackages exists in the parsed stats
+        if (!parsedStats.latestPackages) {
+          parsedStats.latestPackages = defaultPackageStatistics.latestPackages;
+        }
+        setPackageStats(parsedStats);
+      }
+      
+      if (storedBlocked) {
+        setBlockedPackages(JSON.parse(storedBlocked));
+      }
+    } catch (error) {
+      console.error('Error loading package data from localStorage:', error);
+    }
+  }, []);
 
   /**
    * Creates a new workflow for a package type
@@ -218,10 +265,33 @@ export const useCILocalStorage = () => {
     setRepositories(prev => prev.filter(repo => repo.name !== repoName));
   }, []);
 
+  /**
+   * Adds a new latest package to the list
+   */
+  const addLatestPackage = useCallback((latestPackage: LatestPackage) => {
+    setPackageStats(prev => {
+      // Create a new array with the new package at the beginning
+      const updatedLatestPackages = [latestPackage, ...prev.latestPackages];
+      
+      // Limit to the 5 most recent packages
+      const limitedLatestPackages = updatedLatestPackages.slice(0, 5);
+      
+      return {
+        ...prev,
+        latestPackages: limitedLatestPackages
+      };
+    });
+  }, []);
+
   return {
     repositories,
     updateRepositoryStatus,
     addRepository,
-    removeRepository
+    removeRepository,
+    packageStats,
+    setPackageStats,
+    blockedPackages,
+    setBlockedPackages,
+    addLatestPackage
   };
 }; 
