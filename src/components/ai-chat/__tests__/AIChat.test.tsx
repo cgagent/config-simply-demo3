@@ -1,3 +1,25 @@
+/**
+ * AIChat Component Tests
+ * 
+ * This test suite verifies the functionality of the AIChat component, which is the main
+ * container component for the chat interface.
+ * 
+ * SCOPE:
+ * - Testing component rendering in different states
+ * - Verifying message display and interaction
+ * - Testing input handling and message sending
+ * - Verifying state management and prop handling
+ * - Testing integration with child components
+ * 
+ * BOUNDARIES:
+ * - These tests should NOT test actual API integrations
+ * - They should NOT test actual AI response generation
+ * - They should NOT test actual network requests
+ * - They should NOT test actual database operations
+ * 
+ * All external dependencies are mocked to focus on component behavior.
+ */
+
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { AIChat } from '../AIChat';

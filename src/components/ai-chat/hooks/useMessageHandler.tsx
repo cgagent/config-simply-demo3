@@ -1,3 +1,26 @@
+/**
+ * Message Handler Hook
+ * 
+ * This hook manages the message handling logic for the AI chat interface.
+ * It provides functions for sending messages, handling user actions, and managing
+ * the chat state.
+ * 
+ * SCOPE:
+ * - Managing chat messages and their state
+ * - Handling user message sending and processing
+ * - Managing action selections and security remediation
+ * - Tracking UI state like processing indicators and input values
+ * - Managing CI configuration visibility
+ * 
+ * BOUNDARIES:
+ * - This hook should NOT handle direct API calls to external services
+ * - It should NOT manage authentication or user data
+ * - It should NOT handle routing or navigation
+ * - It should NOT directly render UI components
+ * - Complex business logic should be delegated to appropriate services
+ * 
+ * This hook acts as a coordinator between UI components and business logic services.
+ */
 import { useToast } from '@/hooks/use-toast';
 import { useMessageState } from './useMessageState';
 import { ChatOption } from '@/components/shared/types';

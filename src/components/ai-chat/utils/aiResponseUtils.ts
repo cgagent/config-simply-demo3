@@ -1,3 +1,25 @@
+/**
+ * AI Response Utilities
+ * 
+ * This module provides utilities for simulating AI responses in the chat interface.
+ * It manages conversation flows, tracks state, and generates appropriate responses
+ * based on user input.
+ * 
+ * SCOPE:
+ * - Simulating AI responses based on predefined conversation flows
+ * - Managing conversation state (current flow, step, action options)
+ * - Providing helper functions to access conversation state
+ * 
+ * BOUNDARIES:
+ * - This module should NOT handle UI rendering or state management
+ * - It should NOT directly interact with external APIs or services
+ * - It should NOT manage authentication or user data
+ * - It should NOT handle routing or navigation
+ * 
+ * The actual AI integration should be handled by a separate service layer.
+ * This module is specifically for simulation and testing purposes.
+ */
+
 import { conversationFlows } from '../config/flows';
 import { standaloneResponses } from '../config/responses/standaloneResponses';
 import { ChatOption } from '@/components/shared/types';
