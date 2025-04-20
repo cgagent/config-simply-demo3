@@ -168,20 +168,25 @@ export const useMessageHandler = () => {
       // Process the message with a slight delay to simulate processing
       setTimeout(() => {
         try {
-          // Add debug logging for current flow and step
+          // Store the current flow and step before processing
+          const beforeFlowId = getCurrentFlow();
+          const beforeStepId = getCurrentStep();
+          
           console.log("Before processing - Current flow and step:", {
-            currentFlow: getCurrentFlow(),
-            currentStep: getCurrentStep()
+            currentFlow: beforeFlowId,
+            currentStep: beforeStepId
           });
           
           // Get the AI response using the existing utility
           const aiResponse = getRandomResponse(content);
-          console.log("AI response:", aiResponse);
           
-          // Add debug logging for current flow and step after processing
+          // Check if the flow or step has changed
+          const afterFlowId = getCurrentFlow();
+          const afterStepId = getCurrentStep();
+          
           console.log("After processing - Current flow and step:", {
-            currentFlow: getCurrentFlow(),
-            currentStep: getCurrentStep()
+            currentFlow: afterFlowId,
+            currentStep: afterStepId
           });
           
           // Check if there are action options for this response
@@ -190,7 +195,43 @@ export const useMessageHandler = () => {
           // Check if this is a confirmation message using the configuration
           const isConfirmation = isConfirmationMessage(content);
           
-          // Create and add the appropriate response message
+          // If the flow or step has changed, get the current step data
+          if ((beforeFlowId !== afterFlowId) || (beforeStepId !== afterStepId)) {
+            console.log("Flow or step changed, getting response from new step");
+            // Find the current flow configuration
+            const currentFlow = conversationFlows.find(flow => flow.id === afterFlowId);
+            if (currentFlow) {
+              // Find the current step configuration
+              const currentStepData = currentFlow.steps.find(step => step.id === afterStepId);
+              if (currentStepData) {
+                // Get the response text from the configuration
+                const responseText = typeof currentStepData.response === 'function' 
+                  ? currentStepData.response(content)
+                  : currentStepData.response;
+                
+                // Check if there are action options defined for this step
+                const stepActionOptions = currentStepData.actionOptions || [];
+                
+                // Create and add the appropriate response message
+                if (stepActionOptions.length > 0) {
+                  const actionOptionsMessage = MessageFactory.createActionOptionsMessage(
+                    responseText, 
+                    stepActionOptions
+                  );
+                  addBotMessage(actionOptionsMessage);
+                } else {
+                  // No action options, just send the text response
+                  addBotMessage(responseText);
+                }
+                
+                // Return early since we've handled the response
+                return;
+              }
+            }
+          }
+          
+          // If we get here, either no flow/step change was detected or the new step couldn't be found
+          // Use the default response handling logic
           if (actionOptions && actionOptions.length > 0 && !isConfirmation) {
             // Create an action options message
             const actionOptionsMessage = MessageFactory.createActionOptionsMessage(aiResponse, actionOptions);

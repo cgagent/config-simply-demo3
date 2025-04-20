@@ -69,9 +69,21 @@ export const simulateAIResponse = (query: string): string => {
             option.value.toLowerCase() === lowerQuery || 
             option.id.toLowerCase() === lowerQuery
           );
+          
+        // Check if the query matches patterns in the next step (for transitions like confirmations)
+        let matchesNextStepPattern = false;
+        if (currentStepData.nextSteps && currentStepData.nextSteps.length > 0) {
+          const nextStepId = currentStepData.nextSteps[0];
+          const nextStepData = flow.steps.find(s => s.id === nextStepId);
+          if (nextStepData) {
+            matchesNextStepPattern = nextStepData.patterns.some(pattern => 
+              lowerQuery.includes(pattern)
+            );
+          }
+        }
 
-        // If there's a matching pattern or this is an action selection, proceed
-        if (matchingPattern || isActionSelection) {
+        // If there's a matching pattern or this is an action selection or matches next step pattern, proceed
+        if (matchingPattern || isActionSelection || matchesNextStepPattern) {
           // Check if this is the end of the flow
           if (currentStepData.isEndOfFlow) {
             // End the flow and return the final response
