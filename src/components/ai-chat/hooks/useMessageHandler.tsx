@@ -13,13 +13,22 @@
  * - Managing CI configuration visibility
  * 
  * BOUNDARIES:
- * - This hook should NOT handle direct API calls to external services
- * - It should NOT manage authentication or user data
- * - It should NOT handle routing or navigation
- * - It should NOT directly render UI components
- * - Complex business logic should be delegated to appropriate services
+ * ⚠️ IMPORTANT: This hook should NOT contain business logic! ⚠️
+ * Business logic should be added to the appropriate config files:
+ * - New response patterns → /config/patterns/
+ * - New conversation flows → /config/flows/
+ * - New response templates → /config/responses/
+ * 
+ * This hook should NOT:
+ * - Handle direct API calls to external services
+ * - Manage authentication or user data
+ * - Handle routing or navigation
+ * - Directly render UI components
+ * - Contain response templates or pattern matching logic
+ * - Define new conversation flows or response patterns
  * 
  * This hook acts as a coordinator between UI components and business logic services.
+ * It should only coordinate and delegate to the appropriate config modules.
  */
 import { useToast } from '@/hooks/use-toast';
 import { useMessageState } from './useMessageState';

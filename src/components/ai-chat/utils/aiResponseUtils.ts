@@ -11,10 +11,18 @@
  * - Providing helper functions to access conversation state
  * 
  * BOUNDARIES:
- * - This module should NOT handle UI rendering or state management
- * - It should NOT directly interact with external APIs or services
- * - It should NOT manage authentication or user data
- * - It should NOT handle routing or navigation
+ * ⚠️ IMPORTANT: This file should NOT contain business logic! ⚠️
+ * Business logic should be added to the appropriate config files:
+ * - New response patterns → /config/patterns/
+ * - New conversation flows → /config/flows/
+ * - New response templates → /config/responses/
+ * 
+ * This file should NOT:
+ * - Handle UI rendering or state management
+ * - Directly interact with external APIs or services
+ * - Manage authentication or user data
+ * - Handle routing or navigation
+ * - Contain response templates or pattern matching logic
  * 
  * The actual AI integration should be handled by a separate service layer.
  * This module is specifically for simulation and testing purposes.
