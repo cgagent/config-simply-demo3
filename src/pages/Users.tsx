@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { UserPlus } from 'lucide-react';
@@ -48,6 +47,26 @@ const UsersPage: React.FC = () => {
       email: 'pending.user@example.com',
       role: 'Developer',
       lastLoginDate: '2023-10-13T16:45:00Z',
+      developerApp: false,
+      status: 'pending'
+    },
+    {
+      id: '7',
+      firstName: '',
+      lastName: '',
+      email: 'pending.user4@example.com',
+      role: 'Developer',
+      lastLoginDate: '',
+      developerApp: false,
+      status: 'pending'
+    },
+    {
+      id: '8',
+      firstName: '',
+      lastName: '',
+      email: 'pending.user5@example.com',
+      role: 'Admin',
+      lastLoginDate: '',
       developerApp: false,
       status: 'pending'
     }
