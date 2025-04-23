@@ -157,30 +157,6 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      {/* Data Consumption Card */}
-      <motion.div
-        variants={cardVariants}
-        initial="initial"
-        animate="animate"
-        whileHover="hover"
-        transition={{ duration: 0.3, delay: 0.1 }}
-      >
-        <Card className="space-card p-4 h-full flex flex-col backdrop-blur-sm">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium text-blue-100/80">Data Consumption</h3>
-          </div>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-2xl font-semibold text-white space-glow">5 GB</span>
-              <span className="text-xs text-blue-200/70">This Month</span>
-            </div>
-            <div className="mt-4">
-              <canvas id="data-consumption-chart" className="w-full h-24"></canvas>
-            </div>
-          </div>
-        </Card>
-      </motion.div>
-
       {/* Blocked Malicious Packages Card */}
       <motion.div
         variants={cardVariants}
@@ -376,6 +352,30 @@ const StatisticsBar: React.FC<StatisticsBarProps> = ({
               <p className="text-xs text-blue-200/60 mt-1">
                 ⚠️ 9 Developers are not protected
               </p>
+            </div>
+          </div>
+        </Card>
+      </motion.div>
+
+      {/* Data Consumption Card */}
+      <motion.div
+        variants={cardVariants}
+        initial="initial"
+        animate="animate"
+        whileHover="hover"
+        transition={{ duration: 0.3, delay: 0.4 }}
+      >
+        <Card className="space-card p-4 h-full flex flex-col backdrop-blur-sm">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-medium text-blue-100/80">Data Consumption</h3>
+          </div>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-2xl font-semibold text-white space-glow">5 GB</span>
+              <span className="text-xs text-blue-200/70">This Month</span>
+            </div>
+            <div className="mt-4">
+              <canvas id="data-consumption-chart" className="w-full h-24"></canvas>
             </div>
           </div>
         </Card>
