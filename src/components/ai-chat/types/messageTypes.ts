@@ -89,6 +89,7 @@ export interface PackageTableMessage extends BaseMessage {
     firstCreated: string;
     versions: number;
   }[];
+  options?: ChatOption[];
 }
 
 /**

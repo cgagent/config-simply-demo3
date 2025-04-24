@@ -200,10 +200,16 @@ const ActionOptionsRenderer: React.FC<{
 /**
  * Renders a package table message
  */
-const PackageTableRenderer: React.FC<{ message: Message }> = ({ message }) => {
+const PackageTableRenderer: React.FC<{ 
+  message: Message;
+  onSelectOption?: (option: ChatOption) => void;
+}> = ({ message, onSelectOption }) => {
   if (!isPackageTableMessage(message)) {
     return <TextMessageRenderer message={message} />;
   }
+
+  // Check if the message has options - it might be a combined message with options
+  const hasOptions = 'options' in message && Array.isArray((message as any).options);
 
   return (
     <div className="space-y-4">
@@ -213,39 +219,60 @@ const PackageTableRenderer: React.FC<{ message: Message }> = ({ message }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5, duration: 0.5 }}
-        className="bg-blue-900/30 rounded-lg overflow-hidden"
+        className="bg-blue-900/40 rounded-lg overflow-hidden border border-blue-700/30 shadow-md"
       >
-        <table className="w-full text-sm">
-          <thead className="bg-blue-950/60">
-            <tr>
-              <th className="py-2 px-3 text-left font-medium">Type</th>
-              <th className="py-2 px-3 text-left font-medium">Package Name</th>
-              <th className="py-2 px-3 text-left font-medium">Latest Version</th>
-              <th className="py-2 px-3 text-left font-medium">First Created</th>
-              <th className="py-2 px-3 text-left font-medium">Versions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {message.packages.map((pkg, index) => (
-              <tr 
-                key={index} 
-                className={index % 2 === 0 ? 'bg-blue-900/20' : 'bg-blue-900/10'}
-              >
-                <td className="py-2 px-3 flex items-center">
-                  <span className="mr-2">
-                    <Package className="h-4 w-4 text-blue-400" />
-                  </span>
-                  {pkg.type}
-                </td>
-                <td className="py-2 px-3 font-medium">{pkg.name}</td>
-                <td className="py-2 px-3">{pkg.version}</td>
-                <td className="py-2 px-3">{pkg.firstCreated}</td>
-                <td className="py-2 px-3">{pkg.versions}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="bg-blue-800/40 px-4 py-2 border-b border-blue-700/30">
+          <div className="text-sm text-white font-medium flex items-center">
+            <Package className="h-4 w-4 mr-2 text-blue-400" />
+            Latest Published Packages
+          </div>
+        </div>
+        <div className="p-2">
+          <div className="overflow-hidden rounded-lg border border-blue-800/50 shadow-sm">
+            <table className="w-full border-collapse bg-blue-950/20">
+              <thead className="bg-blue-900/50">
+                <tr>
+                  <th className="py-2 px-3 text-left font-medium text-blue-100 border-b border-blue-800/30">Type</th>
+                  <th className="py-2 px-3 text-left font-medium text-blue-100 border-b border-blue-800/30">Package Name</th>
+                  <th className="py-2 px-3 text-left font-medium text-blue-100 border-b border-blue-800/30">Latest Version</th>
+                  <th className="py-2 px-3 text-left font-medium text-blue-100 border-b border-blue-800/30">First Created</th>
+                  <th className="py-2 px-3 text-left font-medium text-blue-100 border-b border-blue-800/30">Versions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-blue-800/20">
+                {message.packages.map((pkg, index) => (
+                  <tr key={index} className="hover:bg-blue-800/20 transition-colors">
+                    <td className="py-3 px-3 flex items-center">
+                      <span className="mr-2">
+                        {pkg.type === 'docker' && <img src="/lovable-uploads/docker.png" className="h-4 w-4" alt="Docker" />}
+                        {pkg.type === 'npm' && <img src="/lovable-uploads/npm.png" className="h-4 w-4" alt="NPM" />}
+                        {!['docker', 'npm'].includes(pkg.type) && <Package className="h-4 w-4 text-blue-400" />}
+                      </span>
+                      <span>{pkg.type}</span>
+                    </td>
+                    <td className="py-3 px-3 font-medium text-blue-100">{pkg.name}</td>
+                    <td className="py-3 px-3">
+                      <code className="px-2 py-1 bg-blue-900/30 rounded text-blue-200">{pkg.version}</code>
+                    </td>
+                    <td className="py-3 px-3">{pkg.firstCreated}</td>
+                    <td className="py-3 px-3">{pkg.versions}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </motion.div>
+
+      {/* Display selectable options if the message has them and onSelectOption is provided */}
+      {hasOptions && onSelectOption && (
+        <div className="mt-4">
+          <SelectableOptions
+            options={(message as any).options}
+            onSelectOption={onSelectOption}
+          />
+        </div>
+      )}
     </div>
   );
 };
@@ -314,7 +341,7 @@ export const MessageRenderer: React.FC<MessageRendererProps> = ({ message, onSel
           ) : isActionOptionsMessage(message) ? (
             <ActionOptionsRenderer message={message} onSelectOption={onSelectOption} />
           ) : isPackageTableMessage(message) ? (
-            <PackageTableRenderer message={message} />
+            <PackageTableRenderer message={message} onSelectOption={onSelectOption} />
           ) : (
             <TextMessageRenderer message={message} />
           )}

@@ -143,7 +143,8 @@ export class MessageFactory {
       version: string;
       firstCreated: string;
       versions: number;
-    }[]
+    }[],
+    options?: ChatOption[]
   ): PackageTableMessage {
     return {
       id: uuidv4(),
@@ -151,7 +152,8 @@ export class MessageFactory {
       content,
       type: 'package-table',
       timestamp: Date.now(),
-      packages
+      packages,
+      options
     };
   }
   

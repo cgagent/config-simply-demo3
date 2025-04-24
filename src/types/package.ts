@@ -55,7 +55,7 @@ export interface PackageStatistics {
 // Default demo data
 export const defaultPackageStatistics: PackageStatistics = {
   totalPackages: 154,
-  blockedPackages: 12,
+  blockedPackages: 3,
   dataConsumption: 1024 * 1024 * 1024 * 2.5, // 2.5 GB
   packageTypeCounts: {
     docker: 45,
@@ -75,10 +75,46 @@ export const defaultPackageStatistics: PackageStatistics = {
     {
       id: "1",
       name: "frontend-app",
-      version: "1.2.3",
+      version: "2.4.0",
       type: "docker",
-      releaseDate: new Date().toISOString(),
+      releaseDate: new Date(new Date().getTime() - (30 * 1000)).toISOString(),
       repository: "frontend-app",
+      status: "passed"
+    },
+    {
+      id: "2",
+      name: "user-service",
+      version: "1.7.3",
+      type: "docker",
+      releaseDate: new Date(new Date().getTime() - (3 * 60 * 60 * 1000)).toISOString(),
+      repository: "user-service",
+      status: "passed"
+    },
+    {
+      id: "3",
+      name: "analytics-dashboard",
+      version: "0.9.1",
+      type: "npm",
+      releaseDate: new Date(new Date().getTime() - (12 * 60 * 60 * 1000)).toISOString(),
+      repository: "analytics",
+      status: "warning"
+    },
+    {
+      id: "4",
+      name: "infra-utilities",
+      version: "3.1.0",
+      type: "npm",
+      releaseDate: new Date(new Date().getTime() - (2 * 24 * 60 * 60 * 1000)).toISOString(),
+      repository: "infrastructure",
+      status: "passed"
+    },
+    {
+      id: "5",
+      name: "api-gateway",
+      version: "1.0.0",
+      type: "docker",
+      releaseDate: new Date(new Date().getTime() - (5 * 24 * 60 * 60 * 1000)).toISOString(),
+      repository: "api-gateway",
       status: "passed"
     }
   ],

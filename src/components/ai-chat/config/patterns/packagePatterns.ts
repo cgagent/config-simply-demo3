@@ -13,7 +13,7 @@ export const PACKAGE_PATTERNS = {
     'show me the latest packages', 
     'show me the last 5 packages',
     'show me the latest 5 published packages',
-    'show me the latest 5 published packages in a table'
+    'show me the latest published packages in my organization'
   ],
   packageDetail: [
     'package detail', 

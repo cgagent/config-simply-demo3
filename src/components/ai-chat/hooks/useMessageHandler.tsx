@@ -37,7 +37,7 @@ import { generateSecurityRemediationResponse } from '../config/responses/securit
 import { Repository } from '../config/patterns/ciPatterns';
 import { isConfirmationMessage } from '../config/patterns/confirmationPatterns';
 import { getRandomResponse, getCurrentActionOptions, simulateAIResponse, getCurrentFlow, getCurrentStep, setRepositoryData } from '../utils/aiResponseUtils';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { MessageFactory } from '../utils/messageFactory';
 import { conversationFlows } from '../config/flows';
 import { useFlow } from '../context/FlowContext';
@@ -52,6 +52,7 @@ import {
 import { useRepositories } from '@/contexts/RepositoryContext';
 import { PackageTableMessage, isPackageTableMessage } from '../types/messageTypes';
 import { formatDistanceToNow } from 'date-fns';
+import { PACKAGE_FLOW_ID, packageFollowUpOptions } from '../config/flows/packageFlow';
 
 
 export const useMessageHandler = () => {
@@ -232,7 +233,10 @@ export const useMessageHandler = () => {
   };
 
   // For backward compatibility, keep the old function name but make it call the new one
-  const handleSecurityRemediation = handleActionSelection;
+  const handleSecurityRemediation = useCallback((option: ChatOption) => {
+    console.log("Handling option selection:", option);
+    handleActionSelection(option);
+  }, [handleActionSelection]);
 
   /**
    * Generic handler for processing user messages
@@ -334,47 +338,52 @@ export const useMessageHandler = () => {
                       {
                         id: "1",
                         name: "frontend-app",
-                        version: "1.2.3",
+                        version: "2.4.0",
                         type: "docker",
                         releaseDate: new Date(new Date().getTime() - (30 * 1000)).toISOString(),
                         repository: "frontend-app",
-                        status: "passed"
+                        status: "passed",
+                        versions: 5
                       },
                       {
                         id: "2",
-                        name: "axios",
-                        version: "1.7.0",
-                        type: "npm",
+                        name: "user-service",
+                        version: "1.7.3",
+                        type: "docker",
                         releaseDate: new Date(new Date().getTime() - (3 * 60 * 60 * 1000)).toISOString(),
-                        repository: "common-libs",
-                        status: "passed"
+                        repository: "user-service",
+                        status: "passed",
+                        versions: 8
                       },
                       {
                         id: "3",
-                        name: "requests",
-                        version: "2.31.0",
-                        type: "python",
+                        name: "analytics-dashboard",
+                        version: "0.9.1",
+                        type: "npm",
                         releaseDate: new Date(new Date().getTime() - (12 * 60 * 60 * 1000)).toISOString(),
-                        repository: "backend-api",
-                        status: "warning"
+                        repository: "analytics",
+                        status: "warning",
+                        versions: 3
                       },
                       {
                         id: "4",
-                        name: "gin",
-                        version: "1.9.1",
-                        type: "go",
+                        name: "infra-utilities",
+                        version: "3.1.0",
+                        type: "npm",
                         releaseDate: new Date(new Date().getTime() - (2 * 24 * 60 * 60 * 1000)).toISOString(),
-                        repository: "microservices",
-                        status: "passed"
+                        repository: "infrastructure",
+                        status: "passed",
+                        versions: 11
                       },
                       {
                         id: "5",
-                        name: "spring-boot",
-                        version: "3.2.1",
-                        type: "maven",
+                        name: "api-gateway",
+                        version: "1.0.0",
+                        type: "docker",
                         releaseDate: new Date(new Date().getTime() - (5 * 24 * 60 * 60 * 1000)).toISOString(),
-                        repository: "backend-services",
-                        status: "failed"
+                        repository: "api-gateway",
+                        status: "passed",
+                        versions: 1
                       }
                     ];
                     
@@ -393,44 +402,26 @@ export const useMessageHandler = () => {
                       name: pkg.name,
                       version: pkg.version,
                       firstCreated: formatDistanceToNow(new Date(pkg.releaseDate), { addSuffix: true }),
-                      versions: 1,
+                      versions: pkg.versions || 1,
                       status: pkg.status
                     }));
                     
                     console.log("Formatted packages for display:", JSON.stringify(formattedPackages, null, 2));
                     
-                    // Add status badge formatting to version based on package status
-                    const getStatusBadge = (status: string) => {
-                      switch(status) {
-                        case 'passed': return '✅';
-                        case 'warning': return '⚠️';
-                        case 'failed': return '❌';
-                        default: return '';
-                      }
-                    };
+                    // Create a package table message with follow-up options
+                    const message = MessageFactory.createPackageTableMessage(
+                      "Here are the latest 5 packages published in your organization:",
+                      formattedPackages,
+                      packageFollowUpOptions
+                    );
                     
-                    // Create markdown table
-                    const tableMarkdown = `
-Here are the latest 5 packages published in your organization:
-
-## Latest Packages
-
-| Type | Package Name | Latest Version | First Created | Versions |
-|:-----|:------------|:--------------|:-------------|:---------|
-${formattedPackages.map((pkg, index) => 
-  `| ${pkg.type} | **${pkg.name}** | \`${pkg.version}\` ${getStatusBadge(pkg.status)} | ${pkg.firstCreated} | ${pkg.versions} |`
-).join('\n')}
-
-`;
-                    
-                    addBotMessage(tableMarkdown);
+                    addBotMessage(message);
+                    setIsProcessing(false);
+                    return;
                   } catch (error) {
                     console.error("Error generating package table:", error);
                     addBotMessage("I encountered an error displaying the package table. Please try again.");
                   }
-                  
-                  setIsProcessing(false);
-                  return;
                 }
                 
                 // Check if there are action options defined for this step
@@ -504,47 +495,52 @@ ${formattedPackages.map((pkg, index) =>
                 {
                   id: "1",
                   name: "frontend-app",
-                  version: "1.2.3",
+                  version: "2.4.0",
                   type: "docker",
                   releaseDate: new Date(new Date().getTime() - (30 * 1000)).toISOString(),
                   repository: "frontend-app",
-                  status: "passed"
+                  status: "passed",
+                  versions: 5
                 },
                 {
                   id: "2",
-                  name: "axios",
-                  version: "1.7.0",
-                  type: "npm",
+                  name: "user-service",
+                  version: "1.7.3",
+                  type: "docker",
                   releaseDate: new Date(new Date().getTime() - (3 * 60 * 60 * 1000)).toISOString(),
-                  repository: "common-libs",
-                  status: "passed"
+                  repository: "user-service",
+                  status: "passed",
+                  versions: 8
                 },
                 {
                   id: "3",
-                  name: "requests",
-                  version: "2.31.0",
-                  type: "python",
+                  name: "analytics-dashboard",
+                  version: "0.9.1",
+                  type: "npm",
                   releaseDate: new Date(new Date().getTime() - (12 * 60 * 60 * 1000)).toISOString(),
-                  repository: "backend-api",
-                  status: "warning"
+                  repository: "analytics",
+                  status: "warning",
+                  versions: 3
                 },
                 {
                   id: "4",
-                  name: "gin",
-                  version: "1.9.1",
-                  type: "go",
+                  name: "infra-utilities",
+                  version: "3.1.0",
+                  type: "npm",
                   releaseDate: new Date(new Date().getTime() - (2 * 24 * 60 * 60 * 1000)).toISOString(),
-                  repository: "microservices",
-                  status: "passed"
+                  repository: "infrastructure",
+                  status: "passed",
+                  versions: 11
                 },
                 {
                   id: "5",
-                  name: "spring-boot",
-                  version: "3.2.1",
-                  type: "maven",
+                  name: "api-gateway",
+                  version: "1.0.0",
+                  type: "docker",
                   releaseDate: new Date(new Date().getTime() - (5 * 24 * 60 * 60 * 1000)).toISOString(),
-                  repository: "backend-services",
-                  status: "failed"
+                  repository: "api-gateway",
+                  status: "passed",
+                  versions: 1
                 }
               ];
               
@@ -563,44 +559,26 @@ ${formattedPackages.map((pkg, index) =>
                 name: pkg.name,
                 version: pkg.version,
                 firstCreated: formatDistanceToNow(new Date(pkg.releaseDate), { addSuffix: true }),
-                versions: 1,
+                versions: pkg.versions || 1,
                 status: pkg.status
               }));
               
               console.log("Formatted packages for display:", JSON.stringify(formattedPackages, null, 2));
               
-              // Add status badge formatting to version based on package status
-              const getStatusBadge = (status: string) => {
-                switch(status) {
-                  case 'passed': return '✅';
-                  case 'warning': return '⚠️';
-                  case 'failed': return '❌';
-                  default: return '';
-                }
-              };
+              // Create a package table message with follow-up options
+              const message = MessageFactory.createPackageTableMessage(
+                "Here are the latest 5 packages published in your organization:",
+                formattedPackages,
+                packageFollowUpOptions
+              );
               
-              // Create markdown table
-              const tableMarkdown = `
-Here are the latest 5 packages published in your organization:
-
-## Latest Packages
-
-| Type | Package Name | Latest Version | First Created | Versions |
-|:-----|:------------|:--------------|:-------------|:---------|
-${formattedPackages.map((pkg, index) => 
-  `| ${pkg.type} | **${pkg.name}** | \`${pkg.version}\` ${getStatusBadge(pkg.status)} | ${pkg.firstCreated} | ${pkg.versions} |`
-).join('\n')}
-
-`;
-              
-              addBotMessage(tableMarkdown);
+              addBotMessage(message);
+              setIsProcessing(false);
+              return;
             } catch (error) {
               console.error("Error generating package table:", error);
               addBotMessage("I encountered an error displaying the package table. Please try again.");
             }
-            
-            setIsProcessing(false);
-            return;
           }
           
           // If we get here, either no flow/step change was detected or the new step couldn't be found
@@ -657,33 +635,22 @@ ${formattedPackages.map((pkg, index) =>
       // Assign a status to each package (for demonstration)
       const status = Math.random() > 0.7 ? (Math.random() > 0.5 ? 'warning' : 'failed') : 'passed';
       return {
-        ...pkg,
-        status
+        type: pkg.type,
+        name: pkg.name,
+        version: pkg.latest_version || pkg.version,
+        firstCreated: pkg.created_date,
+        versions: pkg.versions_count || 1
       };
     });
 
-    // Helper function to get a status badge
-    const getStatusBadge = (status: string) => {
-      switch (status) {
-        case 'passed': return '✅';
-        case 'warning': return '⚠️';
-        case 'failed': return '❌';
-        default: return '';
-      }
-    };
-
-    // Format packages as a markdown table
-    const markdownTable = `
-Here are the latest packages published in your organization:
-
-| Type | Package Name | Latest Version | First Created | Versions |
-|:-----|:-------------|:--------------|:-------------|:---------|
-${formattedPackages.map((pkg: any) => 
-  `| ${pkg.type} | **${pkg.name}** | \`${pkg.latest_version}\` ${getStatusBadge(pkg.status)} | ${pkg.created_date} | ${pkg.versions_count} |`
-).join('\n')}
-`;
-
-    addBotMessage(markdownTable);
+    // Create a package table message with follow-up options
+    const message = MessageFactory.createPackageTableMessage(
+      "Here are the latest packages published in your organization:",
+      formattedPackages,
+      packageFollowUpOptions
+    );
+    
+    addBotMessage(message);
   };
 
   return {

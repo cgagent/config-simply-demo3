@@ -196,7 +196,7 @@ export const useCILocalStorage = () => {
           {
             id: crypto.randomUUID(),
             name: "frontend-app",
-            version: "1.2.3",
+            version: "2.4.0",
             type: "docker",
             releaseDate: new Date(now.getTime() - (30 * 1000)).toISOString(), // 30 seconds ago
             repository: "frontend-app",
@@ -204,39 +204,39 @@ export const useCILocalStorage = () => {
           },
           {
             id: crypto.randomUUID(),
-            name: "axios",
-            version: "1.7.0",
-            type: "npm",
+            name: "user-service",
+            version: "1.7.3",
+            type: "docker",
             releaseDate: new Date(now.getTime() - (3 * 60 * 60 * 1000)).toISOString(), // 3 hours ago
-            repository: "common-libs",
+            repository: "user-service",
             status: "passed"
           },
           {
             id: crypto.randomUUID(),
-            name: "requests",
-            version: "2.31.0",
-            type: "python",
-            releaseDate: new Date(now.getTime() - (5 * 60 * 1000)).toISOString(), // 5 minutes ago
-            repository: "backend-api",
+            name: "analytics-dashboard",
+            version: "0.9.1",
+            type: "npm",
+            releaseDate: new Date(now.getTime() - (12 * 60 * 60 * 1000)).toISOString(), // 12 hours ago
+            repository: "analytics",
             status: "warning"
           },
           {
             id: crypto.randomUUID(),
-            name: "spring-boot",
-            version: "3.2.1",
-            type: "maven",
+            name: "infra-utilities",
+            version: "3.1.0",
+            type: "npm",
             releaseDate: new Date(now.getTime() - (1 * 24 * 60 * 60 * 1000)).toISOString(), // 1 day ago
-            repository: "microservices",
+            repository: "infrastructure",
             status: "passed"
           },
           {
             id: crypto.randomUUID(),
-            name: "golang",
-            version: "1.21",
+            name: "api-gateway",
+            version: "1.0.0",
             type: "docker",
-            releaseDate: new Date(now.getTime() - (15 * 60 * 1000)).toISOString(), // 15 minutes ago
-            repository: "gateway-service",
-            status: "failed"
+            releaseDate: new Date(now.getTime() - (3 * 24 * 60 * 60 * 1000)).toISOString(), // 3 days ago
+            repository: "api-gateway",
+            status: "passed"
           }
         ];
 
