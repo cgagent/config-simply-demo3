@@ -56,7 +56,11 @@ import { PACKAGE_FLOW_ID, packageFollowUpOptions } from '../config/flows/package
 import { TOKEN_FLOW_ID } from '../config/flows/tokenFlow';
 
 // Original hook format
-export const useMessageHandler = () => {
+export const useMessageHandler = ({ 
+  onTokenGenerated 
+}: { 
+  onTokenGenerated?: (token: string, name: string, expiration: string) => void 
+} = {}) => {
   const { toast } = useToast();
   const [showCIConfig, setShowCIConfig] = useState(false);
   const [repository, setRepository] = useState<Repository | null>(null);
@@ -179,14 +183,24 @@ export const useMessageHandler = () => {
           else if (tokenFlowState.step === 'confirmation') {
             // Handle final confirmation
             if (option.id === 'confirm-yes') {
-              // Generate a mock token
-              const mockToken = `jfrog_at_${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`;
+              // Generate a mock token with the specified pattern
+              const mockToken = 'AKC' + Math.random().toString(36).substring(2, 4) + 
+                              Math.random().toString(36).substring(2, 4).toUpperCase() + 
+                              Math.random().toString(36).substring(2, 6) + 
+                              Math.random().toString(36).substring(2, 6).toUpperCase() + 
+                              Math.random().toString(36).substring(2, 6) +
+                              Math.random().toString(36).substring(2, 6).toUpperCase();
               
               // End the token flow
               setTokenFlowState(null);
               
-              // Show success message
-              addBotMessage(`✅ **Token generated**\n\n**Details:**\n• Type: Read-only\n• Token: \`${mockToken}\`\n\n⚠️ Copy this token now - it won't be displayed again.`);
+              // Show success message in chat (without the token)
+              addBotMessage(`✅ Token generated successfully! The token has been displayed in a popup window.`);
+
+              // Show token in modal
+              if (onTokenGenerated) {
+                onTokenGenerated(mockToken, tokenFlowState.tokenName || '', tokenFlowState.tokenExpiration || '');
+              }
             } else {
               // Cancel token generation
               setTokenFlowState(null);
@@ -362,8 +376,13 @@ export const useMessageHandler = () => {
             else if (tokenFlowState.step === 'confirmation') {
               // Handle final confirmation
               if (content.toLowerCase().includes('yes') || content.toLowerCase().includes('generate')) {
-                // Generate a mock token
-                const mockToken = `jfrog_at_${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`;
+                // Generate a mock token with the specified pattern
+                const mockToken = 'AKC' + Math.random().toString(36).substring(2, 4) + 
+                                Math.random().toString(36).substring(2, 4).toUpperCase() + 
+                                Math.random().toString(36).substring(2, 6) + 
+                                Math.random().toString(36).substring(2, 6).toUpperCase() + 
+                                Math.random().toString(36).substring(2, 6) +
+                                Math.random().toString(36).substring(2, 6).toUpperCase();
                 
                 // End the token flow
                 setTokenFlowState(null);

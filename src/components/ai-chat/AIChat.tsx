@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { InitialChatScreen } from './InitialChatScreen';
 import { ConversationScreen } from './ConversationScreen';
 import { useMessageHandler } from './hooks/useMessageHandler';
@@ -8,6 +8,7 @@ import { useAutoSendMessage } from './hooks/useAutoSendMessage';
 import { useResetDetection } from './hooks/useResetDetection';
 import { useChatStateNotifier } from './hooks/useChatStateNotifier';
 import { FlowProvider } from './context/FlowContext';
+import { TokenModal } from '@/components/shared/TokenModal';
 
 interface AIChatProps {
   onChatStateChange?: (isChatActive: boolean) => void;
@@ -44,6 +45,24 @@ const AIChatContent: React.FC<AIChatProps> = ({
   shouldSendMessage = false,
   clearShouldSendMessage
 }) => {
+  // Add modal state
+  const [tokenModalState, setTokenModalState] = useState<{
+    isOpen: boolean;
+    token: string;
+    tokenName: string;
+    expiration: string;
+  } | null>(null);
+
+  // Function to show token in modal
+  const showTokenInModal = (token: string, name: string, expiration: string) => {
+    setTokenModalState({
+      isOpen: true,
+      token,
+      tokenName: name,
+      expiration
+    });
+  };
+
   const {
     messages,
     isProcessing,
@@ -55,8 +74,10 @@ const AIChatContent: React.FC<AIChatProps> = ({
     showCIConfig,
     repository,
     fullReset
-  } = useMessageHandler();
-  
+  } = useMessageHandler({
+    onTokenGenerated: showTokenInModal
+  });
+
   // Reset detection when navigating
   useResetDetection({ resetMessages: fullReset });
   
@@ -91,6 +112,11 @@ const AIChatContent: React.FC<AIChatProps> = ({
   
   // Get messages with typing animation applied
   const displayMessages = getAnimatedMessages();
+
+  // Function to close modal
+  const closeTokenModal = () => {
+    setTokenModalState(null);
+  };
   
   // Initial state (no messages yet and no initial input)
   if (messages.length === 0 && !hasInitialInput) {
@@ -107,16 +133,29 @@ const AIChatContent: React.FC<AIChatProps> = ({
 
   // Chat state (after user has sent at least one message or when there's initial input)
   return (
-    <ConversationScreen
-      messages={displayMessages}
-      isProcessing={isProcessing}
-      inputValue={inputValue}
-      setInputValue={setInputValue}
-      onSendMessage={handleSendMessage}
-      onSelectQuery={handleSelectQuery}
-      onSelectOption={handleSecurityRemediation}
-      showCIConfig={showCIConfig}
-      repository={repository}
-    />
+    <>
+      <ConversationScreen
+        messages={displayMessages}
+        isProcessing={isProcessing}
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+        onSendMessage={handleSendMessage}
+        onSelectQuery={handleSelectQuery}
+        onSelectOption={handleSecurityRemediation}
+        showCIConfig={showCIConfig}
+        repository={repository}
+      />
+      
+      {/* Add TokenModal */}
+      {tokenModalState && (
+        <TokenModal
+          isOpen={tokenModalState.isOpen}
+          onClose={closeTokenModal}
+          token={tokenModalState.token}
+          tokenName={tokenModalState.tokenName}
+          expiration={tokenModalState.expiration}
+        />
+      )}
+    </>
   );
 };
