@@ -13,16 +13,17 @@ interface Repository {
   // Add other repository properties as needed
 }
 
-interface ConversationScreenProps {
+export interface ConversationScreenProps {
   messages: Message[];
   isProcessing: boolean;
   inputValue: string;
   setInputValue: (value: string) => void;
   onSendMessage: (content: string) => void;
   onSelectQuery: (query: string) => void;
-  onSelectOption?: (option: SharedChatOption) => void;
-  showCIConfig: boolean;
-  repository?: Repository;
+  onSelectOption: (option: SharedChatOption) => void;
+  showCIConfig?: boolean;
+  repository?: Repository | null;
+  onTokenGenerated?: (token: string, name: string, expiration: string) => void;
 }
 
 export const ConversationScreen: React.FC<ConversationScreenProps> = ({
