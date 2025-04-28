@@ -231,58 +231,39 @@ export const useMessageHandler = ({
     }
 
     // Check if we're in the token flow
-    if (tokenFlowState) {
+    if (tokenFlowState && tokenFlowState.step === 'confirmation') {
       setTimeout(() => {
         try {
-          if (tokenFlowState.step === 'expiration') {
-            // Store the token expiration and move to confirmation step
-            const tokenExpiration = option.value;
-            setTokenFlowState({
-              ...tokenFlowState,
-              step: 'confirmation',
-              tokenExpiration
-            });
+          if (option.id === 'confirm-yes') {
+            // Generate a mock token with the specified pattern
+            const mockToken = 'AKC' + Math.random().toString(36).substring(2, 4) + 
+                           Math.random().toString(36).substring(2, 4).toUpperCase() + 
+                           Math.random().toString(36).substring(2, 6) + 
+                           Math.random().toString(36).substring(2, 6).toUpperCase() + 
+                           Math.random().toString(36).substring(2, 6) +
+                           Math.random().toString(36).substring(2, 6).toUpperCase();
             
-            // Show confirmation options
-            const message = MessageFactory.createActionOptionsMessage(
-              `**Token summary:**\n• Name: "${tokenFlowState.tokenName}"\n• Type: Read-only access\n• Expiration: ${tokenExpiration}\n\nGenerate this token now?`,
-              [
-                { id: 'confirm-yes', label: 'Generate Token', value: 'Yes' },
-                { id: 'confirm-no', label: 'Cancel', value: 'No' }
-              ]
-            );
-            addBotMessage(message);
-          }
-          else if (tokenFlowState.step === 'confirmation') {
-            // Handle final confirmation
-            if (option.id === 'confirm-yes') {
-              // Generate a mock token with the specified pattern
-              const mockToken = 'AKC' + Math.random().toString(36).substring(2, 4) + 
-                              Math.random().toString(36).substring(2, 4).toUpperCase() + 
-                              Math.random().toString(36).substring(2, 6) + 
-                              Math.random().toString(36).substring(2, 6).toUpperCase() + 
-                              Math.random().toString(36).substring(2, 6) +
-                              Math.random().toString(36).substring(2, 6).toUpperCase();
-              
-              // End the token flow
-              setTokenFlowState(null);
-              
-              // Show success message in chat (without the token)
-              addBotMessage(`✅ Token generated successfully! The token has been displayed in a popup window.`);
-
-              // Show token in modal
-              if (onTokenGenerated) {
-                onTokenGenerated(mockToken, tokenFlowState.tokenName || '', tokenFlowState.tokenExpiration || '');
-              }
-            } else {
-              // Cancel token generation
-              setTokenFlowState(null);
-              addBotMessage(`Token generation cancelled.\n\nSay "generate token" to start over with different settings.`);
+            // Show token in modal
+            if (onTokenGenerated) {
+              onTokenGenerated(
+                mockToken, 
+                tokenFlowState.tokenName || '', 
+                tokenFlowState.tokenExpiration || ''
+              );
             }
+            
+            // Success message in chat without the token
+            addBotMessage("🎉 Success! Your token has been generated.\nIs there anything else I can help you with?");
+          } else if (option.id === 'confirm-no') {
+            // Cancel token generation
+            addBotMessage("Token generation cancelled. Let me know if you'd like to try again later.");
           }
+          
+          // End the token flow in either case
+          setTokenFlowState(null);
         } catch (error) {
           console.error("Error processing token action:", error);
-          addBotMessage("I encountered an error processing your selection. Please try again.");
+          addBotMessage("I encountered an error processing your request. Please try again.");
         } finally {
           setIsProcessing(false);
         }
@@ -463,92 +444,101 @@ Would you like me to send the invitations now?`,
             }
           }
           
-          // Continue with existing token flow check
-          if (tokenFlowState) {
-            // Handle token flow based on current step
-            if (tokenFlowState.step === 'name') {
-              // Store the token name and move to expiration step
-              const tokenName = content.trim();
-              setTokenFlowState({
-                step: 'expiration',
-                tokenName
-              });
-              
-              // Show duration options
-              const message = MessageFactory.createActionOptionsMessage(
-                `Your token name will be "${tokenName}"\n\nWhat should be your token duration?`,
-                [
-                  { id: 'expiration-never', label: 'Never', value: 'Never' },
-                  { id: 'expiration-1day', label: '1 Day', value: '1 Day' },
-                  { id: 'expiration-3days', label: '3 Days', value: '3 Days' },
-                  { id: 'expiration-7days', label: '7 Days', value: '7 Days' },
-                  { id: 'expiration-1month', label: '1 Month', value: '1 Month' },
-                  { id: 'expiration-1year', label: '1 Year', value: '1 Year' }
-                ]
-              );
-              addBotMessage(message);
-              setIsProcessing(false);
-              return;
-            } 
-            else if (tokenFlowState.step === 'expiration') {
-              // Store the token expiration and move to confirmation step
-              const tokenExpiration = content.trim();
-              setTokenFlowState({
-                ...tokenFlowState,
-                step: 'confirmation',
-                tokenExpiration
-              });
-              
-              // Show confirmation options
-              const message = MessageFactory.createActionOptionsMessage(
-                `**Token summary:**\n• Name: "${tokenFlowState.tokenName}"\n• Type: Read-only access\n• Expiration: ${tokenExpiration}\n\nGenerate this token now?`,
-                [
-                  { id: 'confirm-yes', label: 'Generate Token', value: 'Yes' },
-                  { id: 'confirm-no', label: 'Cancel', value: 'No' }
-                ]
-              );
-              addBotMessage(message);
-              setIsProcessing(false);
-              return;
-            }
-            else if (tokenFlowState.step === 'confirmation') {
-              // Handle final confirmation
-              if (content.toLowerCase().includes('yes') || content.toLowerCase().includes('generate')) {
-                // Generate a mock token with the specified pattern
-                const mockToken = 'AKC' + Math.random().toString(36).substring(2, 4) + 
-                                Math.random().toString(36).substring(2, 4).toUpperCase() + 
-                                Math.random().toString(36).substring(2, 6) + 
-                                Math.random().toString(36).substring(2, 6).toUpperCase() + 
-                                Math.random().toString(36).substring(2, 6) +
-                                Math.random().toString(36).substring(2, 6).toUpperCase();
-                
-                // End the token flow
-                setTokenFlowState(null);
-                
-                // Show success message
-                addBotMessage(`✅ **Token generated**\n\n**Details:**\n• Type: Read-only\n• Token: \`${mockToken}\`\n\n⚠️ Copy this token now - it won't be displayed again.`);
-              } else {
-                // Cancel token generation
-                setTokenFlowState(null);
-                addBotMessage(`Token generation cancelled.\n\nSay "generate token" to start over with different settings.`);
-              }
-              setIsProcessing(false);
-              return;
-            }
-          }
+          // Check if this is starting a token flow or a direct token generation command
+          const directTokenPattern = /^generate\s+token\s+for\s+(.+?)\s+with\s+(.+)$/i;
+          const directTokenMatch = content.match(directTokenPattern);
           
-          // Check if this is starting a token flow
-          if (content.toLowerCase().includes('token') || 
+          // Direct token generation pattern matched
+          if (directTokenMatch) {
+            console.log("Direct token pattern matched:", directTokenMatch);
+            
+            // Extract description and duration from the message
+            const tokenDescription = directTokenMatch[1].trim();
+            const tokenDuration = directTokenMatch[2].trim();
+            
+            console.log("Token details:", { description: tokenDescription, duration: tokenDuration });
+            
+            // Validate duration
+            const validDurations = [
+              'never', 'no expiration', 'no expire', 'unlimited',
+              '1 day', 'one day', '1day', 'a day', 
+              '3 days', 'three days', '3days',
+              '7 days', 'seven days', '7days', 'a week', 'one week',
+              '1 month', 'one month', '1month', '30 days', 'a month',
+              '1 year', 'one year', '1year', '365 days', 'a year'
+            ];
+            
+            // Normalize duration for easier matching
+            let normalizedDuration = tokenDuration.toLowerCase();
+            
+            // Map to standard format
+            if (['no expiration', 'no expire', 'unlimited'].includes(normalizedDuration)) {
+              normalizedDuration = 'never';
+            } else if (['one day', '1day', 'a day'].includes(normalizedDuration)) {
+              normalizedDuration = '1 day';
+            } else if (['three days', '3days'].includes(normalizedDuration)) {
+              normalizedDuration = '3 days';
+            } else if (['seven days', '7days', 'a week', 'one week'].includes(normalizedDuration)) {
+              normalizedDuration = '7 days';
+            } else if (['one month', '1month', '30 days', 'a month'].includes(normalizedDuration)) {
+              normalizedDuration = '1 month';
+            } else if (['one year', '1year', '365 days', 'a year'].includes(normalizedDuration)) {
+              normalizedDuration = '1 year';
+            }
+            
+            if (!validDurations.includes(normalizedDuration)) {
+              // Invalid duration
+              addBotMessage(`The duration "${tokenDuration}" is not valid. Please choose from: Never, 1 Day, 3 Days, 7 Days, 1 Month, or 1 Year.`);
+              setIsProcessing(false);
+              return;
+            }
+            
+            // Store token info in state for later use
+            setTokenFlowState({
+              step: 'confirmation',
+              tokenName: tokenDescription,
+              tokenExpiration: tokenDuration
+            });
+            
+            // Show confirmation message
+            const message = MessageFactory.createActionOptionsMessage(
+              `Got it! Here's a quick summary:
+
+Description: ${tokenDescription}
+
+Duration: ${tokenDuration}
+
+Would you like me to generate the token now?`,
+              [
+                { id: 'confirm-yes', label: 'Yes', value: 'Yes' },
+                { id: 'confirm-no', label: 'No', value: 'No' }
+              ]
+            );
+            
+            addBotMessage(message);
+            setIsProcessing(false);
+            return;
+          }
+          // Regular token request without the specific format
+          else if (content.toLowerCase().includes('token') || 
               content.toLowerCase().includes('generate token') || 
               content.includes('create token')) {
             
-            // Start the token flow
-            setTokenFlowState({
-              step: 'name'
-            });
+            console.log("Token request detected, showing instructions");
             
-            // Show initial prompt
-            addBotMessage("To generate a new access token, please name it first with a descriptive name that will help you identify this token later.\n\nWhat would you like to name your token?");
+            // Show token generation instructions
+            addBotMessage(`Of course! 🔑
+To generate a token, I'll need two quick details:
+
+A short description to help you remember what the token is for
+
+The duration for how long the token should be valid (you can choose: Never, 1 Day, 3 Days, 7 Days, 1 Month, 1 Year)
+
+👉 Generate token for [description] with [duration]
+
+Example:
+Generate token for CI pipeline with 7 Days`);
+            
             setIsProcessing(false);
             return;
           }

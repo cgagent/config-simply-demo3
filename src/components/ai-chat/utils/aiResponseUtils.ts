@@ -41,6 +41,14 @@ import { DISTRIBUTION_FLOW_ID } from '../config/flows/distributionFlow';
 
 // Add priority pattern matching
 const PRIORITY_PATTERNS: Record<string, string[]> = {
+  'token-generator': [
+    'generate token',
+    'create token',
+    'new token',
+    'token',
+    'generate token for',
+    'access token'
+  ],
   'invite-user': [
     'invite a user',
     'invite user',
@@ -71,12 +79,6 @@ const PRIORITY_PATTERNS: Record<string, string[]> = {
     'distribute outside',
     'package to users outside',
     'need to externally distribute'
-  ],
-  [TOKEN_FLOW_ID]: [
-    'generate token',
-    'create token',
-    'new token',
-    'token'
   ]
   // Add more flows as needed
 };
