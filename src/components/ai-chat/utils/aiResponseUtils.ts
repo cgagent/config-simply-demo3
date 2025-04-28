@@ -41,6 +41,28 @@ import { DISTRIBUTION_FLOW_ID } from '../config/flows/distributionFlow';
 
 // Add priority pattern matching
 const PRIORITY_PATTERNS: Record<string, string[]> = {
+  'invite-user': [
+    'invite a user',
+    'invite user',
+    'add a user',
+    'add user',
+    'invite as developer',
+    'invite as admin'
+  ],
+  'repo-configure-simply': [
+    'simple config',
+    'quick setup',
+    'configure simply',
+    'easy setup', 
+    'repo config',
+    'repository config',
+    'quick configure',
+    'simple repository',
+    'configure repository',
+    'configure repo',
+    'set up repository',
+    'set up repo'
+  ],
   [DISTRIBUTION_FLOW_ID]: [
     'external distribution',
     'externally distribute',

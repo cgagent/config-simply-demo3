@@ -13,7 +13,20 @@ export const CONFIG_PATTERNS = {
   merge: ['merge', 'merging', 'pull request'],
   abort: ['abort', 'cancel', 'stop'],
   viewDiff: ['view diff', 'see diff', 'check diff'],
-  checkOnGithub: ['check on github', 'view on github', 'see on github']
+  checkOnGithub: ['check on github', 'view on github', 'see on github'],
+  // Simple repo configuration patterns
+  simpleConfig: ['simple config', 'quick setup', 'configure simply', 'easy setup', 'repo config', 'simple repository'],
+  // Authentication types
+  tokenAuth: ['token auth', 'token authentication', 'use token', 'with token'],
+  userPassAuth: ['username password', 'user pass', 'with credentials', 'login credentials'],
+  // Configuration types
+  simpleConfigType: ['simple configuration', 'basic setup', 'simple setup'],
+  advancedConfigType: ['advanced configuration', 'advanced setup', 'complex setup'],
+  // Actions
+  proceed: ['proceed', 'continue', 'go ahead', 'do it', 'yes'],
+  startOver: ['start over', 'restart', 'begin again', 'try again'],
+  viewPR: ['view pr', 'view pull request', 'show pr', 'see changes'],
+  mergePR: ['merge pr', 'merge pull request', 'accept changes']
 } as const;
 
 /**

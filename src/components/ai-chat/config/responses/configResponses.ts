@@ -83,6 +83,72 @@ export const generateCheckOnGithubResponse = (): string => {
 };
 
 /**
+ * Generates a response for simple repository configuration initial
+ */
+export const generateSimpleRepoConfigResponse = (): string => {
+  return `Let me help you configure your repository with a simplified approach. I can help with common package managers:
+  
+• npm/JavaScript
+• Docker
+• Maven/Java
+• PyPI/Python
+
+Which package manager would you like to configure?`;
+};
+
+/**
+ * Generates a response for npm repository configuration
+ */
+export const generateSimpleNpmConfigResponse = (): string => {
+  return `For npm repositories, I can help you with:
+  
+1. Setting up authentication with tokens
+2. Configuring .npmrc for your project
+3. Setting up scoped registries
+
+What would you like to configure?`;
+};
+
+/**
+ * Generates a response for Docker repository configuration
+ */
+export const generateSimpleDockerConfigResponse = (): string => {
+  return `For Docker repositories, I can help you with:
+  
+1. Setting up Docker registry authentication
+2. Configuring your Dockerfile to use the registry
+3. Setting up Docker Compose for multi-container applications
+
+What would you like to configure?`;
+};
+
+/**
+ * Generates a response for Maven repository configuration
+ */
+export const generateSimpleMavenConfigResponse = (): string => {
+  return `For Maven repositories, I can help you with:
+  
+1. Configuring settings.xml for authentication
+2. Setting up your pom.xml to use the repository
+3. Configuring Maven profiles
+
+What would you like to configure?`;
+};
+
+/**
+ * Generates a response for PyPI repository configuration
+ */
+export const generateSimplePyPIConfigResponse = (): string => {
+  return `For PyPI repositories, I can help you with:
+  
+1. Setting up .pypirc for authentication
+2. Configuring pip.conf for your project
+3. Setting up requirements.txt with your private dependencies
+
+What would you like to configure?`;
+};
+
+/**
  * Configuration chat responses
  */
 export const configResponses = {
@@ -98,5 +164,12 @@ export const configResponses = {
   merge: generateMergeResponse,
   abort: generateAbortResponse,
   viewDiff: generateViewDiffResponse,
-  checkOnGithub: generateCheckOnGithubResponse
+  checkOnGithub: generateCheckOnGithubResponse,
+  
+  // Simple repository configuration responses
+  simpleRepoConfig: generateSimpleRepoConfigResponse,
+  simpleNpmConfig: generateSimpleNpmConfigResponse,
+  simpleDockerConfig: generateSimpleDockerConfigResponse,
+  simpleMavenConfig: generateSimpleMavenConfigResponse,
+  simplePyPIConfig: generateSimplePyPIConfigResponse
 }; 

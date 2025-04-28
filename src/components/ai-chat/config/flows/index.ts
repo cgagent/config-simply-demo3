@@ -3,6 +3,7 @@ import { packageFlow } from './packageFlow';
 import { securityFlow, maliciousPackagesFlow } from './securityFlow';
 import { tokenFlow } from './tokenFlow';
 import { distributionFlow } from './distributionFlow';
+import { configFlow, repoConfigureSimplyFlow } from './configFlow';
 import { ConversationFlow } from '../../utils/types';
 
 /**
@@ -14,5 +15,7 @@ export const conversationFlows: ConversationFlow[] = [
   securityFlow,
   maliciousPackagesFlow,
   tokenFlow,
-  distributionFlow
+  distributionFlow,
+  configFlow,
+  repoConfigureSimplyFlow
 ]; 

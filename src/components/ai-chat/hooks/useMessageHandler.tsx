@@ -157,8 +157,28 @@ export const useMessageHandler = ({
     addUserMessage(option.value);
     setIsProcessing(true);
 
-    // Handle user invitation flow responses
+    // Handle send invites confirmation
+    if (option.id === 'send-invites') {
+      setTimeout(() => {
+        addBotMessage("🎉 Done! Invitations have been sent.\nIs there anything else I can help you with?");
+        setIsProcessing(false);
+      }, 1500);
+      return;
+    }
+    
+    // Handle cancel invites
+    if (option.id === 'cancel-invites') {
+      setTimeout(() => {
+        addBotMessage("No problem. You can invite users anytime by typing 'invite users' in the chat.");
+        setIsProcessing(false);
+      }, 1000);
+      return;
+    }
+    
+    // Legacy handling for old flow - can be removed when no longer needed
+    // Handle user invitation flow responses 
     if (option.id === 'admin-role' || option.id === 'developer-role') {
+      // Explicitly bypass other flows for user invitation
       setTimeout(() => {
         const role = option.id === 'admin-role' ? 'Admin' : 'Developer';
         addBotMessage(`Great! You've selected the ${role} role. Please provide the email addresses of the users you'd like to invite, separated by commas.`);
@@ -167,6 +187,7 @@ export const useMessageHandler = ({
       return;
     }
     
+    // Legacy handling for old flow - can be removed when no longer needed
     // Handle email input for user invitation - check for previous role message
     const lastMessages = messages.slice(-3);
     const roleSelectionMessage = lastMessages.find(msg => 
@@ -199,15 +220,7 @@ export const useMessageHandler = ({
       return;
     }
     
-    // Handle send invites confirmation
-    if (option.id === 'send-invites') {
-      setTimeout(() => {
-        addBotMessage("✅ Invitations have been sent successfully! The users will receive an email with instructions on how to set up their accounts.");
-        setIsProcessing(false);
-      }, 1500);
-      return;
-    }
-    
+    // Legacy handling for old flow - can be removed when no longer needed
     // Handle maybe later (cancel invites)
     if (option.id === 'maybe-later') {
       setTimeout(() => {
@@ -385,26 +398,69 @@ export const useMessageHandler = ({
       // Process the message with a slight delay to simulate processing
       setTimeout(() => {
         try {
-          // Check for user invite flow
+          // Check explicitly for user invitation flow first
+          // This ensures it takes precedence over any other flow patterns
           if (content.toLowerCase().includes('invite a user') || 
               content.toLowerCase().includes('invite user') ||
               content.toLowerCase().includes('add a user') ||
               content.toLowerCase().includes('add user')) {
             
-            console.log("Triggering user invitation flow");
+            console.log("Explicitly triggering simplified user invitation flow");
             
-            // Show role selection options
-            const message = MessageFactory.createActionOptionsMessage(
-              "Let's invite users to your organization. Which role would you like to give to these users?",
-              [
-                { id: 'admin-role', label: 'Admin', value: 'Admin' },
-                { id: 'developer-role', label: 'Developer', value: 'Developer' }
-              ]
-            );
+            // Show the new simplified user invitation message
+            addBotMessage(`Of course! 🚀
+To invite a user, please send me:
+
+A list of email addresses
+
+The role you'd like to assign (Developer or Admin)
+
+You can write it like this:
+👉 Invite alice@example.com, bob@example.com as Developer`);
             
-            addBotMessage(message);
             setIsProcessing(false);
             return;
+          }
+          
+          // Check for the invitation pattern: "Invite [emails] as [role]"
+          const invitePattern = /invite\s+(.+)\s+as\s+(developer|admin)/i;
+          const inviteMatch = content.match(invitePattern);
+          
+          if (inviteMatch) {
+            // Extract emails and role from the message
+            const emailsText = inviteMatch[1];
+            const role = inviteMatch[2].charAt(0).toUpperCase() + inviteMatch[2].slice(1).toLowerCase();
+            
+            // Parse emails
+            const emails = emailsText.split(',').map(email => email.trim()).filter(Boolean);
+            
+            if (emails.length > 0) {
+              // Format emails list
+              const emailsList = emails.join(', ');
+              
+              // Show confirmation message
+              const message = MessageFactory.createActionOptionsMessage(
+                `Got it! Here's a quick summary:
+
+Emails: ${emailsList}
+
+Role: ${role}
+
+Would you like me to send the invitations now?`,
+                [
+                  { id: 'send-invites', label: 'Yes', value: 'Yes' },
+                  { id: 'cancel-invites', label: 'No', value: 'No' }
+                ]
+              );
+              
+              addBotMessage(message);
+              setIsProcessing(false);
+              return;
+            } else {
+              addBotMessage("I couldn't identify any email addresses. Please try again with valid email addresses.");
+              setIsProcessing(false);
+              return;
+            }
           }
           
           // Continue with existing token flow check
@@ -509,7 +565,7 @@ export const useMessageHandler = ({
           // Get the AI response using the existing utility
           const aiResponse = getRandomResponse(content);
           
-          // Add debugging for token flow
+          // Add debugging for flow
           console.log("AI Response:", {
             content: content,
             response: aiResponse,
@@ -517,443 +573,17 @@ export const useMessageHandler = ({
             currentStep: getCurrentStep()
           });
           
-          // Special handling for token flow
-          if (getCurrentFlow() === TOKEN_FLOW_ID) {
-            console.log("Token flow detected, current step:", getCurrentStep());
-            // The token flow will be handled by the flow mechanism
-            // This ensures the flow advances properly through the steps
-          }
-          
-          // Special handling for empty responses from getRandomResponse (token flow)
-          if (aiResponse === "") {
-            console.log("Empty response detected, letting flow mechanism handle it");
-            // Let the flow mechanism take care of it
-            setIsProcessing(false);
-            return;
-          }
-          
-          // Check if the flow or step has changed
-          const afterFlowId = getCurrentFlow();
-          const afterStepId = getCurrentStep();
-          
-          // If the flow changed, update the context
-          if (beforeFlowId !== afterFlowId) {
-            setCurrentFlow(afterFlowId);
-          }
-          
-          console.log("After processing - Current flow and step:", {
-            currentFlow: afterFlowId,
-            currentStep: afterStepId
-          });
-          
-          // Check if there are action options for this response
-          const actionOptions = getCurrentActionOptions();
-          
-          // Check if this is a confirmation message using the configuration
-          const isConfirmation = isConfirmationMessage(content);
-          
-          // If the flow or step has changed, get the current step data
-          if ((beforeFlowId !== afterFlowId) || (beforeStepId !== afterStepId)) {
-            console.log("Flow or step changed, getting response from new step");
-            // Find the current flow configuration
-            const currentFlow = conversationFlows.find(flow => flow.id === afterFlowId);
-            if (currentFlow) {
-              // Find the current step configuration
-              const currentStepData = currentFlow.steps.find(step => step.id === afterStepId);
-              if (currentStepData) {
-                // Get the response text from the configuration
-                const responseText = typeof currentStepData.response === 'function' 
-                  ? currentStepData.response(content)
-                  : currentStepData.response;
-                
-                // Check for special placeholder responses
-                if (responseText === "SHOW_PACKAGES_TABLE") {
-                  // Generate package table markdown response
-                  console.log("Handling SHOW_PACKAGES_TABLE with updated packages");
-                  
-                  try {
-                    // Get the latest package data from our hook
-                    const { latestPackages } = repositories.length > 0 
-                      ? packageStats 
-                      : { latestPackages: [] };
-                    
-                    console.log("Raw packages from packageStats:", JSON.stringify(latestPackages, null, 2));
-                    
-                    if (!latestPackages || latestPackages.length === 0) {
-                      addBotMessage("I couldn't find any recent packages in your organization.");
-                      setIsProcessing(false);
-                      return;
-                    }
-                    
-                    // Get packages directly from localStorage if needed for debugging
-                    /*
-                    try {
-                      const storedStats = localStorage.getItem('package_statistics');
-                      if (storedStats) {
-                        const parsedStats = JSON.parse(storedStats);
-                        console.log("Packages from localStorage:", JSON.stringify(parsedStats.latestPackages, null, 2));
-                      }
-                    } catch (e) {
-                      console.error("Failed to load packages from localStorage:", e);
-                    }
-                    */
-                    
-                    // Hard-coded packages for testing if needed
-                    const backupPackages = [
-                      {
-                        id: "1",
-                        name: "frontend-app",
-                        version: "2.4.0",
-                        type: "docker",
-                        releaseDate: new Date(new Date().getTime() - (30 * 1000)).toISOString(),
-                        repository: "frontend-app",
-                        status: "passed",
-                        versions: 5,
-                        externalDistributed: "No"
-                      },
-                      {
-                        id: "2",
-                        name: "user-service",
-                        version: "1.7.3",
-                        type: "docker",
-                        releaseDate: new Date(new Date().getTime() - (3 * 60 * 60 * 1000)).toISOString(),
-                        repository: "user-service",
-                        status: "passed",
-                        versions: 8,
-                        externalDistributed: "Yes"
-                      },
-                      {
-                        id: "3",
-                        name: "analytics-dashboard",
-                        version: "0.9.1",
-                        type: "npm",
-                        releaseDate: new Date(new Date().getTime() - (12 * 60 * 60 * 1000)).toISOString(),
-                        repository: "analytics",
-                        status: "warning",
-                        versions: 3,
-                        externalDistributed: "No"
-                      },
-                      {
-                        id: "4",
-                        name: "infra-utilities",
-                        version: "3.1.0",
-                        type: "npm",
-                        releaseDate: new Date(new Date().getTime() - (2 * 24 * 60 * 60 * 1000)).toISOString(),
-                        repository: "infrastructure",
-                        status: "passed",
-                        versions: 11,
-                        externalDistributed: "Yes" 
-                      },
-                      {
-                        id: "5",
-                        name: "api-gateway",
-                        version: "1.0.0",
-                        type: "docker",
-                        releaseDate: new Date(new Date().getTime() - (5 * 24 * 60 * 60 * 1000)).toISOString(),
-                        repository: "api-gateway",
-                        status: "passed",
-                        versions: 1,
-                        externalDistributed: "No"
-                      },
-                      {
-                        id: "6",
-                        name: "dev-utilities",
-                        version: "0.5.2",
-                        type: "npm",
-                        releaseDate: new Date(new Date().getTime() - (10 * 24 * 60 * 60 * 1000)).toISOString(),
-                        repository: "dev-tools",
-                        status: "warning",
-                        versions: 4,
-                        externalDistributed: "No"
-                      }
-                    ];
-                    
-                    // Use backup packages as fallback
-                    const packagesToUse = latestPackages.length >= 5 ? latestPackages : backupPackages;
-                    console.log("Using packages:", JSON.stringify(packagesToUse, null, 2));
-                    
-                    // Ensure packages are sorted by release date (newest first)
-                    const sortedPackages = [...packagesToUse].sort((a, b) => 
-                      new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime()
-                    );
-                    
-                    // Format packages for table
-                    const formattedPackages = sortedPackages.slice(0, 5).map((pkg, index) => {
-                      // Assign varied version counts based on package type and index
-                      let versions;
-                      if (pkg.type === 'docker') {
-                        versions = [3, 5, 7][index % 3]; // Cycle through 3, 5, 7 for docker
-                      } else if (pkg.type === 'npm') {
-                        versions = [1, 2, 4, 6][index % 4]; // Cycle through 1, 2, 4, 6 for npm
-                      } else {
-                        versions = [1, 3, 5, 7][index % 4]; // Default pattern for other types
-                      }
-                      
-                      // Determine External Distributed status to ensure a mix of Yes and No
-                      // If the package already has an explicit value, use it
-                      let isDistributed = false;
-                      
-                      if (pkg.externalDistributed === "Yes") {
-                        isDistributed = true;
-                      } else if (pkg.externalDistributed === "No") {
-                        isDistributed = false;
-                      } else {
-                        // Apply rules that will give us a mix
-                        // For even balance: packages at index 1 and 3 are distributed (Yes)
-                        isDistributed = index === 1 || index === 3;
-                      }
-                      
-                      return {
-                        type: pkg.type,
-                        name: pkg.name,
-                        version: pkg.version,
-                        firstCreated: formatDistanceToNow(new Date(pkg.releaseDate), { addSuffix: true }),
-                        versions: versions,
-                        status: pkg.status,
-                        externalDistributed: isDistributed ? 'Yes' as const : 'No' as const
-                      };
-                    });
-                    
-                    console.log("Formatted packages for display:", JSON.stringify(formattedPackages, null, 2));
-                    
-                    // Debug log before creating the message
-                    console.log("About to create package table message with formatted packages");
-                    
-                    // Create a package table message with follow-up options
-                    const message = MessageFactory.createPackageTableMessage(
-                      "Here are the latest 5 packages published in your organization:",
-                      formattedPackages,
-                      packageFollowUpOptions
-                    );
-                    
-                    // Debug log after creating the message
-                    console.log("Created package table message:", JSON.stringify(message, null, 2));
-                    
-                    addBotMessage(message);
-                    setIsProcessing(false);
-                    return;
-                  } catch (error) {
-                    console.error("Error generating package table:", error);
-                    addBotMessage("I encountered an error displaying the package table. Please try again.");
-                  }
-                }
-                
-                // Check if there are action options defined for this step
-                const stepActionOptions = currentStepData.actionOptions || [];
-                
-                // Create and add the appropriate response message
-                if (stepActionOptions.length > 0) {
-                  const actionOptionsMessage = MessageFactory.createActionOptionsMessage(
-                    responseText, 
-                    stepActionOptions
-                  );
-                  addBotMessage(actionOptionsMessage);
-                } else {
-                  // No action options, just send the text response
-                  addBotMessage(responseText);
-                }
-                
-                // Return early since we've handled the response
-                return;
-              }
+          // Process the AI response
+          if (aiResponse) {
+            if (Array.isArray(aiResponse) || typeof aiResponse === 'object') {
+              addBotMessage(aiResponse);
+            } else {
+              addBotMessage(aiResponse.toString());
             }
           }
           
-          // Special handling for PackageTableMessage
-          if (typeof aiResponse === 'object' && 
-              'packages' in aiResponse && 
-              Array.isArray(aiResponse.packages) && 
-              'type' in aiResponse && 
-              aiResponse.type === 'package-table') {
-            console.log("Detected PackageTableMessage with packages array");
-            // Just add the message directly - we now rely on the packageResponses to format it correctly
-            addBotMessage(aiResponse);
-            setIsProcessing(false);
-            return;
-          }
-          
-          // Special handling for the SHOW_PACKAGES_TABLE placeholder
-          if (aiResponse === 'SHOW_PACKAGES_TABLE') {
-            // Generate package table markdown response
-            console.log("Handling SHOW_PACKAGES_TABLE with updated packages");
-            
-            try {
-              // Get the latest package data from our hook
-              const { latestPackages } = repositories.length > 0 
-                ? packageStats 
-                : { latestPackages: [] };
-              
-              console.log("Raw packages from packageStats:", JSON.stringify(latestPackages, null, 2));
-              
-              if (!latestPackages || latestPackages.length === 0) {
-                addBotMessage("I couldn't find any recent packages in your organization.");
-                setIsProcessing(false);
-                return;
-              }
-              
-              // Get packages directly from localStorage if needed for debugging
-              /*
-              try {
-                const storedStats = localStorage.getItem('package_statistics');
-                if (storedStats) {
-                  const parsedStats = JSON.parse(storedStats);
-                  console.log("Packages from localStorage:", JSON.stringify(parsedStats.latestPackages, null, 2));
-                }
-              } catch (e) {
-                console.error("Failed to load packages from localStorage:", e);
-              }
-              */
-              
-              // Hard-coded packages for testing if needed
-              const backupPackages = [
-                {
-                  id: "1",
-                  name: "frontend-app",
-                  version: "2.4.0",
-                  type: "docker",
-                  releaseDate: new Date(new Date().getTime() - (30 * 1000)).toISOString(),
-                  repository: "frontend-app",
-                  status: "passed",
-                  versions: 5,
-                  externalDistributed: "No"
-                },
-                {
-                  id: "2",
-                  name: "user-service",
-                  version: "1.7.3",
-                  type: "docker",
-                  releaseDate: new Date(new Date().getTime() - (3 * 60 * 60 * 1000)).toISOString(),
-                  repository: "user-service",
-                  status: "passed",
-                  versions: 8,
-                  externalDistributed: "Yes"
-                },
-                {
-                  id: "3",
-                  name: "analytics-dashboard",
-                  version: "0.9.1",
-                  type: "npm",
-                  releaseDate: new Date(new Date().getTime() - (12 * 60 * 60 * 1000)).toISOString(),
-                  repository: "analytics",
-                  status: "warning",
-                  versions: 3,
-                  externalDistributed: "No"
-                },
-                {
-                  id: "4",
-                  name: "infra-utilities",
-                  version: "3.1.0",
-                  type: "npm",
-                  releaseDate: new Date(new Date().getTime() - (2 * 24 * 60 * 60 * 1000)).toISOString(),
-                  repository: "infrastructure",
-                  status: "passed",
-                  versions: 11,
-                  externalDistributed: "Yes" 
-                },
-                {
-                  id: "5",
-                  name: "api-gateway",
-                  version: "1.0.0",
-                  type: "docker",
-                  releaseDate: new Date(new Date().getTime() - (5 * 24 * 60 * 60 * 1000)).toISOString(),
-                  repository: "api-gateway",
-                  status: "passed",
-                  versions: 1,
-                  externalDistributed: "No"
-                },
-                {
-                  id: "6",
-                  name: "dev-utilities",
-                  version: "0.5.2",
-                  type: "npm",
-                  releaseDate: new Date(new Date().getTime() - (10 * 24 * 60 * 60 * 1000)).toISOString(),
-                  repository: "dev-tools",
-                  status: "warning",
-                  versions: 4,
-                  externalDistributed: "No"
-                }
-              ];
-              
-              // Use backup packages as fallback
-              const packagesToUse = latestPackages.length >= 5 ? latestPackages : backupPackages;
-              console.log("Using packages:", JSON.stringify(packagesToUse, null, 2));
-              
-              // Ensure packages are sorted by release date (newest first)
-              const sortedPackages = [...packagesToUse].sort((a, b) => 
-                new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime()
-              );
-              
-              // Format packages for table
-              const formattedPackages = sortedPackages.slice(0, 5).map((pkg, index) => {
-                // Assign varied version counts based on package type and index
-                let versions;
-                if (pkg.type === 'docker') {
-                  versions = [3, 5, 7][index % 3]; // Cycle through 3, 5, 7 for docker
-                } else if (pkg.type === 'npm') {
-                  versions = [1, 2, 4, 6][index % 4]; // Cycle through 1, 2, 4, 6 for npm
-                } else {
-                  versions = [1, 3, 5, 7][index % 4]; // Default pattern for other types
-                }
-                
-                // Determine External Distributed status to ensure a mix of Yes and No
-                // If the package already has an explicit value, use it
-                let isDistributed = false;
-                
-                if (pkg.externalDistributed === "Yes") {
-                  isDistributed = true;
-                } else if (pkg.externalDistributed === "No") {
-                  isDistributed = false;
-                } else {
-                  // Apply rules that will give us a mix
-                  // For even balance: packages at index 1 and 3 are distributed (Yes)
-                  isDistributed = index === 1 || index === 3;
-                }
-                
-                return {
-                  type: pkg.type,
-                  name: pkg.name,
-                  version: pkg.version,
-                  firstCreated: formatDistanceToNow(new Date(pkg.releaseDate), { addSuffix: true }),
-                  versions: versions,
-                  status: pkg.status,
-                  externalDistributed: isDistributed ? 'Yes' as const : 'No' as const
-                };
-              });
-              
-              console.log("Formatted packages for display:", JSON.stringify(formattedPackages, null, 2));
-              
-              // Debug log before creating the message
-              console.log("About to create package table message with formatted packages");
-              
-              // Create a package table message with follow-up options
-              const message = MessageFactory.createPackageTableMessage(
-                "Here are the latest 5 packages published in your organization:",
-                formattedPackages,
-                packageFollowUpOptions
-              );
-              
-              // Debug log after creating the message
-              console.log("Created package table message:", JSON.stringify(message, null, 2));
-              
-              addBotMessage(message);
-              setIsProcessing(false);
-              return;
-            } catch (error) {
-              console.error("Error generating package table:", error);
-              addBotMessage("I encountered an error displaying the package table. Please try again.");
-            }
-          }
-          
-          // If we get here, either no flow/step change was detected or the new step couldn't be found
-          // Use the default response handling logic
-          if (actionOptions && actionOptions.length > 0 && !isConfirmation) {
-            // Create an action options message
-            const actionOptionsMessage = MessageFactory.createActionOptionsMessage(aiResponse, actionOptions);
-            addBotMessage(actionOptionsMessage);
-          } else {
-            // Send a regular text message
-            addBotMessage(aiResponse);
-          }
+          setIsProcessing(false);
+          return;
         } catch (error) {
           console.error("Error generating AI response:", error);
           toast({
