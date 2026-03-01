@@ -15,10 +15,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { UseFormReturn } from 'react-hook-form';
+import { UseFormReturn, FieldValues } from 'react-hook-form';
 
 interface CommonUserFormFieldsProps {
-  form: UseFormReturn<any>; // Using any here as we'll use this for both form types
+  form: UseFormReturn<FieldValues>;
 }
 
 const CommonUserFormFields: React.FC<CommonUserFormFieldsProps> = ({ form }) => {
