@@ -20,11 +20,11 @@ jobs:
       - name: Setup JFrog Fly
         uses: jfrog/fly-action@v1
         with:
-          url: https://yaronltest15.jfrog.io
+          url: https://yaronltest16.jfrog.io
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: yaronltest15.jfrog.io/docker/${{ github.repository }}:latest
+          tags: yaronltest16.jfrog.io/docker/${{ github.repository }}:latest
