@@ -98,7 +98,7 @@ let currentStep: string | null = null;
 let currentActionOptions: ChatOption[] | null = null;
 
 // Function to set repository data from outside this module
-export const setRepositoryData = (data: any) => {
+export const setRepositoryData = (data: unknown) => {
   repositoryData = data;
 };
 
@@ -285,7 +285,7 @@ export const simulateAIResponse = (query: string): string | BaseMessage => {
 };
 
 // Helper function to get a simulated response
-export const getRandomResponse = (query: string): string | any => {
+export const getRandomResponse = (query: string): string => {
   const lowerQuery = query.toLowerCase();
   
   // First check if this is a token generation request

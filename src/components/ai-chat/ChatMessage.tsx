@@ -100,9 +100,9 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, onSelectOptio
   console.log("ChatMessage rendering with message:", {
     id: message.id,
     role: message.role,
-    type: (message as any).type || 'unknown',
+    type: (message as Record<string, unknown>).type || 'unknown',
     hasTypeField: 'type' in message,
-    isPackageTable: 'type' in message && (message as any).type === 'package-table',
+    isPackageTable: 'type' in message && (message as Record<string, unknown>).type === 'package-table',
     hasPackages: 'packages' in message,
     content: message.content.substring(0, 100) + (message.content.length > 100 ? '...' : '')
   });
@@ -298,7 +298,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, onSelectOptio
               />
             </div>
           ) : isPackageTable ? (
-            <MessageRenderer message={message as any as TypeMessage} onSelectOption={onSelectOption} />
+            <MessageRenderer message={message as unknown as TypeMessage} onSelectOption={onSelectOption} />
           ) : (
             <div className="prose prose-sm max-w-none dark:prose-invert prose-pre:bg-blue-900/30 prose-pre:text-blue-100 prose-code:text-blue-300">
               <ReactMarkdown 

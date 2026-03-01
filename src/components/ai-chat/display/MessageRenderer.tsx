@@ -205,14 +205,14 @@ const PackageTableRenderer: React.FC<{
   message: Message; 
   onSelectOption?: (option: ChatOption) => void;
 }> = ({ message, onSelectOption }) => {
-  if (!isPackageTableMessage(message) || !message.packages) {
-    return <TextMessageRenderer message={message} />;
-  }
-
   const [distributeModalOpen, setDistributeModalOpen] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<string>('');
   const [distributedPackages, setDistributedPackages] = useState<Set<string>>(new Set());
   const { toast } = useToast();
+
+  if (!isPackageTableMessage(message) || !message.packages) {
+    return <TextMessageRenderer message={message} />;
+  }
 
   const handleDistributeClick = (packageName: string) => {
     setSelectedPackage(packageName);

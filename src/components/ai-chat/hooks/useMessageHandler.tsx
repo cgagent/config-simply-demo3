@@ -540,22 +540,22 @@ Would you like me to send the invitations now?`,
           // Check if this is starting a token flow or a direct token generation command
           const directTokenPatterns = [
             // Original patterns
-            /^(?:create|generate\s+)?(?:a\s+)?token\s+for\s+(.+?)\s+with\s+(\d+\s*(?:days?|months?|years?|week))(?:\s+expiration)?(?:\s*$|\s*[\n\.])/i,
-            /^(?:create|generate\s+)?(?:a\s+)?token\s+with\s+(?:the\s+)?name\s+(.+?)\s+and\s+(?:an?\s+)?(?:expiration\s+of\s+)?(\d+\s*(?:days?|months?|years?|week))(?:\s*$|\s*[\n\.])/i,
-            /^(?:create|generate\s+)?(?:a\s+)?token\s+named\s+(.+?)\s+(?:with\s+)?(\d+\s*(?:days?|months?|years?|week))(?:\s*$|\s*[\n\.])/i,
-            /^(?:create|generate\s+)?(?:a\s+)?token\s+(.+?)\s+(?:that\s+)?(?:never\s+expires?|valid\s+forever)(?:\s*$|\s*[\n\.])/i,
-            /^(?:create|generate\s+)?(?:a\s+)?token\s+(.+?)\s+(?:valid\s+for\s+)?(\d+\s*(?:days?|months?|years?|week))(?:\s*$|\s*[\n\.])/i,
+            /^(?:create|generate\s+)?(?:a\s+)?token\s+for\s+(.+?)\s+with\s+(\d+\s*(?:days?|months?|years?|week))(?:\s+expiration)?(?:\s*$|\s*[\n.])/i,
+            /^(?:create|generate\s+)?(?:a\s+)?token\s+with\s+(?:the\s+)?name\s+(.+?)\s+and\s+(?:an?\s+)?(?:expiration\s+of\s+)?(\d+\s*(?:days?|months?|years?|week))(?:\s*$|\s*[\n.])/i,
+            /^(?:create|generate\s+)?(?:a\s+)?token\s+named\s+(.+?)\s+(?:with\s+)?(\d+\s*(?:days?|months?|years?|week))(?:\s*$|\s*[\n.])/i,
+            /^(?:create|generate\s+)?(?:a\s+)?token\s+(.+?)\s+(?:that\s+)?(?:never\s+expires?|valid\s+forever)(?:\s*$|\s*[\n.])/i,
+            /^(?:create|generate\s+)?(?:a\s+)?token\s+(.+?)\s+(?:valid\s+for\s+)?(\d+\s*(?:days?|months?|years?|week))(?:\s*$|\s*[\n.])/i,
             // k8s-deploy patterns
-            /^(?:create|generate\s+)?(?:a\s+)?token\s+k8s-deploy\s+(?:valid\s+)?forever(?:\s*$|\s*[\n\.])/i,
-            /^(?:create|generate\s+)?(?:a\s+)?token\s+k8s-deploy\s+(?:valid\s+for\s+)?(\d+\s*(?:days?|months?|years?|week))(?:\s*$|\s*[\n\.])/i,
+            /^(?:create|generate\s+)?(?:a\s+)?token\s+k8s-deploy\s+(?:valid\s+)?forever(?:\s*$|\s*[\n.])/i,
+            /^(?:create|generate\s+)?(?:a\s+)?token\s+k8s-deploy\s+(?:valid\s+for\s+)?(\d+\s*(?:days?|months?|years?|week))(?:\s*$|\s*[\n.])/i,
             // Named with expiration patterns
-            /^(?:create|generate\s+)?(?:a\s+)?token\s+named\s+(\w+[-\w]*)\s+with\s+(\d+\s*(?:days?|months?|years?|week))(?:\s+expiration)?(?:\s*$|\s*[\n\.])/i,
-            /^(?:create|generate\s+)?(?:a\s+)?token\s+named\s+(\w+[-\w]*)\s+(?:that\s+)?(?:expires?\s+in\s+)?(\d+\s*(?:days?|months?|years?|week))(?:\s*$|\s*[\n\.])/i,
+            /^(?:create|generate\s+)?(?:a\s+)?token\s+named\s+(\w+[-\w]*)\s+with\s+(\d+\s*(?:days?|months?|years?|week))(?:\s+expiration)?(?:\s*$|\s*[\n.])/i,
+            /^(?:create|generate\s+)?(?:a\s+)?token\s+named\s+(\w+[-\w]*)\s+(?:that\s+)?(?:expires?\s+in\s+)?(\d+\s*(?:days?|months?|years?|week))(?:\s*$|\s*[\n.])/i,
             // Natural language variations with better name capture
-            /(?:create|make|generate|get)?\s*(?:a\s+)?token\s+(\w+[-\w]*)\s+(?:for|valid for|with duration|that lasts)?\s*(\d+\s*(?:days?|months?|years?|week))(?:\s*$|\s*[\n\.])/i,
+            /(?:create|make|generate|get)?\s*(?:a\s+)?token\s+(\w+[-\w]*)\s+(?:for|valid for|with duration|that lasts)?\s*(\d+\s*(?:days?|months?|years?|week))(?:\s*$|\s*[\n.])/i,
             // More flexible patterns with name capture
-            /.*token\s+(\w+[-\w]*)(?:\s+for|\s+valid|\s+with)?\s+(\d+\s*(?:days?|months?|years?|week))(?:\s*$|\s*[\n\.])/i,
-            /.*token\s+(\w+[-\w]*)\s+(\d+\s*(?:days?|months?|years?|week))(?:\s*$|\s*[\n\.])/i
+            /.*token\s+(\w+[-\w]*)(?:\s+for|\s+valid|\s+with)?\s+(\d+\s*(?:days?|months?|years?|week))(?:\s*$|\s*[\n.])/i,
+            /.*token\s+(\w+[-\w]*)\s+(\d+\s*(?:days?|months?|years?|week))(?:\s*$|\s*[\n.])/i
           ];
           
           // Define grammar keywords to exclude
@@ -602,7 +602,7 @@ Would you like me to send the invitations now?`,
             content.match(/(?:create\s+(?:a\s+)?new,?\s+)?(?:no-expiry|no\s+expiry)\s+access\s+token\s+called\s+(\w+[-\w]*)/i) ||
 
             // Match period-separated token name and expiration (flexible punctuation)
-            content.match(/(?:also\s+)?(?:create\s+|generate\s+)?(?:a\s+)?token\s+(?:name\s+|named\s+)?(\w+[-\w]*)[\s.,/]*(?:expiration|expires?(?:\s+in)?|valid\s+for)\s+(\d+\s*(?:days?|months?|years?|week))(?:\s*$|\s*[\n\.,])/i) ||
+            content.match(/(?:also\s+)?(?:create\s+|generate\s+)?(?:a\s+)?token\s+(?:name\s+|named\s+)?(\w+[-\w]*)[\s.,/]*(?:expiration|expires?(?:\s+in)?|valid\s+for)\s+(\d+\s*(?:days?|months?|years?|week))(?:\s*$|\s*[\n.,])/i) ||
             // Match "Create token named X with Y days expiration"
             content.match(/(?:also\s+)?(?:create|generate)?\s*(?:a\s+)?token\s+named\s+(\w+[-\w]*)\s+(?:for|with)?\s+(\d+\s*(?:days?|months?|years?|week))(?:\s+expiration)?/i) ||
             // Match "token name with X time expiration"
@@ -642,8 +642,8 @@ Would you like me to send the invitations now?`,
           if (!directTokenMatch) {
             const directTokenPatterns = [
               // Period-separated token name and expiration patterns (flexible punctuation)
-              /(?:also\s+)?(?:create\s+|generate\s+)?(?:a\s+)?token\s+(?:name\s+|named\s+)?(\w+[-\w]*)[\s.,/]*(?:expiration|expires?(?:\s+in)?|valid\s+for)\s+(\d+\s*(?:days?|months?|years?|week))(?:\s*$|\s*[\n\.,])/i,
-              /(?:also\s+)?(?:create\s+|generate\s+)?(?:a\s+)?token\s+(?:name\s+|named\s+)?(\w+[-\w]*)[\s.,/]*(?:expiration|expires?(?:\s+in)?|valid\s+for)\s+forever(?:\s*$|\s*[\n\.,])/i,
+              /(?:also\s+)?(?:create\s+|generate\s+)?(?:a\s+)?token\s+(?:name\s+|named\s+)?(\w+[-\w]*)[\s.,/]*(?:expiration|expires?(?:\s+in)?|valid\s+for)\s+(\d+\s*(?:days?|months?|years?|week))(?:\s*$|\s*[\n.,])/i,
+              /(?:also\s+)?(?:create\s+|generate\s+)?(?:a\s+)?token\s+(?:name\s+|named\s+)?(\w+[-\w]*)[\s.,/]*(?:expiration|expires?(?:\s+in)?|valid\s+for)\s+forever(?:\s*$|\s*[\n.,])/i,
               // Named with expiration patterns - most specific first
               /(?:also\s+)?(?:create|generate)?\s*(?:a\s+)?token\s+named\s+(\w+[-\w]*)\s+(?:for|with)?\s+(\d+\s*(?:days?|months?|years?|week))(?:\s+expiration)?/i,
               /(?:also\s+)?(?:create|generate)?\s*(?:a\s+)?token\s+named\s+(\w+[-\w]*)\s+(?:that\s+)?(?:expires?\s+in\s+)?(\d+\s*(?:days?|months?|years?|week))/i,
@@ -695,7 +695,7 @@ Would you like me to send the invitations now?`,
             console.log("Token generation proceeding with:", { name: tokenDescription, duration: tokenDuration });
             
             // Normalize duration for easier matching
-            let normalizedDuration = tokenDuration.toLowerCase().trim().replace(/[\n\.]$/, '');
+            let normalizedDuration = tokenDuration.toLowerCase().trim().replace(/[\n.]$/, '');
             
             // Validate duration
             const validDurations = [
@@ -871,21 +871,24 @@ or
     setRepository(null);
   };
 
-  const handlePackagesQuery = (latestPackages: any) => {
+  const handlePackagesQuery = (latestPackages: unknown[]) => {
     if (!latestPackages || !Array.isArray(latestPackages) || latestPackages.length === 0) {
       addBotMessage("Sorry, I couldn't find any recent packages.");
       return;
     }
 
     // Format packages for display
-    const formattedPackages = latestPackages.slice(0, 5).map((pkg: any, index: number) => ({
-      type: pkg.type || 'unknown',
-      name: pkg.name,
-      version: pkg.version,
-      firstCreated: formatDistanceToNow(new Date(pkg.releaseDate), { addSuffix: true }),
-      versions: pkg.type === 'docker' ? [3, 5, 8][index % 3] : [1, 2, 4, 7][index % 4],
-      externalDistributed: pkg.status === 'passed' ? 'Yes' as const : 'No' as const
-    }));
+    const formattedPackages = latestPackages.slice(0, 5).map((rawPkg: unknown, index: number) => {
+      const pkg = rawPkg as Record<string, unknown>;
+      return {
+        type: (pkg.type as string) || 'unknown',
+        name: pkg.name as string,
+        version: pkg.version as string,
+        firstCreated: formatDistanceToNow(new Date(pkg.releaseDate as string), { addSuffix: true }),
+        versions: pkg.type === 'docker' ? [3, 5, 8][index % 3] : [1, 2, 4, 7][index % 4],
+        externalDistributed: pkg.status === 'passed' ? 'Yes' as const : 'No' as const
+      };
+    });
 
     // Create a package table message with follow-up options
     const message = MessageFactory.createPackageTableMessage(
