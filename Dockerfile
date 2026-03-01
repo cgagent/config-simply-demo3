@@ -1,5 +1,5 @@
 # Build stage
-FROM yaronltest15.jfrog.io/docker/node:20-alpine as build
+FROM yaronltest16.jfrog.io/docker/node:20-alpine as build
 
 WORKDIR /app
 
@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM yaronltest15.jfrog.io/docker/nginx:alpine
+FROM yaronltest16.jfrog.io/docker/nginx:alpine
 
 # Copy built assets from build stage
 COPY --from=build /app/dist /usr/share/nginx/html
