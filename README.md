@@ -22,24 +22,28 @@ Other useful scripts:
 | `npm test` | Run tests with Vitest |
 | `npm run test:coverage` | Run tests with coverage |
 
+## Branch Protection
+
+The `main` branch is protected. Direct pushes are not allowed -- all changes must go through a pull request. The **Code Quality** workflow is a required status check that must pass before a PR can be merged.
+
 ## CI/CD Workflows
 
 All workflows run on GitHub Actions and use GitHub-native services (GHCR for container images, `GITHUB_TOKEN` for authentication). Workflow files live in `.github/workflows/`.
 
 ### 1. Code Quality (`code-quality.yml`)
 
-**Trigger:** every push to `main` and every pull request.
+**Trigger:** pull requests targeting `main`.
 
-Runs static analysis to catch issues before they reach production:
+Runs static analysis as a merge gate to catch issues before they reach production:
 
 - **ESLint** -- enforces code style and catches common JavaScript/TypeScript mistakes.
 - **TypeScript type check** (`tsc --noEmit`) -- validates type correctness across the codebase without emitting build output.
 
-This workflow does not require any container registry access; it only needs the source code and Node.js 20.
+This is a required status check -- PRs cannot be merged until it passes.
 
 ### 2. Build and Push Docker Image (`docker-push.yml`)
 
-**Trigger:** every push to `main`.
+**Trigger:** when a pull request is merged into `main` (via the resulting push event).
 
 Builds a production Docker image and publishes it to GHCR:
 
@@ -69,13 +73,14 @@ Validates that the newly published container image actually works:
 ### Workflow Pipeline
 
 ```
-push to main
-  ├── Code Quality ──────────────── lint + type check
-  └── Build and Push Docker Image ─ build & push to GHCR
-          └── Smoke Test ────────── pull, run, verify
+pull request → Code Quality (lint + type check)  ← must pass to merge
+      │
+      ▼ merge
+push to main → Build and Push Docker Image → Smoke Test
 ```
 
-Code Quality and Build run in parallel on every push to `main`.
+Code Quality runs on every PR as a required check.
+Build and Push runs only after a PR is merged into `main`.
 The Smoke Test is chained to the Build workflow via `workflow_run` and only executes when the build succeeds.
 
 ## Docker
