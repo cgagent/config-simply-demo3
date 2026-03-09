@@ -11,10 +11,16 @@ jobs:
 
     permissions:
       contents: read
+      id-token: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Setup JFrog Fly
+        uses: jfrog/fly-action@v1
+        with:
+          url: https://cga.jfrog.io
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
